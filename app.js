@@ -20,7 +20,7 @@ server.route({
         if (req.query.v) {
             var stream = fs.createWriteStream(req.query.v + '.mp3');
             stream.on('close', function() {
-                reply("finished!");
+               reply("finished downloading mp3");
             });
             request('http://YouTubeInMP3.com/fetch/?video=http://www.youtube.com/watch?v=' + req.query.v).pipe(stream);
         }
