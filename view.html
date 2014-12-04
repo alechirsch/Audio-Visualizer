@@ -89,6 +89,14 @@
 		<div class="slider">
 			<label>Gradient Size??</label>
 			<input id="slider-size" type="range" value="800" min="500" max="1500" step="0.01" />
+		</div>		
+		<div class="slider">
+			<label>Line Distortion</label>
+			<input id="slider-lineDistortion" type="range" value="100" min="0" max="1000" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Unknown</label>
+			<input id="slider-unknown" type="range" value="100" min="0" max="1000" step="0.01" />
 		</div>
 		<div class="slider">
 			<label>Color 1</label>
@@ -142,6 +150,8 @@
 		uniform float curve;
 		uniform float shape;
 		uniform float size;
+		uniform float lineDistortion;
+		uniform float unknown;
 		uniform float color1;
 		uniform float color2;
 		uniform float color3;
@@ -173,7 +183,7 @@
 
 			h=sin(f*g)*speed2-sin(e*g)*212.0*p.x;
 			h=(h+(f-e)*q+sin(r-(a+h)/7.0)*10.0+i/4.0)*g;
-			i+=cos(h*2.3*sin(a/350.0-q))*184.0*sin(q-(r*4.3+a/12.0)*g)+tan(r*g+h)*184.0*cos(r*g+h);
+			i+=cos(h*2.3*sin(a/350.0-q))*lineDistortion*sin(q-(r*4.3+a/12.0)*g)+tan(r*g+h)*lineDistortion*cos(r*g+h);
 
 			i=mod(i/5.6,shape)/64.0;
 			if(i<0.0) i+=4.0;
@@ -196,14 +206,6 @@
 		var container, stats;
 
 		var camera, scene, renderer;
-
-		// var sliderLy= document.getElementById('slider-ly');
-		// var sliderLz= document.getElementById('slider-lz');
-
-		// var sliderCz = document.getElementById('slider-cz');
-
-		// var sliderCax = document.getElementById('slider-cax');
-		// var sliderCay = document.getElementById('slider-cay');
 
 		var uniforms;
 
@@ -234,6 +236,8 @@
 				curve: { type: "f", value: 0.0},
 				shape: { type: "f", value: 0.0},
 				size: { type: "f", value: 0.0},
+				lineDistortion: { type: "f", value: 0.0},
+				unknown: { type: "f", value: 0.0},
 				color1: { type: "f", value: 0.0},
 				color2: { type: "f", value: 0.0},
 				color3: { type: "f", value: 0.0},
@@ -300,6 +304,8 @@
 				uniforms.curve.value = document.getElementById('slider-curve').value;
 				uniforms.shape.value = document.getElementById('slider-shape').value;
 				uniforms.size.value = document.getElementById('slider-size').value;
+				uniforms.lineDistortion.value = document.getElementById('slider-lineDistortion').value;
+				uniforms.unknown.value = document.getElementById('slider-unknown').value;
 				uniforms.color1.value = document.getElementById('slider-color-1').value;
 				uniforms.color2.value = document.getElementById('slider-color-2').value;
 				uniforms.color3.value = document.getElementById('slider-color-3').value;
