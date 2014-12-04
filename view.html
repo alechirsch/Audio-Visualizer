@@ -92,10 +92,6 @@
 			<input id="slider-curveIntensity" type="range" value="0" min="0" max="800" step=".01" />
 		</div>
 		<div class="slider">
-			<label>Shape</label>
-			<input id="slider-shape" type="range" value="50" min="-800" max="500" step="0.01" />
-		</div>
-		<div class="slider">
 			<label>Gradient Size??</label>
 			<input id="slider-size" type="range" value="800" min="500" max="1500" step="0.01" />
 		</div>		
@@ -118,6 +114,10 @@
 		<div class="slider">
 			<label>Unknown</label>
 			<input id="slider-unknown" type="range" value="1" min="0" max="20" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Color Inversion</label>
+			<input id="slider-colorInversion" type="range" value="50" min="-800" max="500" step="0.01" />
 		</div>
 		<div class="slider">
 			<label>Color 1</label>
@@ -165,7 +165,7 @@
 		uniform float speed;
 		uniform float speed2;
 		uniform float curve;
-		uniform float shape;
+		uniform float colorInversion;
 		uniform float size;
 		uniform float lineDistortion;
 		uniform float horizontalPulse;
@@ -205,7 +205,7 @@
 			h=(h+(f-e)*q+sin(r-(a+h)/7.0)*10.0+i/4.0)*g;
 			i+=cos(h*2.3*sin(a/350.0-q))*lineDistortion*sin(q-(r*unknown+a/12.0)*g)+tan(r*g+h)*lineDistortion*cos(r*g+h);
 
-			i=mod(i/5.6,shape)/64.0;
+			i=mod(i/5.6,colorInversion)/64.0;
 			if(i<0.0) i+=4.0;
 			if(i>=2.0) i=4.0-i;
 
@@ -229,7 +229,10 @@
 
 		var uniforms;
 		
-		//var ears = new EasyEars({url: 'http://freedownloads.last.fm/download/569330037/The%2BFever%2B%2528Aye%2BAye%2529.mp3'});
+		//var ears = new EasyEars({url: 'http://alechirsch.com/cohkka.mp3'});
+		var ears = new EasyEars({dropTarget: document}, function(){
+			console.log('song loaded!');
+		});
 
 		init();
 		animate();
@@ -256,7 +259,7 @@
 				speed: { type: "f", value: 0.0},
 				speed2: { type: "f", value: 0.0},
 				curve: { type: "f", value: 0.0},
-				shape: { type: "f", value: 0.0},
+				colorInversion: { type: "f", value: 0.0},
 				size: { type: "f", value: 0.0},
 				lineDistortion: { type: "f", value: 0.0},
 				horizontalPulse: { type: "f", value: 0.0},
@@ -328,7 +331,7 @@
 				uniforms.speed.value = document.getElementById('slider-speed').value;
 				uniforms.speed2.value = document.getElementById('slider-speed-2').value;
 				uniforms.curve.value = document.getElementById('slider-curve').value;
-				uniforms.shape.value = document.getElementById('slider-shape').value;
+				uniforms.colorInversion.value = document.getElementById('slider-colorInversion').value;
 				uniforms.size.value = document.getElementById('slider-size').value;
 				uniforms.lineDistortion.value = document.getElementById('slider-lineDistortion').value;
 				uniforms.horizontalPulse.value = document.getElementById('slider-horizontalPulse').value;
