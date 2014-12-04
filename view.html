@@ -64,7 +64,7 @@
 		</div>
 		<div class="slider">
 			<label>Horizontal Stretch</label>
-			<input id="slider-horizontalStretch" type="range" value="500" min="-500" max="800" step="0.01" />
+			<input id="slider-horizontalStretch" type="range" value="400" min="-500" max="800" step="0.01" />
 		</div>
 		<div class="slider">
 			<label>Horizontal Stretch 2</label>
@@ -107,8 +107,12 @@
 			<input id="slider-verticalWaveDistortion" type="range" value="1" min="0.01" max="2" step="0.01" />
 		</div>
 		<div class="slider">
+			<label>Circles</label>
+			<input id="slider-circles" type="range" value="8" min="8" max="1000" step="0.01" />
+		</div>
+		<div class="slider">
 			<label>Unknown</label>
-			<input id="slider-unknown" type="range" value="1" min="0.01" max="2" step="0.01" />
+			<input id="slider-unknown" type="range" value="1" min="0" max="20" step="0.01" />
 		</div>
 		<div class="slider">
 			<label>Color 1</label>
@@ -166,6 +170,7 @@
 		uniform float horizontalPulse;
 		uniform float verticalWaveDistortion;
 		uniform float curveIntensity;
+		uniform float circles;
 		uniform float unknown;
 		uniform float color1;
 		uniform float color2;
@@ -197,7 +202,7 @@
 
 			h=sin(f*g)*speed2-sin(e*g)*212.0*p.x;
 			h=(h+(f-e)*q+sin(r-(a+h)/7.0)*10.0+i/4.0)*g;
-			i+=cos(h*2.3*sin(a/350.0-q))*lineDistortion*sin(q-(r*4.3+a/12.0)*g)+tan(r*g+h)*lineDistortion*cos(r*g+h);
+			i+=cos(h*2.3*sin(a/350.0-q))*lineDistortion*sin(q-(r*unknown+a/12.0)*g)+tan(r*g+h)*lineDistortion*cos(r*g+h);
 
 			i=mod(i/5.6,shape)/64.0;
 			if(i<0.0) i+=4.0;
@@ -205,7 +210,7 @@
 
 			d=r/size;
 
-			d+=sin(d*d*8.0)*0.52;
+			d+=sin(d*d*circles)*0.52;
 			f=(sin(a*g)+1.0)/2.0;
 
 			gl_FragColor=vec4(vec3(f*i/2.0,i/2.0+d/3.0,i)*d*p.x+vec3(i/color1+d/color2,i/color3+d/color4,i)*d*(1.0-p.x),1.0);
@@ -254,6 +259,7 @@
 				horizontalPulse: { type: "f", value: 0.0},
 				verticalWaveDistortion: { type: "f", value: 0.0},
 				curveIntensity: { type: "f", value: 0.0},
+				circles: { type: "f", value: 0.0},
 				unknown: { type: "f", value: 0.0},
 				color1: { type: "f", value: 0.0},
 				color2: { type: "f", value: 0.0},
@@ -325,6 +331,7 @@
 				uniforms.horizontalPulse.value = document.getElementById('slider-horizontalPulse').value;
 				uniforms.verticalWaveDistortion.value = document.getElementById('slider-verticalWaveDistortion').value;
 				uniforms.curveIntensity.value = document.getElementById('slider-curveIntensity').value;
+				uniforms.circles.value = document.getElementById('slider-circles').value;
 				uniforms.unknown.value = document.getElementById('slider-unknown').value;
 				uniforms.color1.value = document.getElementById('slider-color-1').value;
 				uniforms.color2.value = document.getElementById('slider-color-2').value;
