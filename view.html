@@ -39,6 +39,11 @@
 			width:150px;
 		}
 	</style>
+
+	<script src="public/js/three.min.js"></script>
+	<script src="public/js/Detector.js"></script>
+	<script src="public/js/stats.min.js"></script>
+	<script src="public/js/easy_ears-0.1.js"></script>
 </head>
 <body>
 
@@ -133,10 +138,6 @@
 
 	</div>
 
-	<script src="public/js/three.min.js"></script>
-
-	<script src="public/js/Detector.js"></script>
-	<script src="public/js/stats.min.js"></script>
 
 	<script id="vertexShader" type="x-shader/x-vertex">
 
@@ -227,6 +228,8 @@
 		var camera, scene, renderer;
 
 		var uniforms;
+		
+		//var ears = new EasyEars({url: 'http://freedownloads.last.fm/download/569330037/The%2BFever%2B%2528Aye%2BAye%2529.mp3'});
 
 		init();
 		animate();
