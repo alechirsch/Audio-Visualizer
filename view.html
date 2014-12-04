@@ -80,11 +80,15 @@
 		</div>
 		<div class="slider">
 			<label>Curve</label>
-			<input id="slider-curve" type="range" value="50" min="-800" max="800" step="0.01" />
+			<input id="slider-curve" type="range" value="0" min="0" max="800" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Curve Intensity</label>
+			<input id="slider-curveIntensity" type="range" value="0" min="0" max="800" step=".01" />
 		</div>
 		<div class="slider">
 			<label>Shape</label>
-			<input id="slider-shape" type="range" value="50" min="-800" max="800" step="0.01" />
+			<input id="slider-shape" type="range" value="50" min="-800" max="500" step="0.01" />
 		</div>
 		<div class="slider">
 			<label>Gradient Size??</label>
@@ -95,8 +99,16 @@
 			<input id="slider-lineDistortion" type="range" value="100" min="0" max="1000" step="0.01" />
 		</div>
 		<div class="slider">
+			<label>Horizontal Pulse</label>
+			<input id="slider-horizontalPulse" type="range" value="25" min="0" max="50" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Vertical Wave Distortion</label>
+			<input id="slider-verticalWaveDistortion" type="range" value="1" min="0.01" max="2" step="0.01" />
+		</div>
+		<div class="slider">
 			<label>Unknown</label>
-			<input id="slider-unknown" type="range" value="100" min="0" max="1000" step="0.01" />
+			<input id="slider-unknown" type="range" value="1" min="0.01" max="2" step="0.01" />
 		</div>
 		<div class="slider">
 			<label>Color 1</label>
@@ -151,6 +163,9 @@
 		uniform float shape;
 		uniform float size;
 		uniform float lineDistortion;
+		uniform float horizontalPulse;
+		uniform float verticalWaveDistortion;
+		uniform float curveIntensity;
 		uniform float unknown;
 		uniform float color1;
 		uniform float color2;
@@ -167,16 +182,15 @@
 
 			f=verticalStretch*(p.y*0.5+0.5);
 
-			i=leftOffset+sin(e*g+a/150.0)*20.0;
+			i=leftOffset+sin(e*g+a/horizontalPulse)*20.0;
 
-			d=bottomOffset+cos(f*g/2.0)*18.0+cos(e*g)*7.0;
+			d=bottomOffset+cos(f*g/verticalWaveDistortion)*18.0+cos(e*g)*7.0;
 
 			r=sqrt(pow(i-e, horizontalStretch2 )+pow(d-f,verticalStretch2));
 			q=f/r;
 			e=(r*cos(q))-a/2.0;f=(r*sin(q))-a/2.0;
 
-			float intensity = 200.0;
-			d=sin(e*g)*curve+sin(e*g)*164.0+r;
+			d=sin(e*g)*curve+sin(e*g)*curveIntensity+r;
 			h=((f+d)+a/2.0)*g;
 			i=cos(h+r*p.x/1.3)*(e+e+a)+cos(q*g*6.0)*(r+h/3.0);
 
@@ -237,6 +251,9 @@
 				shape: { type: "f", value: 0.0},
 				size: { type: "f", value: 0.0},
 				lineDistortion: { type: "f", value: 0.0},
+				horizontalPulse: { type: "f", value: 0.0},
+				verticalWaveDistortion: { type: "f", value: 0.0},
+				curveIntensity: { type: "f", value: 0.0},
 				unknown: { type: "f", value: 0.0},
 				color1: { type: "f", value: 0.0},
 				color2: { type: "f", value: 0.0},
@@ -305,6 +322,9 @@
 				uniforms.shape.value = document.getElementById('slider-shape').value;
 				uniforms.size.value = document.getElementById('slider-size').value;
 				uniforms.lineDistortion.value = document.getElementById('slider-lineDistortion').value;
+				uniforms.horizontalPulse.value = document.getElementById('slider-horizontalPulse').value;
+				uniforms.verticalWaveDistortion.value = document.getElementById('slider-verticalWaveDistortion').value;
+				uniforms.curveIntensity.value = document.getElementById('slider-curveIntensity').value;
 				uniforms.unknown.value = document.getElementById('slider-unknown').value;
 				uniforms.color1.value = document.getElementById('slider-color-1').value;
 				uniforms.color2.value = document.getElementById('slider-color-2').value;
