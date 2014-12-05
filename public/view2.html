@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>three.js webgl - shader [Monjori]</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+		body {
+			color: #ffffff;
+			font-family:Monospace;
+			font-size:13px;
+			text-align:center;
+			font-weight: bold;
+
+			background-color: #000000;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		#info {
+			position: absolute;
+			top: 0px; width: 100%;
+			padding: 5px;
+		}
+
+		a {
+
+			color: #ffffff;
+		}
+
+		#oldie a { color:#da0 }
+		
+		#sliders{
+			position:absolute;
+			top:0px;
+			right:0px;
+			padding:10px;
+			background-color:rgba(255,0,0,0.5);
+			width:150px;
+		}
+	</style>
+
+	<script src="js/three.min.js"></script>
+	<script src="js/Detector.js"></script>
+	<script src="js/stats.min.js"></script>
+	<script src="js/easy_ears-0.1.js"></script>
+	<script src="js/audio.js"></script>
+</head>
+<body>
+	<div id="prompt">drop here</div>
+	<div id="container"></div>
+	<div id="info"><a href="http://threejs.org" target="_blank">three.js</a> - shader demo. featuring <a href="http://www.pouet.net/prod.php?which=52761" target="_blank">Monjori by Mic</a> 	
+	</div>
+	<div id="sliders">
+		<div class="slider">
+			<label>Left Off Set</label>
+			<input id="slider-leftOffset" type="range" value="100" min="0" max="600" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Bottom Off Set</label>
+			<input id="slider-bottomOffset" type="range" value="250" min="0" max="600" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Vertical Stretch</label>
+			<input id="slider-verticalStretch" type="range" value="400" min="0" max="600" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Vertical Stretch 2</label>
+			<input id="slider-verticalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Horizontal Stretch</label>
+			<input id="slider-horizontalStretch" type="range" value="400" min="-500" max="800" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Horizontal Stretch 2</label>
+			<input id="slider-horizontalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Speed</label>
+			<input id="slider-speed" type="range" value="20" min="1" max="100" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Speed 2</label>
+			<input id="slider-speed-2" type="range" value="250" min="0" max="1000" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Curve</label>
+			<input id="slider-curve" type="range" value="0" min="0" max="800" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Curve Intensity</label>
+			<input id="slider-curveIntensity" type="range" value="0" min="0" max="800" step=".01" />
+		</div>
+		<div class="slider">
+			<label>Gradient Size??</label>
+			<input id="slider-size" type="range" value="800" min="500" max="1500" step="0.01" />
+		</div>		
+		<div class="slider">
+			<label>Line Distortion</label>
+			<input id="slider-lineDistortion" type="range" value="100" min="0" max="1000" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Horizontal Pulse</label>
+			<input id="slider-horizontalPulse" type="range" value="25" min="0" max="50" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Vertical Wave Distortion</label>
+			<input id="slider-verticalWaveDistortion" type="range" value="1" min="0.01" max="2" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Circles</label>
+			<input id="slider-circles" type="range" value="8" min="8" max="1000" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Unknown</label>
+			<input id="slider-unknown" type="range" value="1" min="0" max="20" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Color Inversion</label>
+			<input id="slider-colorInversion" type="range" value="50" min="-800" max="500" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Color 1</label>
+			<input id="slider-color-1" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Color 2</label>
+			<input id="slider-color-2" type="range" value="2.0" min="0.1" max="10.0" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Color 3</label>
+			<input id="slider-color-3" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
+		</div>
+		<div class="slider">
+			<label>Color 4</label>
+			<input id="slider-color-4" type="range" value="3.0" min="0.1" max="10.0" step="0.01" />
+		</div>
+
+	</div>
+
+
+	<script id="vertexShader" type="x-shader/x-vertex">
+
+		void main()	{
+
+			gl_Position = vec4( position, 1.0 );
+
+		}
+
+	</script>
+
+
+	
+
+	<script id="fragmentShader" type="x-shader/x-fragment">
+
+		uniform vec2 resolution;
+		uniform float time;
+		uniform float leftOffset;
+		uniform float horizontalStretch;
+		uniform float horizontalStretch2;
+		uniform float verticalStretch;
+		uniform float verticalStretch2;
+		uniform float bottomOffset;
+		uniform float speed;
+		uniform float speed2;
+		uniform float curve;
+		uniform float colorInversion;
+		uniform float size;
+		uniform float lineDistortion;
+		uniform float horizontalPulse;
+		uniform float verticalWaveDistortion;
+		uniform float curveIntensity;
+		uniform float circles;
+		uniform float unknown;
+		uniform float color1;
+		uniform float color2;
+		uniform float color3;
+		uniform float color4;
+
+		void main()	{
+
+			vec2 p = -1.0 + 2.0 * gl_FragCoord.xy / resolution.xy;
+			float a = time*speed;
+			float d,e,f,g=1.0/40.0,h,i,r,q;
+
+			e=horizontalStretch*(p.x*0.5+0.5);
+
+			f=verticalStretch*(p.y*0.5+0.5);
+
+			i=leftOffset+sin(e*g+a/horizontalPulse)*20.0;
+
+			d=bottomOffset+cos(f*g/verticalWaveDistortion)*18.0+cos(e*g)*7.0;
+
+			r=sqrt(pow(i-e, horizontalStretch2 )+pow(d-f,verticalStretch2));
+			q=f/r;
+			e=(r*cos(q))-a/2.0;f=(r*sin(q))-a/2.0;
+
+			d=sin(e*g)*curve+sin(e*g)*curveIntensity+r;
+			h=((f+d)+a/2.0)*g;
+			i=cos(h+r*p.x/1.3)*(e+e+a)+cos(q*g*6.0)*(r+h/3.0);
+
+
+			h=sin(f*g)*speed2-sin(e*g)*212.0*p.x;
+			h=(h+(f-e)*q+sin(r-(a+h)/7.0)*10.0+i/4.0)*g;
+			i+=cos(h*2.3*sin(a/350.0-q))*lineDistortion*sin(q-(r*unknown+a/12.0)*g)+tan(r*g+h)*lineDistortion*cos(r*g+h);
+
+			i=mod(i/5.6,colorInversion)/64.0;
+			if(i<0.0) i+=4.0;
+			if(i>=2.0) i=4.0-i;
+
+			d=r/size;
+
+			d+=sin(d*d*circles)*0.52;
+			f=(sin(a*g)+1.0)/2.0;
+
+			gl_FragColor=vec4(vec3(f*i/2.0,i/2.0+d/3.0,i)*d*p.x+vec3(i/color1+d/color2,i/color3+d/color4,i)*d*(1.0-p.x),1.0);
+
+		}
+	</script>
+
+	<script>
+		/*from http://airtightinteractive.com/demos/js/reactive/	*/
+		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+
+		var container, stats;
+
+		var camera, scene, renderer;
+
+		var uniforms;
+		var source;
+		var analyser;
+		var buffer;
+		var audioBuffer;
+		var dropArea;
+		var audioContext;
+		var source;
+		var analyser;
+		var xhr;
+		var started = false;
+
+
+		init();
+		animate();
+
+		function init() {
+
+
+			
+			try {
+				window.AudioContext = window.AudioContext || window.webkitAudioContext;
+				audioContext = new window.AudioContext();
+			} catch(e) {
+				return;
+			}
+
+			window.addEventListener('touchstart', function() {
+
+				/* create empty buffer */
+				var buffer = audioContext.createBuffer(1, 1, 22050);
+				var source = audioContext.createBufferSource();
+				source.buffer = buffer;
+
+				/* connect to output (your speakers) */
+				source.connect(audioContext.destination);
+
+				/* play the file */
+				source.noteOn(0);
+
+			}, false);
+
+			/* init audio */
+			analyser = audioContext.createAnalyser();
+			analyser.smoothingTimeConstant = 0.1;
+			analyser.fftSize = 1024;
+			container = document.getElementById( 'container' );
+
+			camera = new THREE.Camera();
+			camera.position.z = 1;
+
+			scene = new THREE.Scene();
+
+			var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+
+			uniforms = {
+				time: { type: "f", value: 1.0 },
+				leftOffset: { type: "f", value: 200.0},
+				horizontalStretch: { type: "f", value: 200.0},
+				horizontalStretch2: { type: "f", value: 200.0},
+				verticalStretch: { type: "f", value: 200.0},
+				verticalStretch2: { type: "f", value: 200.0},
+				bottomOffset: { type: "f", value: 200.0},
+				speed: { type: "f", value: 0.0},
+				speed2: { type: "f", value: 0.0},
+				curve: { type: "f", value: 0.0},
+				colorInversion: { type: "f", value: 0.0},
+				size: { type: "f", value: 0.0},
+				lineDistortion: { type: "f", value: 0.0},
+				horizontalPulse: { type: "f", value: 0.0},
+				verticalWaveDistortion: { type: "f", value: 0.0},
+				curveIntensity: { type: "f", value: 0.0},
+				circles: { type: "f", value: 0.0},
+				unknown: { type: "f", value: 0.0},
+				color1: { type: "f", value: 0.0},
+				color2: { type: "f", value: 0.0},
+				color3: { type: "f", value: 0.0},
+				color4: { type: "f", value: 0.0},
+				resolution: { type: "v2", value: new THREE.Vector2() }
+			};
+
+			var material = new THREE.ShaderMaterial( {
+
+				uniforms: uniforms,
+				vertexShader: document.getElementById( 'vertexShader' ).textContent,
+				fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+
+			} );
+
+			var mesh = new THREE.Mesh( geometry, material );
+			scene.add( mesh );
+
+			renderer = new THREE.WebGLRenderer();
+			container.appendChild( renderer.domElement );
+
+			stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			container.appendChild( stats.domElement );
+
+			onWindowResize();
+
+			document.addEventListener('drop', onMP3Drop, false);
+			window.addEventListener( 'resize', onWindowResize, false );
+
+
+			LoopVisualizer.init();
+		}
+
+		function onDroppedMP3Loaded(data) {
+			audioContext.decodeAudioData(data, function(buffer) {
+				audioBuffer = buffer;
+				startSound();
+			}, function(e) {
+				$('#prompt').text("cannot decode mp3");
+				console.log(e);
+			});
+		}
+
+		function startSound() {
+
+			if (source){
+				source.stop(0.0);
+				source.disconnect();
+			}
+
+			/* Connect audio processing graph */
+			source = audioContext.createBufferSource();	
+			source.connect(audioContext.destination);
+			source.connect(analyser);
+
+			source.buffer = audioBuffer;
+			source.loop = true;
+			source.start(0.0);
+			startViz();
+		}
+
+		function onDocumentMouseMove(event) {
+			mouseX = (event.clientX - windowHalfX);
+			mouseY = (event.clientY - windowHalfY);
+		}
+
+		function onDocumentTouchStart( event ) {
+			if ( event.touches.length == 1 ) {
+				event.preventDefault();
+				mouseX = event.touches[ 0 ].pageX - windowHalfX;
+				mouseY = event.touches[ 0 ].pageY - windowHalfY;
+			}
+		}
+
+		function onDocumentTouchMove( event ) {
+			if ( event.touches.length == 1 ) {
+				event.preventDefault();
+				mouseX = event.touches[ 0 ].pageX - windowHalfX;
+				mouseY = event.touches[ 0 ].pageY - windowHalfY;
+			}
+		}
+
+		function onWindowResize(event) {
+			windowHalfX = window.innerWidth / 2;
+			windowHalfY = window.innerHeight / 2;
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+			render();
+			stats.update();
+		}
+
+		function render() {
+
+			LoopVisualizer.update();
+
+			noisePos += 0.005;
+
+			if (LoopVisualizer.vizParams.autoTilt){
+				var rotRng = Math.PI /2;
+				LoopVisualizer.loopHolder.rotation.x = perlin.noise(noisePos,0,0) * rotRng;
+				LoopVisualizer.loopHolder.rotation.y = perlin.noise(noisePos ,100,0) * rotRng;
+
+			}else{
+			}
+
+			renderer.render(scene, camera);
+		}
+
+		function onDocumentDragOver(evt) {
+			$('#prompt').show();
+			$('#prompt').text("drop MP3 here");
+			evt.stopPropagation();
+			evt.preventDefault();
+			return false;
+		}
+
+		function onMP3Drop(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+
+			$('#prompt').show();
+			$('#prompt').text("loading...");
+
+			var droppedFiles = evt.dataTransfer.files;
+			var reader = new FileReader();
+			reader.onload = function(fileEvent) {
+				var data = fileEvent.target.result;
+				onDroppedMP3Loaded(data);
+			};
+			reader.readAsArrayBuffer(droppedFiles[0]);
+		}
+
+		function startViz(){
+			$('#prompt').hide();
+			/*LoopVisualizer.start(); */
+			if (!started){
+				started = true;
+				animate();
+			}
+		}
+
+		/*** END FROM http://airtightinteractive.com/demos/js/reactive/ ***/
+
+		function onWindowResize( event ) {
+
+			uniforms.resolution.value.x = window.innerWidth;
+			uniforms.resolution.value.y = window.innerHeight;
+
+			renderer.setSize( window.innerWidth, window.innerHeight );
+
+		}
+
+
+
+		function animate() {
+
+			requestAnimationFrame( animate );
+
+			render();
+			stats.update();
+
+		}
+
+		function render() {
+
+			uniforms.time.value += 0.05;
+			uniforms.leftOffset.value = document.getElementById('slider-leftOffset').value;
+			uniforms.horizontalStretch.value = document.getElementById('slider-horizontalStretch').value;
+			uniforms.horizontalStretch2.value = document.getElementById('slider-horizontalStretch-2').value;
+			uniforms.verticalStretch.value = document.getElementById('slider-verticalStretch').value;
+			uniforms.verticalStretch2.value = document.getElementById('slider-verticalStretch-2').value;
+			uniforms.bottomOffset.value = document.getElementById('slider-bottomOffset').value;
+			uniforms.speed.value = document.getElementById('slider-speed').value;
+			uniforms.speed2.value = document.getElementById('slider-speed-2').value;
+			uniforms.curve.value = document.getElementById('slider-curve').value;
+			uniforms.colorInversion.value = document.getElementById('slider-colorInversion').value;
+			uniforms.size.value = document.getElementById('slider-size').value;
+			uniforms.lineDistortion.value = document.getElementById('slider-lineDistortion').value;
+			uniforms.horizontalPulse.value = document.getElementById('slider-horizontalPulse').value;
+			uniforms.verticalWaveDistortion.value = document.getElementById('slider-verticalWaveDistortion').value;
+			uniforms.curveIntensity.value = document.getElementById('slider-curveIntensity').value;
+			uniforms.circles.value = document.getElementById('slider-circles').value;
+			uniforms.unknown.value = document.getElementById('slider-unknown').value;
+			uniforms.color1.value = document.getElementById('slider-color-1').value;
+			uniforms.color2.value = document.getElementById('slider-color-2').value;
+			uniforms.color3.value = document.getElementById('slider-color-3').value;
+			uniforms.color4.value = document.getElementById('slider-color-4').value;
+			renderer.render( scene, camera );
+
+		}
+
+	</script>
+
+</body>
+</html>
+

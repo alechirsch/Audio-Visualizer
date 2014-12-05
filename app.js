@@ -1,3 +1,28 @@
+// Require the express library:
+var express = require('express');
+
+// Create an app:
+var app = express();
+
+// This shows you how to use "middleware" to provide additional
+// functionality. This middleware allows files to be served
+// statically:
+app.use(express.static(__dirname + '/public'));
+
+
+
+// What happens if the app gets a request that it does not understand?
+// We match anything and return a response:
+app.get('*', function (req, res) {
+  res.status(404).send('Sorry. I do not understand you!\n');
+});
+
+// Start the server:
+var server = app.listen(3000, function () {
+  console.log('Listening on port %d', server.address().port);
+});
+
+/*
 var Hapi = require('hapi');
 var fs = require('fs');
 var request = require('request');
@@ -39,3 +64,4 @@ server.route({
 });
 server.start();
 console.log('Server started on localhost:8000');
+*/
