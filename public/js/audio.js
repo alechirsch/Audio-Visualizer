@@ -39,7 +39,8 @@ var LoopVisualizer = (function() {
 		color3: 1,
 		color4: 1
 	};
-
+	var min = 0;
+	var max = 75000;
 	function init() {
 
 		////////INIT audio in
@@ -58,7 +59,7 @@ var LoopVisualizer = (function() {
 
 	}
 
-	function normalize(value, min, max){
+	function normalize(value){
 		return (value - min) / (max - min);
 	}
 
@@ -72,9 +73,11 @@ var LoopVisualizer = (function() {
 		for(var i = 0; i < BIN_COUNT; i++) {
 			sum += freqByteData[i];
 		}
+		if(sum > 75000){
+			sum = 75000;
+		}
 
-		parameters.lineDistortion = normalize(sum,0,800);
-
+		parameters.lineDistortion = normalize(sum) * 800;
 	}
 
 	return {
