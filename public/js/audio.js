@@ -1,16 +1,10 @@
 var LoopVisualizer = (function() {
 
-	var RINGCOUNT = 160;
-	var SEPARATION = 30;
-	var INIT_RADIUS = 50;
+
 	var SEGMENTS = 512;
 	var BIN_COUNT = 512;
 
-	var rings = [];
-	var levels = [];
-	var colors = [];
-	var loopHolder = new THREE.Object3D();
-	var loopGeom;//one geom for all rings
+
 	var freqByteData;
 	var timeByteData;
 
@@ -23,27 +17,27 @@ var LoopVisualizer = (function() {
 		autoTilt: false
 	};
 	var parameters = {
-		leftOffset: { type: "f", value: 200.0},
-		horizontalStretch: { type: "f", value: 200.0},
-		horizontalStretch2: { type: "f", value: 200.0},
-		verticalStretch: { type: "f", value: 200.0},
-		verticalStretch2: { type: "f", value: 200.0},
-		bottomOffset: { type: "f", value: 200.0},
-		speed: { type: "f", value: 0.0},
-		speed2: { type: "f", value: 0.0},
-		curve: { type: "f", value: 0.0},
-		colorInversion: { type: "f", value: 0.0},
-		size: { type: "f", value: 0.0},
-		lineDistortion: { type: "f", value: 0.0},
-		horizontalPulse: { type: "f", value: 0.0},
-		verticalWaveDistortion: { type: "f", value: 0.0},
-		curveIntensity: { type: "f", value: 0.0},
-		circles: { type: "f", value: 0.0},
-		unknown: { type: "f", value: 0.0},
-		color1: { type: "f", value: 0.0},
-		color2: { type: "f", value: 0.0},
-		color3: { type: "f", value: 0.0},
-		color4: { type: "f", value: 0.0}
+		leftOffset: 1,
+		horizontalStretch: 1,
+		horizontalStretch2: 1,
+		verticalStretch: 1,
+		verticalStretch2: 1,
+		bottomOffset: 1,
+		speed: 1,
+		speed2: 1,
+		curve: 1,
+		colorInversion: 1,
+		size: 1,
+		lineDistortion: 1,
+		horizontalPulse: 1,
+		verticalWaveDistortion: 1,
+		curveIntensity: 1,
+		circles: 1,
+		unknown: 1,
+		color1: 1,
+		color2: 1,
+		color3: 1,
+		color4: 1
 	};
 
 	function init() {
@@ -64,18 +58,28 @@ var LoopVisualizer = (function() {
 
 	}
 
+	function normalize(value, min, max){
+		return (value - min) / (max - min);
+	}
+
 	function update() {
 
 		
 		analyser.getByteFrequencyData(freqByteData);
 		analyser.getByteTimeDomainData(timeByteData);
 
+		var sum = 0;
+		for(var i = 0; i < BIN_COUNT; i++) {
+			sum += freqByteData[i];
+		}
+
+		parameters.lineDistortion = normalize(sum,0,800);
+
 	}
 
 	return {
 		init:init,
 		update:update,
-		loopHolder:loopHolder,
-		vizParams:vizParams
+		parameters:parameters
 	};
 }());
