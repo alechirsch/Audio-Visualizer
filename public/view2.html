@@ -43,7 +43,6 @@
 	<script src="js/three.min.js"></script>
 	<script src="js/Detector.js"></script>
 	<script src="js/stats.min.js"></script>
-	<script src="js/easy_ears-0.1.js"></script>
 	<script src="js/audio.js"></script>
 </head>
 <body>
@@ -450,7 +449,8 @@
 			uniforms.horizontalPulse.value = document.getElementById('slider-horizontalPulse').value;
 			uniforms.verticalWaveDistortion.value = document.getElementById('slider-verticalWaveDistortion').value;
 			uniforms.curveIntensity.value = document.getElementById('slider-curveIntensity').value;
-			uniforms.circles.value = document.getElementById('slider-circles').value;
+			//uniforms.circles.value = document.getElementById('slider-circles').value;
+			uniforms.circles.value = LoopVisualizer.parameters.circles;
 			uniforms.unknown.value = document.getElementById('slider-unknown').value;
 			uniforms.color1.value = document.getElementById('slider-color-1').value;
 			uniforms.color2.value = document.getElementById('slider-color-2').value;

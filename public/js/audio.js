@@ -78,6 +78,7 @@ var LoopVisualizer = (function() {
 		}
 
 		parameters.lineDistortion = normalize(sum) * 800;
+		parameters.circles = (normalize(sum) * 200) + 8;
 	}
 
 	return {
