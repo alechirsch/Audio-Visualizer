@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "express": "^4.10.4"
+    "ejs": "^1.0.0",
+    "hapi": "^7.5.2",
+    "ytdl-core": "^0.2.4"
   }
 }
