@@ -1,6 +1,5 @@
 var Hapi = require('hapi');
 var fs = require('fs');
-var request = require('request');
 var ytdl =  require('ytdl-core'); 
 var ejs = require('ejs');
 var Path = require('path');
@@ -47,5 +46,5 @@ server.route({
     }
 });
 server.start();
-console.log('Server started on localhost:3000');
+console.log('Server started on localhost:8000');
 
