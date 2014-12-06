@@ -2,10 +2,18 @@ var Hapi = require('hapi');
 var fs = require('fs');
 var request = require('request');
 var ytdl =  require('ytdl-core'); 
+var ejs = require('ejs');
+var Path = require('path');
 var server = new Hapi.Server('0.0.0.0', process.env.PORT || 8000, {
     "payload": {
         "maxBytes": 104857600 //Increasing max file size to 1MB
     }
+});
+server.views({
+    engines: {
+        ejs: ejs
+    },
+    path: Path.join(__dirname, 'views')
 });
 server.route({
     method: 'GET',
@@ -19,9 +27,9 @@ server.route({
     path: '/watch',
     handler: function(req, reply) {
         if (req.query.v) {
-            var stream = fs.createWriteStream(req.query.v + '.mp4');
+            var stream = fs.createWriteStream("public/" + req.query.v + '.mp4');
             stream.on('close', function() {
-               reply("finished downloading mp4");
+               reply.view('view.ejs', { video_id: req.query.v });
             });
             ytdl('http://www.youtube.com/watch?v=' + req.query.v).pipe(stream);
         }
@@ -39,4 +47,5 @@ server.route({
     }
 });
 server.start();
-console.log('Server started on localhost:8000');
+console.log('Server started on localhost:3000');
+
