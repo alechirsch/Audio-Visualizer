@@ -236,9 +236,7 @@
 
 		$('#enter-link').click(function(){
 			$('#prompt').html("<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>").show();
-			setTimeout(function() {
-				$('#prompt').hide().text("");
-			}, 10000);
+			fadePrompt();
 
 		});
 
@@ -369,6 +367,12 @@
 			}
 		}
 
+		function fadePrompt(){
+			setTimeout(function() {
+				$('#prompt').fadeOut('slow');
+			}, 10000);
+		}
+
 		function getURLParameter(url, name) {
 		    return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
 		}
@@ -441,7 +445,6 @@
 		}
 
 		function onDocumentDragOver(evt) {
-			$('#prompt').text("Drop file here").show();
 			evt.stopPropagation();
 			evt.preventDefault();
 			return false;
