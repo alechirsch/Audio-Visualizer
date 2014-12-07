@@ -18,7 +18,7 @@ server.route({
     method: 'GET',
     path: '/',
     handler: function(req, reply) {
-        reply.view('view.ejs', {video_id: false});
+        reply.view('view.ejs', {video_id: '', youtube: false});
     }
 });
 server.route({
@@ -28,7 +28,7 @@ server.route({
         if (req.query.v) {
             var stream = fs.createWriteStream("public/" + req.query.v + '.mp4');
             stream.on('close', function() {
-               reply.view('view.ejs', { video_id: req.query.v });
+               reply.view('view.ejs', { video_id: req.query.v, youtube: true });
             });
             ytdl('http://www.youtube.com/watch?v=' + req.query.v).pipe(stream);
         }

@@ -1,154 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>three.js webgl - shader [Monjori]</title>
+	<title>Youtube Visualize</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<style>
-		body {
-			color: #ffffff;
-			font-family:Monospace;
-			font-size:13px;
-			text-align:center;
-			font-weight: bold;
-
-			background-color: #000000;
-			margin: 0px;
-			overflow: hidden;
-		}
-
-		#info {
-			position: absolute;
-			top: 0px; width: 100%;
-			padding: 5px;
-		}
-
-		a {
-
-			color: #ffffff;
-		}
-
-		#oldie a { color:#da0 }
-		
-		#sliders{
-			position:absolute;
-			top:0px;
-			right:0px;
-			padding:10px;
-			background-color:rgba(255,0,0,0.5);
-			width:150px;
-		}
-	</style>
-
+	<link href="public/css/style.css" rel="stylesheet">
 	<script src="public/js/three.min.js"></script>
 	<script src="public/js/Detector.js"></script>
 	<script src="public/js/stats.min.js"></script>
 	<script src="public/js/audio.js"></script>
 	<script src="public/js/jquery-2.1.1.min.js"></script>
+	<script src="public/js/accordion.js"></script>
 </head>
 <body>
 	<div id="container"></div>
-	<div id="prompt">test?</div>
-	<div id="info"><a href="http://threejs.org" target="_blank">three.js</a> - shader demo. featuring <a href="http://www.pouet.net/prod.php?which=52761" target="_blank">Monjori by Mic</a> 	
-	</div>
-	<ul id="options">
-		<li>
-			<h3>Section</h3>
-			<div class="acc-section">
-				<div class="acc-content">
-					The content
+	<div id="prompt-contatiner"><div id="prompt"></div></div>
+	<div id="tools">
+		<ul id="accordion">
+			<li id="color">
+				<h3>Color</h3>
+				<div class="acc-section">
+					<div class="acc-content">
+						<div class="slider">
+							<label>Color 1</label>
+							<input id="slider-color-1" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Color 2</label>
+							<input id="slider-color-2" type="range" value="2.0" min="0.1" max="10.0" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Color 3</label>
+							<input id="slider-color-3" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Color 4</label>
+							<input id="slider-color-4" type="range" value="3.0" min="0.1" max="10.0" step="0.01" />
+						</div>					
+						<div class="slider">
+							<label>Color Inversion</label>
+							<input id="slider-colorInversion" type="range" value="50" min="-800" max="500" step="0.01" />
+						</div>
+					</div>
 				</div>
+			</li>
+			<li id="shape">
+				<h3>Shape</h3>
+				<div class="acc-section">
+					<div class="acc-content">
+						<div class="slider">
+							<label>Left Off Set</label>
+							<input id="slider-leftOffset" type="range" value="100" min="0" max="600" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Bottom Off Set</label>
+							<input id="slider-bottomOffset" type="range" value="250" min="0" max="600" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Vertical Stretch</label>
+							<input id="slider-verticalStretch" type="range" value="400" min="0" max="600" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Vertical Stretch 2</label>
+							<input id="slider-verticalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Horizontal Stretch</label>
+							<input id="slider-horizontalStretch" type="range" value="400" min="-500" max="800" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Horizontal Stretch 2</label>
+							<input id="slider-horizontalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
+						</div>
+					</div>
+				</div>
+			</li>
+			<li id="speed">
+				<h3>Speed</h3>
+				<div class="acc-section">
+					<div class="acc-content">
+						<div class="slider">
+							<label>Speed</label>
+							<input id="slider-speed" type="range" value="20" min="1" max="100" step="0.01" />
+						</div>
+						<div class="slider">
+							<label>Speed 2</label>
+							<input id="slider-speed-2" type="range" value="250" min="0" max="1000" step="0.01" />
+						</div>
+					</div>
+				</div>
+			</li>
+			<li id="song">
+				<h3>Song</h3>
+				<div class="acc-section">
+					<div class="acc-content">
+						Drop a song or <a id="enter-link">enter a link.</a>
+					</div>
+				</div>
+			</li>
+
+		</ul>
+		<div id="sliders">
+			<div class="slider">
+				<label>Curve</label>
+				<input id="slider-curve" type="range" value="0" min="0" max="800" step="0.01" />
 			</div>
-		</li>
-	</ul>
-	<div id="sliders">
-		<div class="slider">
-			<label>Left Off Set</label>
-			<input id="slider-leftOffset" type="range" value="100" min="0" max="600" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Bottom Off Set</label>
-			<input id="slider-bottomOffset" type="range" value="250" min="0" max="600" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Vertical Stretch</label>
-			<input id="slider-verticalStretch" type="range" value="400" min="0" max="600" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Vertical Stretch 2</label>
-			<input id="slider-verticalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Horizontal Stretch</label>
-			<input id="slider-horizontalStretch" type="range" value="400" min="-500" max="800" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Horizontal Stretch 2</label>
-			<input id="slider-horizontalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Speed</label>
-			<input id="slider-speed" type="range" value="20" min="1" max="100" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Speed 2</label>
-			<input id="slider-speed-2" type="range" value="250" min="0" max="1000" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Curve</label>
-			<input id="slider-curve" type="range" value="0" min="0" max="800" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Curve Intensity</label>
-			<input id="slider-curveIntensity" type="range" value="0" min="0" max="800" step=".01" />
-		</div>
-		<div class="slider">
-			<label>Gradient Size??</label>
-			<input id="slider-size" type="range" value="800" min="500" max="1500" step="0.01" />
-		</div>		
-		<div class="slider">
-			<label>Line Distortion</label>
-			<input id="slider-lineDistortion" type="range" value="100" min="0" max="1000" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Horizontal Pulse</label>
-			<input id="slider-horizontalPulse" type="range" value="25" min="0" max="50" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Vertical Wave Distortion</label>
-			<input id="slider-verticalWaveDistortion" type="range" value="1" min="0.01" max="2" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Circles</label>
-			<input id="slider-circles" type="range" value="8" min="8" max="1000" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Unknown</label>
-			<input id="slider-unknown" type="range" value="1" min="0" max="20" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Color Inversion</label>
-			<input id="slider-colorInversion" type="range" value="50" min="-800" max="500" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Color 1</label>
-			<input id="slider-color-1" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Color 2</label>
-			<input id="slider-color-2" type="range" value="2.0" min="0.1" max="10.0" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Color 3</label>
-			<input id="slider-color-3" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
-		</div>
-		<div class="slider">
-			<label>Color 4</label>
-			<input id="slider-color-4" type="range" value="3.0" min="0.1" max="10.0" step="0.01" />
-		</div>
+			<div class="slider">
+				<label>Curve Intensity</label>
+				<input id="slider-curveIntensity" type="range" value="0" min="0" max="800" step=".01" />
+			</div>
+			<div class="slider">
+				<label>Gradient Size??</label>
+				<input id="slider-size" type="range" value="800" min="500" max="1500" step="0.01" />
+			</div>		
+			<div class="slider">
+				<label>Line Distortion</label>
+				<input id="slider-lineDistortion" type="range" value="100" min="0" max="1000" step="0.01" />
+			</div>
+			<div class="slider">
+				<label>Horizontal Pulse</label>
+				<input id="slider-horizontalPulse" type="range" value="25" min="0" max="50" step="0.01" />
+			</div>
+			<div class="slider">
+				<label>Vertical Wave Distortion</label>
+				<input id="slider-verticalWaveDistortion" type="range" value="1" min="0.01" max="2" step="0.01" />
+			</div>
+			<div class="slider">
+				<label>Circles</label>
+				<input id="slider-circles" type="range" value="8" min="8" max="1000" step="0.01" />
+			</div>
+			<div class="slider">
+				<label>Unknown</label>
+				<input id="slider-unknown" type="range" value="1" min="0" max="20" step="0.01" />
+			</div>
 
+
+		</div>
 	</div>
-
 
 	<script id="vertexShader" type="x-shader/x-vertex">
 
@@ -233,10 +221,39 @@
 	<script>
 		/*from http://airtightinteractive.com/demos/js/reactive/	*/
 		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-/*
-		var accordion = new TINY.accordion.slider("options");
-		accordion.init("options","h3",false,0,"selected");
-*/
+
+		var accordion = new TINY.accordion.slider("accordion");
+		accordion.init("accordion","h3",true,0,"selected");
+		$('#prompt').html("Drop a file or enter a Youtube link " +
+			"<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>");
+		$('#youtube').keydown(function() {
+			if (event.keyCode == 13) {
+				var value = $( this ).val();
+				value = "/" + value.match(/\/([^/]*)$/)[1];
+				if(value.length > 1) youtubeEntered(value);
+			}
+		});
+
+		$('#enter-link').click(function(){
+			$('#prompt').html("<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>").show();
+			setTimeout(function() {
+				$('#prompt').hide().text("");
+			}, 10000);
+
+		});
+
+		var mouseOver = false;
+		$('#container').mousemove(function(){
+			$('#tools').fadeIn('fast');
+			setTimeout(function() {
+				if(!mouseOver && !($('#tools').is(':hover'))){
+					$('#tools').fadeOut('slow');
+				}
+				mouseOver = false;
+			}, 5000);
+			mouseOver = true;
+		}); 
+
 		var container, stats;
 
 		var camera, scene, renderer;
@@ -261,7 +278,7 @@
 		function init() {
 
 
-			
+
 			try {
 				window.AudioContext = window.AudioContext || window.webkitAudioContext;
 				audioContext = new window.AudioContext();
@@ -337,29 +354,57 @@
 			renderer = new THREE.WebGLRenderer();
 			container.appendChild( renderer.domElement );
 
-			stats = new Stats();
-			stats.domElement.style.position = 'absolute';
-			stats.domElement.style.top = '0px';
-			container.appendChild( stats.domElement );
-
 			onWindowResize();
 
 			document.addEventListener('drop', onMP3Drop, false);
 			document.addEventListener('dragover', onDocumentDragOver, false);
-			
+
 			window.addEventListener( 'resize', onWindowResize, false );
 
 
 			LoopVisualizer.init();
-			
-			if(<%= video_id %>){
-				loadYoutube();
+
+			if(<%= youtube %>){
+				loadYoutube('<%= video_id %>');
 			}
 		}
 
+		function getURLParameter(url, name) {
+		    return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
+		}
 
-		function loadYoutube() {
-			var url = "public/<%= video_id %>.mp4";
+		function loading(){
+			$('#prompt').text("loading").show();
+			var i = 0;
+			var interval = setInterval(function() {
+				if($('#prompt').is(':hidden')) clearInterval(interval);
+				if(i === 5){
+					$('#prompt').text('loading');
+					i = 0;
+				}
+				else{
+					$('#prompt').append('.');
+					i++;
+				}
+			}, 750);
+		}
+
+		function youtubeEntered(link){
+			loading();
+			var request = new XMLHttpRequest();
+			request.open("GET", link, true);
+			request.responseType = "arraybuffer";
+			request.send();
+
+			request.onload = function() {
+				loadYoutube(getURLParameter(link, 'v'));
+			};
+		}
+
+		function loadYoutube(link) {
+			loading();
+			var url = "public/" + link + ".mp4";
+			console.log(url);
 			var request = new XMLHttpRequest();
 			request.open("GET", url, true);
 			request.responseType = "arraybuffer";
@@ -375,8 +420,7 @@
 		};
 
 		function loadSampleAudio() {
-			$('#prompt').text("loading...");
-
+			loading();
 			var audioURL = "public/cohkka.mp3";
 
 			/* Load asynchronously */
@@ -389,11 +433,18 @@
 					audioBuffer = buffer;
 					startSound();
 				}, function(e) {
-					$('#prompt').text("error loading mp3");
+					$('#prompt').text("error loading mp3").show();
 					console.log(e);
 				});
 			};
 			request.send();
+		}
+
+		function onDocumentDragOver(evt) {
+			$('#prompt').text("Drop file here").show();
+			evt.stopPropagation();
+			evt.preventDefault();
+			return false;
 		}
 
 		function onDroppedMP3Loaded(data) {
@@ -401,7 +452,7 @@
 				audioBuffer = buffer;
 				startSound();
 			}, function(e) {
-				$('#prompt').text("cannot decode mp3");
+				$('#prompt').text("cannot decode mp3").show();
 				console.log(e);
 			});
 		}
@@ -410,6 +461,7 @@
 			evt.stopPropagation();
 			evt.preventDefault();
 
+			loading();
 
 			var droppedFiles = evt.dataTransfer.files;
 			var reader = new FileReader();
@@ -432,6 +484,7 @@
 			source.connect(audioContext.destination);
 			source.connect(analyser);
 
+			$('#prompt').fadeOut('slow');
 			source.buffer = audioBuffer;
 			source.loop = true;
 			source.start(0.0);
@@ -462,21 +515,8 @@
 			stats.update();
 		}
 
-		function onDocumentDragOver(evt) {
-			evt.stopPropagation();
-			evt.preventDefault();
-			return false;
-		}
 
-/*
-		function startViz(){
-			/*LoopVisualizer.start(); 
-			if (!started){
-				started = true;
-				animate();
-			}
-		}
-		*/
+
 		/*** END FROM http://airtightinteractive.com/demos/js/reactive/ ***/
 
 		function onWindowResize( event ) {
@@ -495,7 +535,7 @@
 			requestAnimationFrame( animate );
 
 			render();
-			stats.update();
+			/*stats.update();*/
 
 		}
 
