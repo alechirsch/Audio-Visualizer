@@ -18,7 +18,7 @@ server.route({
     method: 'GET',
     path: '/',
     handler: function(req, reply) {
-        reply.file('view.html');
+        reply.view('view.ejs', {video_id: false});
     }
 });
 server.route({

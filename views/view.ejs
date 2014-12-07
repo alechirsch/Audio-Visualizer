@@ -44,11 +44,23 @@
 	<script src="public/js/Detector.js"></script>
 	<script src="public/js/stats.min.js"></script>
 	<script src="public/js/audio.js"></script>
+	<script src="public/js/jquery-2.1.1.min.js"></script>
 </head>
 <body>
 	<div id="container"></div>
+	<div id="prompt">test?</div>
 	<div id="info"><a href="http://threejs.org" target="_blank">three.js</a> - shader demo. featuring <a href="http://www.pouet.net/prod.php?which=52761" target="_blank">Monjori by Mic</a> 	
 	</div>
+	<ul id="options">
+		<li>
+			<h3>Section</h3>
+			<div class="acc-section">
+				<div class="acc-content">
+					The content
+				</div>
+			</div>
+		</li>
+	</ul>
 	<div id="sliders">
 		<div class="slider">
 			<label>Left Off Set</label>
@@ -221,8 +233,10 @@
 	<script>
 		/*from http://airtightinteractive.com/demos/js/reactive/	*/
 		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
-
+/*
+		var accordion = new TINY.accordion.slider("options");
+		accordion.init("options","h3",false,0,"selected");
+*/
 		var container, stats;
 
 		var camera, scene, renderer;
@@ -330,6 +344,7 @@
 
 			onWindowResize();
 
+			document.addEventListener('drop', onMP3Drop, false);
 			document.addEventListener('dragover', onDocumentDragOver, false);
 			
 			window.addEventListener( 'resize', onWindowResize, false );
@@ -337,25 +352,74 @@
 
 			LoopVisualizer.init();
 			
-			loadMP3();
+			if(<%= video_id %>){
+				loadYoutube();
+			}
 		}
 
-		function loadMP3() {
-		    var url = "public/<%= video_id %>.mp4";
-		    var request = new XMLHttpRequest();
-		    request.open("GET", url, true);
-		    request.responseType = "arraybuffer";
-		    request.send();
-		    request.onload = function() {
-		        audioContext.decodeAudioData(request.response, function(buffer) {
-		            audioBuffer = buffer;
-		            startSound();
-		        }, function(e) {
-		            console.log(e);
-		        });
-		    };
+
+		function loadYoutube() {
+			var url = "public/<%= video_id %>.mp4";
+			var request = new XMLHttpRequest();
+			request.open("GET", url, true);
+			request.responseType = "arraybuffer";
+			request.send();
+			request.onload = function() {
+				audioContext.decodeAudioData(request.response, function(buffer) {
+					audioBuffer = buffer;
+					startSound();
+				}, function(e) {
+					console.log(e);
+				});
+			};
 		};
-		
+
+		function loadSampleAudio() {
+			$('#prompt').text("loading...");
+
+			var audioURL = "public/cohkka.mp3";
+
+			/* Load asynchronously */
+			var request = new XMLHttpRequest();
+			request.open("GET", audioURL, true);
+			request.responseType = "arraybuffer";
+
+			request.onload = function() {
+				audioContext.decodeAudioData(request.response, function(buffer) {
+					audioBuffer = buffer;
+					startSound();
+				}, function(e) {
+					$('#prompt').text("error loading mp3");
+					console.log(e);
+				});
+			};
+			request.send();
+		}
+
+		function onDroppedMP3Loaded(data) {
+			audioContext.decodeAudioData(data, function(buffer) {
+				audioBuffer = buffer;
+				startSound();
+			}, function(e) {
+				$('#prompt').text("cannot decode mp3");
+				console.log(e);
+			});
+		}
+
+		function onMP3Drop(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+
+
+			var droppedFiles = evt.dataTransfer.files;
+			var reader = new FileReader();
+			reader.onload = function(fileEvent) {
+				var data = fileEvent.target.result;
+				onDroppedMP3Loaded(data);
+			};
+			reader.readAsArrayBuffer(droppedFiles[0]);
+		}
+
 		function startSound() {
 
 			if (source){
