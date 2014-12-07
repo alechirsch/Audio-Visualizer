@@ -13,6 +13,7 @@ body {
 a{
 	color:#709BE8;
 	text-decoration: underline;
+	cursor: pointer;
 }
 
 #prompt-contatiner{
@@ -45,7 +46,7 @@ a{
 	display:block;
 }
 .slider{
-	margin:5px 0;
+	margin:10px 0;
 }
 
 #accordion {
