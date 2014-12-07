@@ -28,6 +28,11 @@ a{
 	color:#fff;
 }
 
+#youtube{
+	padding:10px;
+	border-radius: 20px;
+}
+
 #sliders{
 	position:absolute;
 	top:0px;
