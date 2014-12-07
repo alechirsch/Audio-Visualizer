@@ -39,6 +39,9 @@ a{
 .slider label{
 	display:block;
 }
+.slider{
+	margin:5px 0;
+}
 
 #accordion {
 	position:absolute; 
@@ -76,3 +79,33 @@ a{
 #nested .acc-section {overflow:hidden; background:#fff}
 #nested .acc-content {width:393px; padding:15px; border:1px solid #9ac1c9; border-top:none; background:#fff}
 #nested .acc-selected {background: #eee}
+
+input[type=range]{
+    -webkit-appearance: none;
+    width: 90%;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: goldenrod;
+    margin-top: -8px;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
+}
