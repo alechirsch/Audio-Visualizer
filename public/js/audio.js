@@ -77,8 +77,9 @@ var LoopVisualizer = (function() {
 			sum = 75000;
 		}
 
-		parameters.lineDistortion = normalize(sum) * 800;
-		parameters.curve = (normalize(sum) * 800);
+		parameters.color1 = normalize(sum) * 8 + 2;
+		parameters.lineDistortion = normalize(sum) * 400;
+		parameters.curve = (normalize(sum) * 400);
 	}
 
 	return {

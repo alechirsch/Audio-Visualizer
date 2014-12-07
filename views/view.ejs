@@ -512,12 +512,6 @@
 			renderer.setSize(window.innerWidth, window.innerHeight);
 		}
 
-		function animate() {
-			requestAnimationFrame(animate);
-			render();
-			stats.update();
-		}
-
 
 
 		/*** END FROM http://airtightinteractive.com/demos/js/reactive/ ***/
@@ -567,7 +561,8 @@
 			uniforms.circles.value = document.getElementById('slider-circles').value;
 			//uniforms.circles.value = LoopVisualizer.parameters.circles;
 			uniforms.unknown.value = document.getElementById('slider-unknown').value;
-			uniforms.color1.value = document.getElementById('slider-color-1').value;
+			//uniforms.color1.value = document.getElementById('slider-color-1').value;
+			uniforms.color1.value = LoopVisualizer.parameters.color1;
 			uniforms.color2.value = document.getElementById('slider-color-2').value;
 			uniforms.color3.value = document.getElementById('slider-color-3').value;
 			uniforms.color4.value = document.getElementById('slider-color-4').value;
