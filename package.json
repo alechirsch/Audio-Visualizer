@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "ejs": "^1.0.0",
     "hapi": "^7.5.2",
