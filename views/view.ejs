@@ -163,7 +163,7 @@
 			</div>
 			<div class="slider">
 				<label>Horizontal Pulse</label>
-				<input id="slider-horizontalPulse" type="range" value="25" min="0" max="50" step="0.01" />
+				<input id="slider-horizontalPulse" type="range" value="100" min="0" max="100" step="0.01" />
 			</div>
 			<div class="slider">
 				<label>Vertical Wave Distortion</label>
@@ -345,7 +345,7 @@
 
 			/* init audio */
 			analyser = audioContext.createAnalyser();
-			analyser.smoothingTimeConstant = 0.001;
+			analyser.smoothingTimeConstant = 0.000001;
 			analyser.fftSize = 1024;
 			container = document.getElementById( 'container' );
 
@@ -588,12 +588,10 @@
 			uniforms.leftOffset.value = document.getElementById('slider-leftOffset').value;
 			uniforms.horizontalStretch.value = document.getElementById('slider-horizontalStretch').value;
 			//uniforms.horizontalStretch2.value = document.getElementById('slider-horizontalStretch-2').value;
-			if(uniforms.horizontalStretch2.value !== LoopVisualizer.parameters.horizontalStretch2){
-				//console.log(LoopVisualizer.parameters.horizontalStretch2);
-			}
 			uniforms.horizontalStretch2.value = LoopVisualizer.parameters.horizontalStretch2;
 			uniforms.verticalStretch.value = document.getElementById('slider-verticalStretch').value;
 			uniforms.verticalStretch2.value = document.getElementById('slider-verticalStretch-2').value;
+			//uniforms.verticalStretch2.value = LoopVisualizer.parameters.verticalStretch2;
 			uniforms.bottomOffset.value = document.getElementById('slider-bottomOffset').value;
 			uniforms.speed.value = document.getElementById('slider-speed').value;
 			uniforms.speed2.value = document.getElementById('slider-speed-2').value;

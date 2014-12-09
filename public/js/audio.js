@@ -40,7 +40,7 @@ var LoopVisualizer = (function() {
 		color4: 1
 	};
 	var min = 0;
-	var max = 255 * 15;
+	var max = 255 * 20;
 	function init() {
 
 		////////INIT audio in
@@ -69,20 +69,22 @@ var LoopVisualizer = (function() {
 
 		var sum = 0;
 		var j = 0;
-		for(var i = j; i < j+15; i++) {
+		for(var i = j; i < j+20; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.horizontalStretch2 = ((1 - normalize(sum)) * 1) + 1;
+		parameters.horizontalStretch2 = ((1 - normalize(sum)) * 0.4) + 1.6;
 		sum = 0;
-		for(var i = j; i < j+15; i++) {
+		j = 20
+		for(var i = j; i < j+20; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.lineDistortion = normalize(sum) * 400;
+		parameters.curve = (1-normalize(sum)) * 300;
 		sum = 0;
-		for(var i = j; i < j+15; i++) {
+		j = 40;
+		for(var i = j; i < j+20; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.curve = (normalize(sum) * 400);
+		parameters.lineDistortion = normalize(sum) * 300;
 	}
 
 	return {
