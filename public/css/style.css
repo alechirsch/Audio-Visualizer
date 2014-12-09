@@ -24,6 +24,10 @@ a {
     margin: 5px;
 }
 
+#color .slider{
+	display:none;
+}
+
 #red-button{
     background-color: #c0392b;
 }
@@ -41,11 +45,11 @@ a {
 }
 
 #yellow-button{
-    background-color: #f39c12;
+    background-color: #F3DF12;
 }
 
 #yellow-button:hover{
-    background-color: #f1c40f;
+    background-color: #E0D566;
 }
 
 #green-button{
