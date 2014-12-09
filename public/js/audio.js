@@ -19,7 +19,7 @@ var LoopVisualizer = (function() {
 	var parameters = {
 		leftOffset: 1,
 		horizontalStretch: 1,
-		horizontalStretch2: 1,
+		horizontalStretch2: 2,
 		verticalStretch: 1,
 		verticalStretch2: 1,
 		bottomOffset: 1,
@@ -40,7 +40,7 @@ var LoopVisualizer = (function() {
 		color4: 1
 	};
 	var min = 0;
-	var max = 75000;
+	var max = 255 * 15;
 	function init() {
 
 		////////INIT audio in
@@ -54,7 +54,7 @@ var LoopVisualizer = (function() {
 	}
 
 	function onParamsChange() {
-
+		console.log("I got here");
 		/* when a parameter is changed, change it */
 
 	}
@@ -62,23 +62,26 @@ var LoopVisualizer = (function() {
 	function normalize(value){
 		return (value - min) / (max - min);
 	}
-
 	function update() {
 
-		
 		analyser.getByteFrequencyData(freqByteData);
 		analyser.getByteTimeDomainData(timeByteData);
 
 		var sum = 0;
-		for(var i = 0; i < BIN_COUNT; i++) {
+		var j = 0;
+		for(var i = j; i < j+15; i++) {
 			sum += freqByteData[i];
 		}
-		if(sum > 75000){
-			sum = 75000;
+		parameters.horizontalStretch2 = ((1 - normalize(sum)) * 1) + 1;
+		sum = 0;
+		for(var i = j; i < j+15; i++) {
+			sum += freqByteData[i];
 		}
-
-		parameters.color1 = normalize(sum) * 8 + 2;
 		parameters.lineDistortion = normalize(sum) * 400;
+		sum = 0;
+		for(var i = j; i < j+15; i++) {
+			sum += freqByteData[i];
+		}
 		parameters.curve = (normalize(sum) * 400);
 	}
 

@@ -94,11 +94,11 @@
 					<div class="acc-content">
 						<div class="slider">
 							<label>Left Off Set</label>
-							<input id="slider-leftOffset" type="range" value="100" min="0" max="600" step="0.01" />
+							<input id="slider-leftOffset" type="range" value="175" min="0" max="600" step="0.01" />
 						</div>
 						<div class="slider">
 							<label>Bottom Off Set</label>
-							<input id="slider-bottomOffset" type="range" value="250" min="0" max="600" step="0.01" />
+							<input id="slider-bottomOffset" type="range" value="220" min="0" max="600" step="0.01" />
 						</div>
 						<div class="slider">
 							<label>Vertical Stretch</label>
@@ -345,7 +345,7 @@
 
 			/* init audio */
 			analyser = audioContext.createAnalyser();
-			analyser.smoothingTimeConstant = 0.1;
+			analyser.smoothingTimeConstant = 0.001;
 			analyser.fftSize = 1024;
 			container = document.getElementById( 'container' );
 
@@ -533,7 +533,7 @@
 
 			$('#prompt').fadeOut('slow');
 			source.buffer = audioBuffer;
-			source.loop = true;
+			source.loop = false;
 			source.start(0.0);
 			/*startViz();*/
 		}
@@ -581,13 +581,17 @@
 		}
 
 		function render() {
-			LoopVisualizer.update();
+			LoopVisualizer.update(source);
 
 
 			uniforms.time.value += 0.05;
 			uniforms.leftOffset.value = document.getElementById('slider-leftOffset').value;
 			uniforms.horizontalStretch.value = document.getElementById('slider-horizontalStretch').value;
-			uniforms.horizontalStretch2.value = document.getElementById('slider-horizontalStretch-2').value;
+			//uniforms.horizontalStretch2.value = document.getElementById('slider-horizontalStretch-2').value;
+			if(uniforms.horizontalStretch2.value !== LoopVisualizer.parameters.horizontalStretch2){
+				//console.log(LoopVisualizer.parameters.horizontalStretch2);
+			}
+			uniforms.horizontalStretch2.value = LoopVisualizer.parameters.horizontalStretch2;
 			uniforms.verticalStretch.value = document.getElementById('slider-verticalStretch').value;
 			uniforms.verticalStretch2.value = document.getElementById('slider-verticalStretch-2').value;
 			uniforms.bottomOffset.value = document.getElementById('slider-bottomOffset').value;
