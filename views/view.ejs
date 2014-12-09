@@ -13,58 +13,67 @@
 	<script src="public/js/accordion.js"></script>
 </head>
 <body>
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1481292832158179&version=v2.0";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
 	<div id="container"></div>
 	<div id="prompt-contatiner"><div id="prompt"></div></div>
 	<div id="tools">
+		<div class="fb-share-button" data-href="https://audio-visualizer.herokuapp.com/" data-layout="button_count"></div>
 		<ul id="accordion">
 			<li id="color">
 				<h3>Color</h3>
 				<div class="acc-section">
 					<div class="acc-content">
-					    <div id="red-button" class="color-button"></div>
-					    <div id="orange-button" class="color-button"></div>
-					    <div id="yellow-button" class="color-button"></div>
-					    <div id="green-button" class="color-button"></div>
-					    <div id="blue-button" class="color-button"></div>
-					    <div id="purple-button" class="color-button"></div>
-					    <script>
-					        $("#red-button").click(function(){ 
-					            $("#slider-color-1").val(0.33);
-					            $("#slider-color-2").val(1.45);
-                                $("#slider-color-3").val(2.86);
-                                $("#slider-color-4").val(3.2);
-					        });
-					        $("#orange-button").click(function(){ 
-					            $("#slider-color-1").val(0.5);
-					            $("#slider-color-2").val(1.12);
-                                $("#slider-color-3").val(0.72);
-                                $("#slider-color-4").val(4.0);
-					        });
-				            $("#yellow-button").click(function(){ 
-					            $("#slider-color-1").val(0.61);
-					            $("#slider-color-2").val(0.55);
-                                $("#slider-color-3").val(0.72);
-                                $("#slider-color-4").val(0.67);
-					        });
-			                $("#green-button").click(function(){ 
-					            $("#slider-color-1").val(3.81);
-					            $("#slider-color-2").val(4.88);
-                                $("#slider-color-3").val(0.55);
-                                $("#slider-color-4").val(3);
-					        });
-					        $("#blue-button").click(function(){ 
-					            $("#slider-color-1").val(10);
-					            $("#slider-color-2").val(10);
-                                $("#slider-color-3").val(2.07);
-                                $("#slider-color-4").val(4.88);
-					        });
-					        $("#purple-button").click(function(){ 
-					            $("#slider-color-1").val(1);
-					            $("#slider-color-2").val(2.69);
-                                $("#slider-color-3").val(6.62);
-                                $("#slider-color-4").val(6.06);
-					        });
-					    </script>
+						<div id="red-button" class="color-button"></div>
+						<div id="orange-button" class="color-button"></div>
+						<div id="yellow-button" class="color-button"></div>
+						<div id="green-button" class="color-button"></div>
+						<div id="blue-button" class="color-button"></div>
+						<div id="purple-button" class="color-button"></div>
+						<script>
+							$("#red-button").click(function(){ 
+								$("#slider-color-1").val(0.33);
+								$("#slider-color-2").val(1.45);
+								$("#slider-color-3").val(2.86);
+								$("#slider-color-4").val(3.2);
+							});
+							$("#orange-button").click(function(){ 
+								$("#slider-color-1").val(0.5);
+								$("#slider-color-2").val(1.12);
+								$("#slider-color-3").val(0.72);
+								$("#slider-color-4").val(4.0);
+							});
+							$("#yellow-button").click(function(){ 
+								$("#slider-color-1").val(0.61);
+								$("#slider-color-2").val(0.55);
+								$("#slider-color-3").val(0.72);
+								$("#slider-color-4").val(0.67);
+							});
+							$("#green-button").click(function(){ 
+								$("#slider-color-1").val(3.81);
+								$("#slider-color-2").val(4.88);
+								$("#slider-color-3").val(0.55);
+								$("#slider-color-4").val(3);
+							});
+							$("#blue-button").click(function(){ 
+								$("#slider-color-1").val(10);
+								$("#slider-color-2").val(10);
+								$("#slider-color-3").val(2.07);
+								$("#slider-color-4").val(4.88);
+							});
+							$("#purple-button").click(function(){ 
+								$("#slider-color-1").val(1);
+								$("#slider-color-2").val(2.69);
+								$("#slider-color-3").val(6.62);
+								$("#slider-color-4").val(6.06);
+							});
+						</script>
 						<div class="slider">
 							<label>Color 1</label>
 							<input id="slider-color-1" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
@@ -278,315 +287,315 @@
 			}
 		});
 
-		$('#enter-link').click(function(){
-			$('#prompt').html("<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>").show();
-			fadePrompt();
+$('#enter-link').click(function(){
+	$('#prompt').html("<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>").show();
+	fadePrompt();
 
+});
+
+var mouseOver = false;
+$('#container').mousemove(function(){
+	$('#tools').fadeIn('fast');
+	setTimeout(function() {
+		if(!mouseOver && !($('#tools').is(':hover'))){
+			$('#tools').fadeOut('slow');
+		}
+		mouseOver = false;
+	}, 5000);
+	mouseOver = true;
+}); 
+
+var container, stats;
+
+var camera, scene, renderer;
+
+var uniforms;
+var source;
+var analyser;
+var buffer;
+var audioBuffer;
+var dropArea;
+var audioContext;
+var source;
+var analyser;
+var xhr;
+var started = false;
+var paused = false;
+
+
+init();
+animate();
+
+function init() {
+
+
+
+	try {
+		window.AudioContext = window.AudioContext || window.webkitAudioContext;
+		audioContext = new window.AudioContext();
+	} catch(e) {
+		return;
+	}
+
+	window.addEventListener('touchstart', function() {
+
+		/* create empty buffer */
+		var buffer = audioContext.createBuffer(1, 1, 22050);
+		var source = audioContext.createBufferSource();
+		source.buffer = buffer;
+
+		/* connect to output (your speakers) */
+		source.connect(audioContext.destination);
+
+		/* play the file */
+		source.noteOn(0);
+
+	}, false);
+
+	/* init audio */
+	analyser = audioContext.createAnalyser();
+	analyser.smoothingTimeConstant = 0.000001;
+	analyser.fftSize = 1024;
+	container = document.getElementById( 'container' );
+
+	camera = new THREE.Camera();
+	camera.position.z = 1;
+
+	scene = new THREE.Scene();
+
+	var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+
+	uniforms = {
+		time: { type: "f", value: 1.0 },
+		leftOffset: { type: "f", value: 200.0},
+		horizontalStretch: { type: "f", value: 200.0},
+		horizontalStretch2: { type: "f", value: 200.0},
+		verticalStretch: { type: "f", value: 200.0},
+		verticalStretch2: { type: "f", value: 200.0},
+		bottomOffset: { type: "f", value: 200.0},
+		speed: { type: "f", value: 0.0},
+		speed2: { type: "f", value: 0.0},
+		curve: { type: "f", value: 0.0},
+		colorInversion: { type: "f", value: 0.0},
+		size: { type: "f", value: 0.0},
+		lineDistortion: { type: "f", value: 0.0},
+		horizontalPulse: { type: "f", value: 0.0},
+		verticalWaveDistortion: { type: "f", value: 0.0},
+		curveIntensity: { type: "f", value: 0.0},
+		circles: { type: "f", value: 0.0},
+		unknown: { type: "f", value: 0.0},
+		color1: { type: "f", value: 0.0},
+		color2: { type: "f", value: 0.0},
+		color3: { type: "f", value: 0.0},
+		color4: { type: "f", value: 0.0},
+		resolution: { type: "v2", value: new THREE.Vector2() }
+	};
+
+	var material = new THREE.ShaderMaterial( {
+
+		uniforms: uniforms,
+		vertexShader: document.getElementById( 'vertexShader' ).textContent,
+		fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+
+	} );
+
+	var mesh = new THREE.Mesh( geometry, material );
+	scene.add( mesh );
+
+	renderer = new THREE.WebGLRenderer();
+	container.appendChild( renderer.domElement );
+
+	onWindowResize();
+
+	document.addEventListener('drop', onMP3Drop, false);
+	document.addEventListener('dragover', onDocumentDragOver, false);
+
+	window.addEventListener( 'resize', onWindowResize, false );
+
+
+	LoopVisualizer.init();
+
+	if(<%= youtube %>){
+		loadYoutube('<%= video_id %>');
+	}
+}
+
+function fadePrompt(){
+	setTimeout(function() {
+		$('#prompt').fadeOut('slow');
+	}, 10000);
+}
+
+function getURLParameter(url, name) {
+	return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
+}
+
+function loading(){
+	$('#prompt').text("loading").show();
+	var i = 0;
+	var interval = setInterval(function() {
+		if($('#prompt').is(':hidden')) clearInterval(interval);
+		if(i === 5){
+			$('#prompt').text('loading');
+			i = 0;
+		}
+		else{
+			$('#prompt').append('.');
+			i++;
+		}
+	}, 750);
+}
+
+function youtubeEntered(link){
+	loading();
+	var request = new XMLHttpRequest();
+	request.open("GET", link, true);
+	request.responseType = "arraybuffer";
+	request.send();
+
+	request.onload = function() {
+		loadYoutube(getURLParameter(link, 'v'));
+	};
+}
+
+function loadYoutube(link) {
+	loading();
+	var url = "public/" + link + ".mp4";
+	console.log(url);
+	var request = new XMLHttpRequest();
+	request.open("GET", url, true);
+	request.responseType = "arraybuffer";
+	request.send();
+	request.onload = function() {
+		audioContext.decodeAudioData(request.response, function(buffer) {
+			audioBuffer = buffer;
+			startSound();
+		}, function(e) {
+			console.log(e);
 		});
+	};
+};
+
+function loadSampleAudio() {
+	loading();
+	var audioURL = "public/cohkka.mp3";
+
+	/* Load asynchronously */
+	var request = new XMLHttpRequest();
+	request.open("GET", audioURL, true);
+	request.responseType = "arraybuffer";
+
+	request.onload = function() {
+		audioContext.decodeAudioData(request.response, function(buffer) {
+			audioBuffer = buffer;
+			startSound();
+		}, function(e) {
+			$('#prompt').text("error loading mp3").show();
+			console.log(e);
+		});
+	};
+	request.send();
+}
 
-		var mouseOver = false;
-		$('#container').mousemove(function(){
-			$('#tools').fadeIn('fast');
-			setTimeout(function() {
-				if(!mouseOver && !($('#tools').is(':hover'))){
-					$('#tools').fadeOut('slow');
-				}
-				mouseOver = false;
-			}, 5000);
-			mouseOver = true;
-		}); 
-
-		var container, stats;
-
-		var camera, scene, renderer;
-
-		var uniforms;
-		var source;
-		var analyser;
-		var buffer;
-		var audioBuffer;
-		var dropArea;
-		var audioContext;
-		var source;
-		var analyser;
-		var xhr;
-		var started = false;
-		var paused = false;
-
-
-		init();
-		animate();
-
-		function init() {
-
-
-
-			try {
-				window.AudioContext = window.AudioContext || window.webkitAudioContext;
-				audioContext = new window.AudioContext();
-			} catch(e) {
-				return;
-			}
-
-			window.addEventListener('touchstart', function() {
-
-				/* create empty buffer */
-				var buffer = audioContext.createBuffer(1, 1, 22050);
-				var source = audioContext.createBufferSource();
-				source.buffer = buffer;
-
-				/* connect to output (your speakers) */
-				source.connect(audioContext.destination);
-
-				/* play the file */
-				source.noteOn(0);
-
-			}, false);
-
-			/* init audio */
-			analyser = audioContext.createAnalyser();
-			analyser.smoothingTimeConstant = 0.000001;
-			analyser.fftSize = 1024;
-			container = document.getElementById( 'container' );
-
-			camera = new THREE.Camera();
-			camera.position.z = 1;
-
-			scene = new THREE.Scene();
-
-			var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
-
-			uniforms = {
-				time: { type: "f", value: 1.0 },
-				leftOffset: { type: "f", value: 200.0},
-				horizontalStretch: { type: "f", value: 200.0},
-				horizontalStretch2: { type: "f", value: 200.0},
-				verticalStretch: { type: "f", value: 200.0},
-				verticalStretch2: { type: "f", value: 200.0},
-				bottomOffset: { type: "f", value: 200.0},
-				speed: { type: "f", value: 0.0},
-				speed2: { type: "f", value: 0.0},
-				curve: { type: "f", value: 0.0},
-				colorInversion: { type: "f", value: 0.0},
-				size: { type: "f", value: 0.0},
-				lineDistortion: { type: "f", value: 0.0},
-				horizontalPulse: { type: "f", value: 0.0},
-				verticalWaveDistortion: { type: "f", value: 0.0},
-				curveIntensity: { type: "f", value: 0.0},
-				circles: { type: "f", value: 0.0},
-				unknown: { type: "f", value: 0.0},
-				color1: { type: "f", value: 0.0},
-				color2: { type: "f", value: 0.0},
-				color3: { type: "f", value: 0.0},
-				color4: { type: "f", value: 0.0},
-				resolution: { type: "v2", value: new THREE.Vector2() }
-			};
-
-			var material = new THREE.ShaderMaterial( {
-
-				uniforms: uniforms,
-				vertexShader: document.getElementById( 'vertexShader' ).textContent,
-				fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-
-			} );
-
-			var mesh = new THREE.Mesh( geometry, material );
-			scene.add( mesh );
-
-			renderer = new THREE.WebGLRenderer();
-			container.appendChild( renderer.domElement );
-
-			onWindowResize();
-
-			document.addEventListener('drop', onMP3Drop, false);
-			document.addEventListener('dragover', onDocumentDragOver, false);
-
-			window.addEventListener( 'resize', onWindowResize, false );
-
-
-			LoopVisualizer.init();
-
-			if(<%= youtube %>){
-				loadYoutube('<%= video_id %>');
-			}
-		}
-
-		function fadePrompt(){
-			setTimeout(function() {
-				$('#prompt').fadeOut('slow');
-			}, 10000);
-		}
-
-		function getURLParameter(url, name) {
-		    return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
-		}
-
-		function loading(){
-			$('#prompt').text("loading").show();
-			var i = 0;
-			var interval = setInterval(function() {
-				if($('#prompt').is(':hidden')) clearInterval(interval);
-				if(i === 5){
-					$('#prompt').text('loading');
-					i = 0;
-				}
-				else{
-					$('#prompt').append('.');
-					i++;
-				}
-			}, 750);
-		}
-
-		function youtubeEntered(link){
-			loading();
-			var request = new XMLHttpRequest();
-			request.open("GET", link, true);
-			request.responseType = "arraybuffer";
-			request.send();
-
-			request.onload = function() {
-				loadYoutube(getURLParameter(link, 'v'));
-			};
-		}
-
-		function loadYoutube(link) {
-			loading();
-			var url = "public/" + link + ".mp4";
-			console.log(url);
-			var request = new XMLHttpRequest();
-			request.open("GET", url, true);
-			request.responseType = "arraybuffer";
-			request.send();
-			request.onload = function() {
-				audioContext.decodeAudioData(request.response, function(buffer) {
-					audioBuffer = buffer;
-					startSound();
-				}, function(e) {
-					console.log(e);
-				});
-			};
-		};
-
-		function loadSampleAudio() {
-			loading();
-			var audioURL = "public/cohkka.mp3";
-
-			/* Load asynchronously */
-			var request = new XMLHttpRequest();
-			request.open("GET", audioURL, true);
-			request.responseType = "arraybuffer";
-
-			request.onload = function() {
-				audioContext.decodeAudioData(request.response, function(buffer) {
-					audioBuffer = buffer;
-					startSound();
-				}, function(e) {
-					$('#prompt').text("error loading mp3").show();
-					console.log(e);
-				});
-			};
-			request.send();
-		}
-
-		function onDocumentDragOver(evt) {
-			evt.stopPropagation();
-			evt.preventDefault();
-			return false;
-		}
-
-		function onDroppedMP3Loaded(data) {
-			audioContext.decodeAudioData(data, function(buffer) {
-				audioBuffer = buffer;
-				startSound();
-			}, function(e) {
-				$('#prompt').text("cannot decode mp3").show();
-				console.log(e);
-			});
-		}
-
-		function onMP3Drop(evt) {
-			evt.stopPropagation();
-			evt.preventDefault();
-
-			loading();
-
-			var droppedFiles = evt.dataTransfer.files;
-			var reader = new FileReader();
-			reader.onload = function(fileEvent) {
-				var data = fileEvent.target.result;
-				onDroppedMP3Loaded(data);
-			};
-			reader.readAsArrayBuffer(droppedFiles[0]);
-		}
-
-		function startSound() {
-
-			if (source){
-				source.stop(0.0);
-				source.disconnect();
-			}
-
-			/* Connect audio processing graph */
-			source = audioContext.createBufferSource();	
-			source.connect(audioContext.destination);
-			source.connect(analyser);
-
-			$('#prompt').fadeOut('slow');
-			source.buffer = audioBuffer;
-			source.loop = false;
-			source.start(0.0);
-			/*startViz();*/
-		}
-
-		function pause(){
-			paused = true;
-			source.mediaElement.pause();
-		}
-
-		function play(){
-			pause = false;
-			source.mediaElement.play();
-		}
-
-		function onWindowResize(event) {
-			windowHalfX = window.innerWidth / 2;
-			windowHalfY = window.innerHeight / 2;
-			camera.aspect = window.innerWidth / window.innerHeight;
-			camera.updateProjectionMatrix();
-			renderer.setSize(window.innerWidth, window.innerHeight);
-		}
-
-
-
-		/*** END FROM http://airtightinteractive.com/demos/js/reactive/ ***/
-
-		function onWindowResize( event ) {
-
-			uniforms.resolution.value.x = window.innerWidth;
-			uniforms.resolution.value.y = window.innerHeight;
-
-			renderer.setSize( window.innerWidth, window.innerHeight );
-
-		}
-
-
-
-		function animate() {
-
-			requestAnimationFrame( animate );
-
-			render();
-			/*stats.update();*/
-
-		}
-
-		function render() {
-			LoopVisualizer.update(source);
-
-
-			uniforms.time.value += 0.05;
-			uniforms.leftOffset.value = document.getElementById('slider-leftOffset').value;
-			uniforms.horizontalStretch.value = document.getElementById('slider-horizontalStretch').value;
+function onDocumentDragOver(evt) {
+	evt.stopPropagation();
+	evt.preventDefault();
+	return false;
+}
+
+function onDroppedMP3Loaded(data) {
+	audioContext.decodeAudioData(data, function(buffer) {
+		audioBuffer = buffer;
+		startSound();
+	}, function(e) {
+		$('#prompt').text("cannot decode mp3").show();
+		console.log(e);
+	});
+}
+
+function onMP3Drop(evt) {
+	evt.stopPropagation();
+	evt.preventDefault();
+
+	loading();
+
+	var droppedFiles = evt.dataTransfer.files;
+	var reader = new FileReader();
+	reader.onload = function(fileEvent) {
+		var data = fileEvent.target.result;
+		onDroppedMP3Loaded(data);
+	};
+	reader.readAsArrayBuffer(droppedFiles[0]);
+}
+
+function startSound() {
+
+	if (source){
+		source.stop(0.0);
+		source.disconnect();
+	}
+
+	/* Connect audio processing graph */
+	source = audioContext.createBufferSource();	
+	source.connect(audioContext.destination);
+	source.connect(analyser);
+
+	$('#prompt').fadeOut('slow');
+	source.buffer = audioBuffer;
+	source.loop = false;
+	source.start(0.0);
+	/*startViz();*/
+}
+
+function pause(){
+	paused = true;
+	source.mediaElement.pause();
+}
+
+function play(){
+	pause = false;
+	source.mediaElement.play();
+}
+
+function onWindowResize(event) {
+	windowHalfX = window.innerWidth / 2;
+	windowHalfY = window.innerHeight / 2;
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+
+
+/*** END FROM http://airtightinteractive.com/demos/js/reactive/ ***/
+
+function onWindowResize( event ) {
+
+	uniforms.resolution.value.x = window.innerWidth;
+	uniforms.resolution.value.y = window.innerHeight;
+
+	renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+
+
+function animate() {
+
+	requestAnimationFrame( animate );
+
+	render();
+	/*stats.update();*/
+
+}
+
+function render() {
+	LoopVisualizer.update(source);
+
+
+	uniforms.time.value += 0.05;
+	uniforms.leftOffset.value = document.getElementById('slider-leftOffset').value;
+	uniforms.horizontalStretch.value = document.getElementById('slider-horizontalStretch').value;
 			//uniforms.horizontalStretch2.value = document.getElementById('slider-horizontalStretch-2').value;
 			uniforms.horizontalStretch2.value = LoopVisualizer.parameters.horizontalStretch2;
 			uniforms.verticalStretch.value = document.getElementById('slider-verticalStretch').value;
