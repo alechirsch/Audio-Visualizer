@@ -102,28 +102,12 @@
 				<div class="acc-section">
 					<div class="acc-content">
 						<div class="slider">
-							<label>Left Off Set</label>
-							<input id="slider-leftOffset" type="range" value="175" min="0" max="600" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Bottom Off Set</label>
-							<input id="slider-bottomOffset" type="range" value="220" min="0" max="600" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Vertical Stretch</label>
-							<input id="slider-verticalStretch" type="range" value="400" min="0" max="600" step="0.01" />
+							<label>Circles</label>
+							<input id="slider-circles" type="range" value="8" min="8" max="1000" step="0.01" />
 						</div>
 						<div class="slider">
 							<label>Vertical Stretch 2</label>
-							<input id="slider-verticalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Horizontal Stretch</label>
-							<input id="slider-horizontalStretch" type="range" value="400" min="-500" max="800" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Horizontal Stretch 2</label>
-							<input id="slider-horizontalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
+							<input id="slider-verticalStretch-2" type="range" value="2.0" min="0.5" max="2.0" step="0.01" />
 						</div>
 					</div>
 				</div>
@@ -137,8 +121,8 @@
 							<input id="slider-speed" type="range" value="20" min="1" max="100" step="0.01" />
 						</div>
 						<div class="slider">
-							<label>Speed 2</label>
-							<input id="slider-speed-2" type="range" value="250" min="0" max="1000" step="0.01" />
+							<label>Horizontal Pulse</label>
+							<input id="slider-horizontalPulse" type="range" value="100" min="0" max="100" step="0.01" />
 						</div>
 					</div>
 				</div>
@@ -154,6 +138,26 @@
 
 		</ul>
 		<div id="sliders">
+			<div class="slider">
+				<label>Left Off Set</label>
+				<input id="slider-leftOffset" type="range" value="175" min="0" max="600" step="0.01" />
+			</div>
+			<div class="slider">
+				<label>Bottom Off Set</label>
+				<input id="slider-bottomOffset" type="range" value="220" min="0" max="600" step="0.01" />
+			</div>
+			<div class="slider">
+				<label>Vertical Stretch</label>
+				<input id="slider-verticalStretch" type="range" value="400" min="0" max="600" step="0.01" />
+			</div>
+			<div class="slider">
+				<label>Horizontal Stretch</label>
+				<input id="slider-horizontalStretch" type="range" value="400" min="-500" max="800" step="0.01" />
+			</div>
+			<div class="slider">
+				<label>Horizontal Stretch 2</label>
+				<input id="slider-horizontalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
+			</div>
 			<div class="slider">
 				<label>Curve</label>
 				<input id="slider-curve" type="range" value="0" min="0" max="800" step="0.01" />
@@ -171,16 +175,8 @@
 				<input id="slider-lineDistortion" type="range" value="100" min="0" max="1000" step="0.01" />
 			</div>
 			<div class="slider">
-				<label>Horizontal Pulse</label>
-				<input id="slider-horizontalPulse" type="range" value="100" min="0" max="100" step="0.01" />
-			</div>
-			<div class="slider">
 				<label>Vertical Wave Distortion</label>
 				<input id="slider-verticalWaveDistortion" type="range" value="1" min="0.01" max="2" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Circles</label>
-				<input id="slider-circles" type="range" value="8" min="8" max="1000" step="0.01" />
 			</div>
 			<div class="slider">
 				<label>Unknown</label>
@@ -215,7 +211,6 @@
 		uniform float verticalStretch2;
 		uniform float bottomOffset;
 		uniform float speed;
-		uniform float speed2;
 		uniform float curve;
 		uniform float colorInversion;
 		uniform float size;
@@ -253,7 +248,7 @@
 			i=cos(h+r*p.x/1.3)*(e+e+a)+cos(q*g*6.0)*(r+h/3.0);
 
 
-			h=sin(f*g)*speed2-sin(e*g)*212.0*p.x;
+			h=sin(f*g)*250.0-sin(e*g)*212.0*p.x;
 			h=(h+(f-e)*q+sin(r-(a+h)/7.0)*10.0+i/4.0)*g;
 			i+=cos(h*2.3*sin(a/350.0-q))*lineDistortion*sin(q-(r*unknown+a/12.0)*g)+tan(r*g+h)*lineDistortion*cos(r*g+h);
 
@@ -295,15 +290,15 @@ $('#enter-link').click(function(){
 
 var timer;
 $(document).mousemove(function() {
-    if (timer) {
-        clearTimeout(timer);
-        timer = 0;
-    }
+	if (timer) {
+		clearTimeout(timer);
+		timer = 0;
+	}
 
-    $("#tools").fadeIn();
-    timer = setTimeout(function() {
-        $('#tools').fadeOut()
-    }, 1500)
+	$("#tools").fadeIn();
+	timer = setTimeout(function() {
+		$('#tools').fadeOut()
+	}, 1500)
 })
 
 var container, stats;
@@ -375,7 +370,6 @@ function init() {
 		verticalStretch2: { type: "f", value: 200.0},
 		bottomOffset: { type: "f", value: 200.0},
 		speed: { type: "f", value: 0.0},
-		speed2: { type: "f", value: 0.0},
 		curve: { type: "f", value: 0.0},
 		colorInversion: { type: "f", value: 0.0},
 		size: { type: "f", value: 0.0},
@@ -449,8 +443,8 @@ function loading(){
 
 
 function youtubeEntered(link){
-    	loading();
-    	window.location.href = "http://localhost:8000" + link;
+	loading();
+	window.location.href = "http://localhost:8000" + link;
 
 }
 
@@ -611,7 +605,6 @@ function render() {
 			//uniforms.verticalStretch2.value = LoopVisualizer.parameters.verticalStretch2;
 			uniforms.bottomOffset.value = document.getElementById('slider-bottomOffset').value;
 			uniforms.speed.value = document.getElementById('slider-speed').value;
-			uniforms.speed2.value = document.getElementById('slider-speed-2').value;
 			//uniforms.curve.value = document.getElementById('slider-curve').value;
 			uniforms.curve.value = LoopVisualizer.parameters.curve;
 			uniforms.colorInversion.value = document.getElementById('slider-colorInversion').value;
