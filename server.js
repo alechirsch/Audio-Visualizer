@@ -1,6 +1,6 @@
 var Hapi = require('hapi');
 var fs = require('fs');
-var ytdl =  require('ytdl-core'); 
+var ytdl = require('ytdl-core');
 var ejs = require('ejs');
 var Path = require('path');
 var server = new Hapi.Server('0.0.0.0', process.env.PORT || 8000, {
@@ -18,7 +18,10 @@ server.route({
     method: 'GET',
     path: '/',
     handler: function(req, reply) {
-        reply.view('view.ejs', {video_id: '', youtube: false});
+        reply.view('view.ejs', {
+            video_id: '',
+            youtube: false
+        });
     }
 });
 server.route({
@@ -26,11 +29,21 @@ server.route({
     path: '/watch',
     handler: function(req, reply) {
         if (req.query.v) {
-            var stream = fs.createWriteStream("public/" + req.query.v + '.mp4');
-            stream.on('close', function() {
-               reply.view('view.ejs', { video_id: req.query.v, youtube: true });
-            });
-            ytdl('http://www.youtube.com/watch?v=' + req.query.v).pipe(stream);
+            if (!req.query.download) {
+                var stream = fs.createWriteStream("public/" + req.query.v + '.mp4');
+                stream.on('close', function() {
+                    reply.view('view.ejs', {
+                        video_id: req.query.v,
+                        youtube: true
+                    });
+                });
+                ytdl('http://www.youtube.com/watch?v=' + req.query.v).pipe(stream);
+            } else {
+                reply.view('view.ejs', {
+                    video_id: req.query.v,
+                    youtube: true
+                });
+            }
         }
     }
 });
