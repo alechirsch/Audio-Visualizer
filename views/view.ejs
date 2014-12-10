@@ -293,17 +293,18 @@ $('#enter-link').click(function(){
 
 });
 
-var mouseOver = false;
-$('#container').mousemove(function(){
-	$('#tools').fadeIn('fast');
-	setTimeout(function() {
-		if(!mouseOver && !($('#tools').is(':hover'))){
-			$('#tools').fadeOut('slow');
-		}
-		mouseOver = false;
-	}, 5000);
-	mouseOver = true;
-}); 
+var timer;
+$(document).mousemove(function() {
+    if (timer) {
+        clearTimeout(timer);
+        timer = 0;
+    }
+
+    $("#tools").fadeIn();
+    timer = setTimeout(function() {
+        $('#tools').fadeOut()
+    }, 1500)
+})
 
 var container, stats;
 
