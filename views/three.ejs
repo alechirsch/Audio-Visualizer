@@ -9,7 +9,6 @@
 	<script src="public/js/three.min.js"></script>
 	<script src="public/js/Detector.js"></script>
 	<script src="public/js/stats.min.js"></script>
-	<script src="public/js/audio.js"></script>
 	<script src="public/js/jquery-2.1.1.min.js"></script>
 	<script src="public/js/accordion.js"></script>
 	<script src="public/js/ui.js"></script>
@@ -246,8 +245,8 @@
 
 	function onWindowResize( event ) {
 
-		uniforms.resolution.value.x = window.innerWidth;
-		uniforms.resolution.value.y = window.innerHeight;
+		parameters.resolution.value.x = window.innerWidth;
+		parameters.resolution.value.y = window.innerHeight;
 
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	}

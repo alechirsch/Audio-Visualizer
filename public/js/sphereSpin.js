@@ -1,19 +1,27 @@
-/*from http://airtightinteractive.com/demos/js/reactive/	*/
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 
-
-//var container
 var stats;
 
-var camera, scene;//, renderer;
+var camera, scene;
 
-var uniforms;
+var parameters;
 
+var SEGMENTS = 512;
+var BIN_COUNT = 512;
+var analyser;
+var source;
+var buffer;
+var audioBuffer;
+var dropArea;
+var audioContext;
 
+var freqByteData;
+var timeByteData;
 
-//init();
-//animate();
+var min = 0;
+var sum = 0;
+var max = 256 * 20;
 
 function init() {
 
@@ -45,7 +53,6 @@ function init() {
 	analyser = audioContext.createAnalyser();
 	analyser.smoothingTimeConstant = 0.000001;
 	analyser.fftSize = 1024;
-	//container = document.getElementById( 'container' );
 
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 	camera.position.z = 5;
@@ -62,42 +69,59 @@ function init() {
 
     scene.add(sphere);
 
-	uniforms = {
+	parameters = {
 		time: { type: "f", value: 1.0 },
-		color1: { type: "f", value: 0.0},
-		color2: { type: "f", value: 0.0},
-		color3: { type: "f", value: 0.0},
-		color4: { type: "f", value: 0.0},
+		sphereScaleX: 1,
+		sphereScaleY: 1,
+		sphereScaleZ: 1,
 		sphereShape: sphere,
 		resolution: { type: "v2", value: new THREE.Vector2() }
 	};
 
-	//renderer = new THREE.WebGLRenderer();
-	//container.appendChild( renderer.domElement );
-
-
-
-
-	LoopVisualizer.init();
-
-/*
-	if(<%= youtube %>){
-		loadYoutube('<%= video_id %>');
-	}
-	*/
+	audioInit();
 }
 
+function audioInit(){
+	freqByteData = new Uint8Array(analyser.frequencyBinCount);
+	timeByteData = new Uint8Array(analyser.frequencyBinCount);
+	onParamsChange();
+}
 
+	function onParamsChange() {
+		console.log("I got here");
+		/* when a parameter is changed, change it */
 
+	}
+function normalize(value){
+		return (value - min) / (max - min);
+	}
 
+function update() {
 
+		analyser.getByteFrequencyData(freqByteData);
+		analyser.getByteTimeDomainData(timeByteData);
 
-/*** END FROM http://airtightinteractive.com/demos/js/reactive/ ***/
-
-
-
-
-
+		sum = 0;
+		j = 0;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleX = normalize(sum) * 0.1;
+		
+		sum = 0;
+		j = 20;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleY = normalize(sum) * 0.1;
+		
+		sum = 0;
+		j = 40;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleZ = normalize(sum) * 0.1;
+	}
 function animate() {
 
 	requestAnimationFrame( animate );
@@ -108,18 +132,18 @@ function animate() {
 }
 var temp = 1;
 function render() {
-	LoopVisualizer.update(source);
+	update(source);
 
 	//uniforms.sphereShape.scale.multiplyScalar((1 / temp));
-	temp = LoopVisualizer.parameters.sphereScale;
+	//temp = LoopVisualizer.parameters.sphereScale;
 	//uniforms.sphereShape.scale.multiplyScalar(LoopVisualizer.parameters.sphereScale);
-	uniforms.sphereShape.rotation.x += LoopVisualizer.parameters.sphereScaleX;
-	uniforms.sphereShape.rotation.y += LoopVisualizer.parameters.sphereScaleY;
-	uniforms.sphereShape.rotation.z += LoopVisualizer.parameters.sphereScaleZ;
+	parameters.sphereShape.rotation.x += parameters.sphereScaleX;
+	parameters.sphereShape.rotation.y += parameters.sphereScaleY;
+	parameters.sphereShape.rotation.z += parameters.sphereScaleZ;
 
 
 
-	uniforms.time.value += 0.05;
+	parameters.time.value += 0.05;
 	renderer.render( scene, camera );
 
 }

@@ -8,14 +8,7 @@ var LoopVisualizer = (function() {
 	var freqByteData;
 	var timeByteData;
 
-	//Vizualizer Params
-	var vizParams = {
-		gain:1,
-		separation: 0.05,
-		scale: 1,
-		zbounce: 1,
-		autoTilt: false
-	};
+	
 	var parameters = {
 		leftOffset: 1,
 		horizontalStretch: 1,

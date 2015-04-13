@@ -1,13 +1,6 @@
 var started = false;
 var paused = false;
-var source;
-var analyser;
-var buffer;
-var audioBuffer;
-var dropArea;
-var audioContext;
-var source;
-var analyser;
+
 var xhr;
 
 
