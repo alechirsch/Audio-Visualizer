@@ -37,7 +37,10 @@ var LoopVisualizer = (function() {
 		color1: 1,
 		color2: 1,
 		color3: 1,
-		color4: 1
+		color4: 1,
+		sphereScaleX: 1,
+		sphereScaleY: 1,
+		sphereScaleZ: 1,
 	};
 	var min = 0;
 	var max = 255 * 20;
@@ -85,6 +88,27 @@ var LoopVisualizer = (function() {
 			sum += freqByteData[i];
 		}
 		parameters.lineDistortion = normalize(sum) * 300;
+		
+		sum = 0;
+		j = 0;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleX = normalize(sum) * 0.1;
+		
+		sum = 0;
+		j = 20;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleY = normalize(sum) * 0.1;
+		
+		sum = 0;
+		j = 40;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleZ = normalize(sum) * 0.1;
 	}
 
 	return {
