@@ -231,8 +231,14 @@
 	animate();
 	document.addEventListener('drop', onMP3Drop, false);
 	document.addEventListener('dragover', onDocumentDragOver, false);
-
-	window.addEventListener( 'resize', onWindowResize, false );
+	window.addEventListener('resize', function() {
+		windowHalfX = window.innerWidth / 2;
+		windowHalfY = window.innerHeight / 2;
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+	}, false);
+	window.addEventListener('resize, onWindowResize', false);
 
 	function onWindowResize(event) {
 		windowHalfX = window.innerWidth / 2;
@@ -240,15 +246,6 @@
 		camera.aspect = window.innerWidth / window.innerHeight;
 		camera.updateProjectionMatrix();
 		renderer.setSize(window.innerWidth, window.innerHeight);
-	}
-
-
-	function onWindowResize( event ) {
-
-		parameters.resolution.value.x = window.innerWidth;
-		parameters.resolution.value.y = window.innerHeight;
-
-		renderer.setSize( window.innerWidth, window.innerHeight );
 	}
 	</script>
 
