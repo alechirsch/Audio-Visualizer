@@ -26,6 +26,16 @@ server.route({
 });
 server.route({
     method: 'GET',
+    path: '/three',
+    handler: function(req, reply) {
+        reply.view('three.ejs', {
+            video_id: '',
+            youtube: false
+        });
+    }
+});
+server.route({
+    method: 'GET',
     path: '/watch',
     handler: function(req, reply) {
         if (req.query.v) {
