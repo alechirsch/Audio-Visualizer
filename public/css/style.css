@@ -32,6 +32,11 @@ a {
 }
 
 
+#color .slider{
+	display:none;
+}
+
+
 #red-button{
     background-color: #c0392b;
 }

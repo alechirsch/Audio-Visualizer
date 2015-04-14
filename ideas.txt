@@ -1,0 +1,18 @@
+Abstract Classes:
+1. Visualization
+2. Audio
+3. 
+
+Global Parameters:
+1. Zoom in/out
+2. Speed/intensity
+3. Color(s)
+4. 
+
+
+Visualizations:
+1. Shere with cylinders popping out.
+	-Each cylinder represents a different frequency
+
+2. Cubes orbiting spheres
+	-
