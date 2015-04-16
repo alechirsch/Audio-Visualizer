@@ -10,8 +10,9 @@ var parameters;
 var SEGMENTS = 512;
 var BIN_COUNT = 512;
 var analyser, source, buffer, audioBuffer, dropArea, audioContext, freqByteData, timeByteData;
-var min = 0, sum = 0, max = 256 * 20;
-
+var min = 0, sum = 0, max = 255 * 20;
+var counter = 0;
+var cylinderArray = [];
 
 function init() {
 	try {
@@ -79,39 +80,43 @@ function init() {
 	sphere.position.set(0, 0, 0);
 	scene.add(sphere);
 	/* CYLINDER */
-	var cylindergeometry = new THREE.CylinderGeometry(0.01, 0.01, 5, 50);
-	var cylindermaterial = new THREE.MeshBasicMaterial({wireframe: true, color: 0x00ff00});
+	var cylindergeometry = new THREE.CylinderGeometry(0.05, 0.05, 2, 10);
+	var cylindermaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
 	var cylinder = new THREE.Mesh(cylindergeometry, cylindermaterial);
 	cylinder.position.set(0,0,0);
-	scene.add(cylinder);
-	//for(var i = 1; i <= 5; i++){
-		//cylinder.rotation.x += Math.PI/5;
-		//for(var j = 1; j <=5; j++){
-			//cylinder.rotation.y += Math.PI/5;
-			for(var k = 1; k <=5; k++){
-				cylinder = cylinder.clone();
-				cylinder.rotation.z += Math.PI/5;
-				scene.add(cylinder);
-			}
-		//}
-		
-	//}
-
+	createCylinders(cylinder, 0);
+	console.log(cylinderArray.length);
 	parameters = {
 		time: { type: "f", value: 1.0 },
-		sphereScaleX: 1,
-		sphereScaleY: 1,
-		sphereScaleZ: 1,
 		sphereShape: sphere,
+		cylGeo: cylindergeometry,
+		cylMaterial: cylindermaterial,
+		cylinderHeights: [],
 		resolution: { type: "v2", value: new THREE.Vector2() }
 	};
 
 	audioInit();
 }
 
-
-
-
+function createCylinders(cylinder, depth){
+	if(depth === 2) return;
+	console.log(depth);
+	for(var i = 0; i < 6; i++){
+		if(depth === 0){
+			cylinder.rotation.x += Math.PI/12;
+			createCylinders(cylinder.clone(), depth + 1);
+			cylinder.rotation.x += Math.PI/12;
+		}
+		else if(depth === 1){
+			cylinder.rotation.z += Math.PI/12;
+			createCylinders(cylinder.clone(), depth + 1);
+			cylinder.rotation.z += Math.PI/12;
+		}
+		cylinderArray[counter++] = cylinder;
+		scene.add(cylinder);
+		cylinder = cylinder.clone();
+	}
+}
 
 function audioInit(){
 	freqByteData = new Uint8Array(analyser.frequencyBinCount);
@@ -132,25 +137,13 @@ function update() {
 	analyser.getByteFrequencyData(freqByteData);
 	analyser.getByteTimeDomainData(timeByteData);
 	sum = 0;
-	j = 0;
-	for(var i = j; i < j+20; i++) {
-		sum += freqByteData[i];
+	for(var i = 0; i <= 48; i++){
+		for(var j = 1; j <= 10; j++){
+			sum += freqByteData[i*j];
+		}
+		parameters.cylinderHeights[i] = normalize(sum) * 10;
+		sum = 0;
 	}
-	parameters.sphereScaleX = normalize(sum) * 0.1;
-
-	sum = 0;
-	j = 20;
-	for(var i = j; i < j+20; i++) {
-		sum += freqByteData[i];
-	}
-	parameters.sphereScaleY = normalize(sum) * 0.1;
-
-	sum = 0;
-	j = 40;
-	for(var i = j; i < j+20; i++) {
-		sum += freqByteData[i];
-	}
-	parameters.sphereScaleZ = normalize(sum) * 0.1;
 }
 
 function animate() {
@@ -162,17 +155,24 @@ function animate() {
 
 }
 
-var temp = 1;
 function render() {
 	update(source);
 
-	//uniforms.sphereShape.scale.multiplyScalar((1 / temp));
-	//temp = LoopVisualizer.parameters.sphereScale;
-	//uniforms.sphereShape.scale.multiplyScalar(LoopVisualizer.parameters.sphereScale);
-	parameters.sphereShape.rotation.x += parameters.sphereScaleX;
-	parameters.sphereShape.rotation.y += parameters.sphereScaleY;
-	parameters.sphereShape.rotation.z += parameters.sphereScaleZ;
+	var tempCyl, newCyl, geometry;
+	for(var i = 0; i < cylinderArray.length; i++){
+		tempCyl = cylinderArray[i];
+		scene.remove(tempCyl);
+		geometry = new THREE.CylinderGeometry(0.05, 0.05, parameters.cylinderHeights[i] + 2, 5);
+		newCyl = new THREE.Mesh(geometry, parameters.cylMaterial);
+		newCyl.rotation.x = tempCyl.rotation.x;
+		newCyl.rotation.y = tempCyl.rotation.y;
+		newCyl.rotation.z = tempCyl.rotation.z;
+		tempCyl.geometry = null;
+		tempCyl = null;
+		cylinderArray[i] = newCyl;
 
+		scene.add(newCyl);
+	}
 	//parameters.time.value += 0.05;
 	renderer.render( scene, camera );
 }
