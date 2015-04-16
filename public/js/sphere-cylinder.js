@@ -80,7 +80,14 @@ function init() {
 	sphere.position.set(0, 0, 0);
 	scene.add(sphere);
 	/* CYLINDER */
-	var cylindergeometry = new THREE.CylinderGeometry(0.05, 0.05, 2, 10);
+	var cylindergeometry = new THREE.CylinderGeometry(0.05, 0.05, 1.55, 10);
+	cylindergeometry.verticesNeedUpdate = true;
+	cylindergeometry.elementsNeedUpdate = true;
+	cylindergeometry.morphTargetsNeedUpdate = true;
+	cylindergeometry.uvsNeedUpdate = true;
+	cylindergeometry.normalsNeedUpdate = true;
+	cylindergeometry.colorsNeedUpdate = true;
+	cylindergeometry.tangentsNeedUpdate = true;
 	var cylindermaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
 	var cylinder = new THREE.Mesh(cylindergeometry, cylindermaterial);
 	cylinder.position.set(0,0,0);
@@ -157,22 +164,7 @@ function animate() {
 
 function render() {
 	update(source);
-
-	var tempCyl, newCyl, geometry;
-	for(var i = 0; i < cylinderArray.length; i++){
-		tempCyl = cylinderArray[i];
-		scene.remove(tempCyl);
-		geometry = new THREE.CylinderGeometry(0.05, 0.05, parameters.cylinderHeights[i] + 2, 5);
-		newCyl = new THREE.Mesh(geometry, parameters.cylMaterial);
-		newCyl.rotation.x = tempCyl.rotation.x;
-		newCyl.rotation.y = tempCyl.rotation.y;
-		newCyl.rotation.z = tempCyl.rotation.z;
-		tempCyl.geometry = null;
-		tempCyl = null;
-		cylinderArray[i] = newCyl;
-
-		scene.add(newCyl);
-	}
+	for(var i = 0; i < cylinderArray.length; i++) cylinderArray[i].scale.y = parameters.cylinderHeights[i]*0.4 + 1;
 	//parameters.time.value += 0.05;
 	renderer.render( scene, camera );
 }
