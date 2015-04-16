@@ -45,8 +45,8 @@ function init() {
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 	controls = new THREE.OrbitControls( camera );
-				controls.damping = 0.2;
-				controls.addEventListener( 'change', render );
+	controls.damping = 0.2;
+	controls.addEventListener( 'change', render );
 
 	scene = new THREE.Scene();
 	/*To use enter the axis length*/
@@ -99,6 +99,10 @@ function init() {
 		cylGeo: cylindergeometry,
 		cylMaterial: cylindermaterial,
 		cylinderHeights: [],
+		cylinderWidths: [],
+		cameraX: 0,
+		cameraY: 0,
+		cameraZ: 0,
 		resolution: { type: "v2", value: new THREE.Vector2() }
 	};
 
@@ -144,13 +148,36 @@ function update() {
 	analyser.getByteFrequencyData(freqByteData);
 	analyser.getByteTimeDomainData(timeByteData);
 	sum = 0;
-	for(var i = 0; i <= 48; i++){
+	for(var i = 5; i <= 47; i++){
 		for(var j = 1; j <= 10; j++){
 			sum += freqByteData[i*j];
 		}
 		parameters.cylinderHeights[i] = normalize(sum) * 10;
 		sum = 0;
 	}
+	for(var i = 5; i <= 47; i++){
+		for(var j = 1; j <= 2; j++){
+			sum += freqByteData[i*j];
+		}
+		parameters.cylinderWidths[i] = normalize(sum) * 10;
+		sum = 0;
+	}
+	for(var i = 12; i < 17; i++){
+		sum += freqByteData[i];
+	}
+	parameters.cameraX += normalize(sum) * 0.01;
+	sum = 0;
+	for(var i = 78; i < 92; i++){
+		sum += freqByteData[i];
+	}
+	parameters.cameraY += normalize(sum) * 0.01;
+
+	sum = 0;
+	for(var i = 122; i < 134; i++){
+		sum += freqByteData[i];
+	}
+	parameters.cameraZ += normalize(sum) * 0.01;
+
 }
 
 function animate() {
@@ -161,10 +188,18 @@ function animate() {
 	/*stats.update();*/
 
 }
-
 function render() {
 	update(source);
-	for(var i = 0; i < cylinderArray.length; i++) cylinderArray[i].scale.y = parameters.cylinderHeights[i]*0.4 + 1;
-	//parameters.time.value += 0.05;
+	for(var i = 0; i < cylinderArray.length; i++){
+		cylinderArray[i].scale.y = parameters.cylinderHeights[i]*0.4 + 1;
+		cylinderArray[i].scale.x = parameters.cylinderWidths[cylinderArray.length - i] + 0.1;
+		cylinderArray[i].scale.z = parameters.cylinderWidths[cylinderArray.length - i] + 0.1;
+	}
+	camera.position.x = Math.cos(parameters.cameraX) * 5;
+	camera.position.y = Math.sin(parameters.cameraY) * 5;
+	camera.position.z = camera.position.x + camera.position.y < 3 ? 3 : camera.position.x + camera.position.y;
+
+	camera.lookAt(new THREE.Vector3(0, 0, 0));
+	//parameters.time.value += 0.05;1
 	renderer.render( scene, camera );
 }
