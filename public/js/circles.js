@@ -12,7 +12,7 @@ var BIN_COUNT = 512;
 var analyser, source, buffer, audioBuffer, dropArea, audioContext, freqByteData, timeByteData;
 var min = 0, sum = 0, max = 255 * 20;
 var counter = 0;
-var cylinderArray = [];
+var circleArray = [];
 
 function init() {
 	try {
@@ -34,14 +34,14 @@ function init() {
 
 	/* init audio */
 	analyser = audioContext.createAnalyser();
-	analyser.smoothingTimeConstant = 0.001;
+	analyser.smoothingTimeConstant = 0.01;
 	analyser.fftSize = 1024;
 
 	/*start ThreeJS scene*/
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-	camera.position.z = 5;
-	camera.position.x = 1;
-	camera.position.y = 2;
+	camera.position.x = 20;
+	camera.position.y = 40;
+	camera.position.z = 50;
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 	controls = new THREE.OrbitControls( camera );
@@ -70,63 +70,50 @@ function init() {
 		createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
 	};
 
-	//debugaxis(100);
-	var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+	debugaxis(100);
 
-	/* SPHERE */
-	var spheregeometry = new THREE.SphereGeometry(0.8, 16, 16);
-	var spherematerial = new THREE.MeshBasicMaterial({wireframe: false, color: 0x000000});
-	var sphere = new THREE.Mesh(spheregeometry, spherematerial);
-	sphere.position.set(0, 0, 0);
-	scene.add(sphere);
-	/* CYLINDER */
-	var cylindergeometry = new THREE.CylinderGeometry(0.05, 0.05, 1.55, 10);
-	cylindergeometry.verticesNeedUpdate = true;
-	cylindergeometry.elementsNeedUpdate = true;
-	cylindergeometry.morphTargetsNeedUpdate = true;
-	cylindergeometry.uvsNeedUpdate = true;
-	cylindergeometry.normalsNeedUpdate = true;
-	cylindergeometry.colorsNeedUpdate = true;
-	cylindergeometry.tangentsNeedUpdate = true;
-	var cylindermaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
-	var cylinder = new THREE.Mesh(cylindergeometry, cylindermaterial);
-	cylinder.position.set(0,0,0);
-	createCylinders(cylinder, 0);
-	console.log(cylinderArray.length);
+	var material = new THREE.MeshBasicMaterial({color: 0xff00});
+	var geometry = new THREE.PlaneBufferGeometry( 200, 200 );
+	var plane = new THREE.Mesh(geometry, material);
+	plane.position.set(0,0,0);
+	plane.rotation.x = -Math.PI/2;
+	plane.rotation.y = 0;
+	scene.add(plane);
+
+
+	var material = new THREE.LineBasicMaterial({color: 0x0000ff});
+	var radius = 1;
+	var segments = 20;
+
+	var circleGeometry = new THREE.CircleGeometry( radius, segments );				
+	var circle = new THREE.Line( circleGeometry, material );
+	circleGeometry.vertices.shift();
+	circle.position.set(0, 1, 0);
+	circle.rotation.x = -Math.PI/2;
+	circle.rotation.y = 0;
+	scene.add( circle );
+	circleArray[0] = circle;
 	parameters = {
-		time: { type: "f", value: 1.0 },
-		sphereShape: sphere,
-		cylGeo: cylindergeometry,
-		cylMaterial: cylindermaterial,
-		cylinderHeights: [],
-		cylinderWidths: [],
-		cameraX: 0,
-		cameraY: 0,
-		cameraZ: 0,
-		resolution: { type: "v2", value: new THREE.Vector2() }
+		material: material,
+		newHeight: 1
 	};
+
+	createCircles(2, 20);
 
 	audioInit();
 }
 
-function createCylinders(cylinder, depth){
-	if(depth === 2) return;
-	console.log(depth);
-	for(var i = 0; i < 8; i++){
-		if(depth === 0){
-			cylinder.rotation.x += Math.PI/8;
-			createCylinders(cylinder.clone(), depth + 1);
-			cylinder.rotation.x += Math.PI/8;
-		}
-		else if(depth === 1){
-			cylinder.rotation.z += Math.PI/8;
-			createCylinders(cylinder.clone(), depth + 1);
-			cylinder.rotation.z += Math.PI/8;
-		}
-		cylinderArray[counter++] = cylinder;
-		scene.add(cylinder);
-		cylinder = cylinder.clone();
-	}
+function createCircles(radius, segments){
+	if(radius > 100) return;
+	var circleGeometry = new THREE.CircleGeometry( radius, segments );				
+	var circle = new THREE.Line( circleGeometry, parameters.material );
+	circleGeometry.vertices.shift();
+	circle.position.set(0, 1, 0);
+	circle.rotation.x = -Math.PI/2;
+	circle.rotation.y = 0;
+	scene.add( circle );
+	circleArray[radius - 1] = circle;
+	createCircles(radius + 1, segments + 2);
 }
 
 function audioInit(){
@@ -148,35 +135,31 @@ function update() {
 	analyser.getByteFrequencyData(freqByteData);
 	analyser.getByteTimeDomainData(timeByteData);
 	sum = 0;
-	for(var i = 5; i <= 71; i++){
-		for(var j = 1; j <= 10; j++){
-			sum += freqByteData[i*j];
-		}
-		parameters.cylinderHeights[i] = normalize(sum, 72) * 20;
-		sum = 0;
+
+	for(var i = 0; i < 50; i++){
+		sum += freqByteData[i];
 	}
-	for(var i = 5; i <= 71; i++){
-		for(var j = 1; j <= 2; j++){
-			sum += freqByteData[i*j];
-		}
-		parameters.cylinderWidths[i] = normalize(sum, 72) * 20;
-		sum = 0;
-	}
+	var average = sum / 50;
+
+	parameters.newHeight = normalize(average, 50) * 1000;
+
+	/*
 	for(var i = 12; i < 17; i++){
 		sum += freqByteData[i];
 	}
-	parameters.cameraX += normalize(sum, 5) * 0.001;
+	parameters.cameraX += normalize(sum, 5) * 0.01;
 	sum = 0;
 	for(var i = 78; i < 92; i++){
 		sum += timeByteData[i];
 	}
-	parameters.cameraY += normalize(sum, 14) * 0.001;
+	parameters.cameraY += normalize(sum, 14) * 0.01;
 
 	sum = 0;
 	for(var i = 122; i < 134; i++){
 		sum += timeByteData[i];
 	}
-	parameters.cameraZ += normalize(sum, 12) * 0.001;
+	parameters.cameraZ += normalize(sum, 12) * 0.01;
+	*/
 }
 
 function animate() {
@@ -187,8 +170,22 @@ function animate() {
 	/*stats.update();*/
 
 }
+
+function updateCircleHeights(index){
+	if(index === 0){
+		circleArray[index].position.y = parameters.newHeight;
+		return;
+	}
+	circleArray[index].position.y = circleArray[index - 1].position.y;
+	updateCircleHeights(index - 1);
+}
+
 function render() {
 	update(source);
+
+	updateCircleHeights(circleArray.length - 1);
+
+	/*
 	for(var i = 0; i < cylinderArray.length; i++){
 		cylinderArray[i].scale.y = parameters.cylinderHeights[i]*0.4 + 1;
 		cylinderArray[i].scale.x = parameters.cylinderWidths[cylinderArray.length - i] + 0.1;
@@ -199,6 +196,7 @@ function render() {
 	camera.position.z = camera.position.x + camera.position.y < 3 ? 3 : camera.position.x + camera.position.y;
 
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
+	*/
 	//parameters.time.value += 0.05;1
 	renderer.render( scene, camera );
 }
