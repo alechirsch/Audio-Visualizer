@@ -1,5 +1,6 @@
 var started = false;
 var paused = false;
+var source;
 
 var xhr;
 
@@ -155,15 +156,18 @@ function startSound() {
 	source.buffer = audioBuffer;
 	source.loop = false;
 	source.start(0.0);
+	started = true;
+	console.log(source);
 	/*startViz();*/
 }
 
 function pause(){
 	paused = true;
-	source.mediaElement.pause();
+	console.log(source);
+	source.stop();
 }
 
 function play(){
-	pause = false;
-	source.mediaElement.play();
+	paused = false;
+	source.start();
 }

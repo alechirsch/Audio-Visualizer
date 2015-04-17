@@ -12,7 +12,7 @@
 	<script src="public/js/jquery-2.1.1.min.js"></script>
 	<script src="public/js/accordion.js"></script>
 	<script src="public/js/ui.js"></script>
-	<script src="public/js/sphereSpin.js"></script>
+	<script src="public/js/flyingShapes.js"></script>
 </head>
 <body>
 	<script>
@@ -206,8 +206,8 @@
 		</div>
 	</div>
 
-
 	<script type="text/javascript">
+	var paused = false;
 	var accordion = new TINY.accordion.slider("accordion");
 	accordion.init("accordion","h3",true,0,"selected");
 	$('#prompt').html("Drop a file or enter a Youtube link " +
@@ -247,6 +247,17 @@
 		camera.updateProjectionMatrix();
 		renderer.setSize(window.innerWidth, window.innerHeight);
 	}
+
+	$('#play-pause').click(function() {
+		if(started) {
+			if(paused) {
+				play();
+			}
+			else {
+				pause();
+			}
+		}
+	});
 	</script>
 
 
