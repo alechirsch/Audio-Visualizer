@@ -55,46 +55,97 @@ function init() {
 	analyser.fftSize = 1024;
 
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-	camera.position.z = 5;
+	camera.position.z = 500;
 	scene = new THREE.Scene();
 	var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
-	//SPHERE
-	var spheregeometry = new THREE.SphereGeometry(0.2, 16, 16);
-    var spherematerial = new THREE.MeshBasicMaterial({wireframe: true, color: 0x00ff00});
+
+	var innerlayer = new THREE.Group();
+	var outerlayer = new THREE.Group();
+	var allobjects = new THREE.Group();
+
+	//CENTER SPHERE (invisible)
+	var spheregeometry = new THREE.SphereGeometry(20, 16, 16);
+    var spherematerial = new THREE.MeshBasicMaterial( { wireframe: true, color: 0x0000ff } );
     var sphere = new THREE.Mesh(spheregeometry, spherematerial);
     sphere.position.set(0, 0, 0);
     scene.add(sphere);
-    //RING
-    var ringgeometry = new THREE.RingGeometry(0.6, 0.8, 16);
-    var ringmaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    var ring = new THREE.Mesh(ringgeometry, ringmaterial);
-    ring.position.set(0, 0, 0);
-    scene.add(ring);
+    //CUBE
+    //var cubegeometry = new THREE.BoxGeometry(20, 20, 20);
+    //var cubematerial = new THREE.MeshNormalMaterial( { color: 0x00ff00 } );
+    //var cube = new THREE.Mesh(cubegeometry, cubematerial);
+    //cube.position.set(200, 0, 0);
+    //scene.add(cube);
+
+    var lineStart = new THREE.Vector3(0,0,0);
+    var lineEnd = new THREE.Vector3(200,0,0);
+    var linegeometry = new THREE.Geometry();
+    linegeometry.vertices.push(new THREE.Vector3(0,0,0), new THREE.Vector3(200,0,0));
+    var linematerial = new THREE.LineBasicMaterial( { color: 0x000000 } );
+    var line = new THREE.Line(linegeometry, linematerial);
+    scene.add(line);
+    
 
 	parameters = {
 		time: { type: "f", value: 1.0 },
+		//GROUP
+		innergroup: innerlayer,
+		outergroup: outerlayer,
+		entiregroup: allobjects,
+
 		//SPHERE
 		sphereShape: sphere,
 		sphereRotX: 1,
 		sphereRotY: 1,
 		sphereRotZ: 1,
 
-		//RING
-		ringShape: ring,
-		ringPosX: 3,
-		ringPosY: 0,
-		ringPosZ: 0,
+		//LINE
+		lineShape: line,
+		lineGeo: linegeometry,
+		lineRotZ: 1,
 
+		innerRadius: 150,
+		outerRadius: 300,
 		resolution: { type: "v2", value: new THREE.Vector2() }
 	};
 
 	audioInit();
+	sceneInit();
 }
 
 function audioInit(){
 	freqByteData = new Uint8Array(analyser.frequencyBinCount);
 	timeByteData = new Uint8Array(analyser.frequencyBinCount);
 	onParamsChange();
+}
+
+function sceneInit() {
+	var cubegeometry = new THREE.BoxGeometry(20, 20, 20);
+    var cubematerial = new THREE.MeshNormalMaterial( { color: 0x00ff00 } );
+    var cubes = [];
+    for(var i=0; i<8; i++) {
+    	cubes.push(new THREE.Mesh(cubegeometry, cubematerial));
+	}
+	cubes[0].position.set(parameters.innerRadius, 0, 0);
+	cubes[1].position.set(0, parameters.innerRadius, 0);
+	cubes[2].position.set(-1*parameters.innerRadius, 0, 0);
+	cubes[3].position.set(0, -1*parameters.innerRadius, 0);
+	cubes[4].position.set(parameters.outerRadius, 0, 0);
+	cubes[5].position.set(0, parameters.outerRadius, 0);
+	cubes[6].position.set(-1*parameters.outerRadius, 0, 0);
+	cubes[7].position.set(0, -1*parameters.outerRadius, 0);
+	for(var j=0; j<4; j++) {
+		parameters.innergroup.add(cubes[j]);
+		parameters.entiregroup.add(cubes[j]);
+		parameters.sphereShape.add(cubes[j]);
+	}
+	for(var j=0; j<4; j++) {
+		parameters.outergroup.add(cubes[j]);
+		parameters.entiregroup.add(cubes[j]);
+		parameters.sphereShape.add(cubes[j]);
+	}
+	for(var cube in cubes) {
+		scene.add(cubes[cube]);
+	}
 }
 
 	function onParamsChange() {
@@ -131,7 +182,8 @@ function update() {
 			sum += freqByteData[i];
 		}
 		parameters.sphereRotZ = normalize(sum) * 0.1;
-	}
+}
+
 function animate() {
 
 	requestAnimationFrame( animate );
@@ -143,15 +195,21 @@ var temp = 1;
 function render() {
 	update(source);
 	//SPHERE
-	parameters.sphereShape.rotation.x += parameters.sphereRotX;
-	parameters.sphereShape.rotation.y += parameters.sphereRotY;
-	parameters.sphereShape.rotation.z += parameters.sphereRotZ;
-	//RING
-	parameters.ringShape.rotation.x += parameters.sphereRotX;
-	parameters.ringShape.rotation.y += parameters.sphereRotY;
-	parameters.ringShape.rotation.z += parameters.sphereRotZ;
+	//parameters.sphereShape.rotation.x += parameters.sphereRotX;
+	//parameters.sphereShape.rotation.y += parameters.sphereRotY;
+	//parameters.sphereShape.rotation.z += parameters.sphereRotZ;
+
+	parameters.sphereShape.traverse(function(obj) {
+		obj.rotation.x += parameters.sphereRotX;
+		obj.rotation.y += parameters.sphereRotY;
+		obj.rotation.z += parameters.sphereRotZ;
+		//console.log(parameters.sphereShape.rotation.x);
+	});
+
 
 	parameters.time.value += 0.05;
 	renderer.render( scene, camera );
+
+	//parameters.lineShape.rotation.z += 0.01;
 
 }

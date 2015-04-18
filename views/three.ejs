@@ -13,205 +13,21 @@
 	<script src="public/js/accordion.js"></script>
 	<script src="public/js/ui.js"></script>
 	<script src="public/js/flyingShapes.js"></script>
+	<script src="public/js/OrbitControls.js"></script>
+
 </head>
 <body>
-	<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-		ga('create', 'UA-57622384-1', 'auto');
-		ga('send', 'pageview');
-
-	</script>
-	<div id="fb-root"></div>
-	<script>(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s); js.id = id;
-		js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1481292832158179&version=v2.0";
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));</script>
-	<div id="container"></div>
-	<div id="prompt-contatiner"><div id="prompt"></div></div>
-	<div id="tools">
-		<div class="fb-share-button" data-href="https://audio-visualizer.herokuapp.com/" data-layout="button_count"></div>
-		<ul id="accordion">
-			<li id="color">
-				<h3>Color</h3>
-				<div class="acc-section">
-					<div class="acc-content">
-						<div id="red-button" class="color-button"></div>
-						<div id="orange-button" class="color-button"></div>
-						<div id="yellow-button" class="color-button"></div>
-						<div id="green-button" class="color-button"></div>
-						<div id="blue-button" class="color-button"></div>
-						<div id="purple-button" class="color-button"></div>
-						<script>
-							$("#red-button").click(function(){ 
-								$("#slider-color-1").val(0.33);
-								$("#slider-color-2").val(1.45);
-								$("#slider-color-3").val(2.86);
-								$("#slider-color-4").val(3.2);
-							});
-							$("#orange-button").click(function(){ 
-								$("#slider-color-1").val(0.5);
-								$("#slider-color-2").val(1.12);
-								$("#slider-color-3").val(0.72);
-								$("#slider-color-4").val(4.0);
-							});
-							$("#yellow-button").click(function(){ 
-								$("#slider-color-1").val(0.61);
-								$("#slider-color-2").val(0.55);
-								$("#slider-color-3").val(0.72);
-								$("#slider-color-4").val(0.67);
-							});
-							$("#green-button").click(function(){ 
-								$("#slider-color-1").val(3.81);
-								$("#slider-color-2").val(4.88);
-								$("#slider-color-3").val(0.55);
-								$("#slider-color-4").val(3);
-							});
-							$("#blue-button").click(function(){ 
-								$("#slider-color-1").val(10);
-								$("#slider-color-2").val(10);
-								$("#slider-color-3").val(2.07);
-								$("#slider-color-4").val(4.88);
-							});
-							$("#purple-button").click(function(){ 
-								$("#slider-color-1").val(1);
-								$("#slider-color-2").val(2.69);
-								$("#slider-color-3").val(6.62);
-								$("#slider-color-4").val(6.06);
-							});
-						</script>
-					</div>
-				</div>
-			</li>
-			<li id="advanced-color">
-				<h3>Advanced Color</h3>
-				<div class="acc-section">
-					<div class="acc-content">						
-						<div class="slider">
-							<label>Color 1</label>
-							<input id="slider-color-1" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Color 2</label>
-							<input id="slider-color-2" type="range" value="2.0" min="0.1" max="10.0" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Color 3</label>
-							<input id="slider-color-3" type="range" value="1.0" min="0.1" max="10.0" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Color 4</label>
-							<input id="slider-color-4" type="range" value="3.0" min="0.1" max="10.0" step="0.01" />
-						</div>					
-						<div class="slider">
-							<label>Color Inversion</label>
-							<input id="slider-colorInversion" type="range" value="50" min="-800" max="500" step="0.01" />
-						</div>
-					</div>
-				</div>
-			</li>
-			<li id="shape">
-				<h3>Shape</h3>
-				<div class="acc-section">
-					<div class="acc-content">
-						<div class="slider">
-							<label>Circles</label>
-							<input id="slider-circles" type="range" value="8" min="8" max="1000" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Vertical Stretch 2</label>
-							<input id="slider-verticalStretch-2" type="range" value="2.0" min="0.5" max="2.0" step="0.01" />
-						</div>
-					</div>
-				</div>
-			</li>
-			<li id="speed">
-				<h3>Speed</h3>
-				<div class="acc-section">
-					<div class="acc-content">
-						<div class="slider">
-							<label>Speed</label>
-							<input id="slider-speed" type="range" value="20" min="1" max="100" step="0.01" />
-						</div>
-						<div class="slider">
-							<label>Horizontal Pulse</label>
-							<input id="slider-horizontalPulse" type="range" value="100" min="0" max="100" step="0.01" />
-						</div>
-					</div>
-				</div>
-			</li>
-			<li id="song">
-				<h3>Song</h3>
-				<div class="acc-section">
-					<div class="acc-content">
-						Drop a song or <a id="enter-link">enter a link.</a>
-					</div>
-				</div>
-			</li>
-
-		</ul>
-		<div id="sliders">
-			<div class="slider">
-				<label>Left Off Set</label>
-				<input id="slider-leftOffset" type="range" value="175" min="0" max="600" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Bottom Off Set</label>
-				<input id="slider-bottomOffset" type="range" value="220" min="0" max="600" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Vertical Stretch</label>
-				<input id="slider-verticalStretch" type="range" value="400" min="0" max="600" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Horizontal Stretch</label>
-				<input id="slider-horizontalStretch" type="range" value="400" min="-500" max="800" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Horizontal Stretch 2</label>
-				<input id="slider-horizontalStretch-2" type="range" value="2.0" min="0.5" max="3.5" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Curve</label>
-				<input id="slider-curve" type="range" value="0" min="0" max="800" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Curve Intensity</label>
-				<input id="slider-curveIntensity" type="range" value="0" min="0" max="800" step=".01" />
-			</div>
-			<div class="slider">
-				<label>Gradient Size??</label>
-				<input id="slider-size" type="range" value="800" min="500" max="1500" step="0.01" />
-			</div>		
-			<div class="slider">
-				<label>Line Distortion</label>
-				<input id="slider-lineDistortion" type="range" value="100" min="0" max="1000" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Vertical Wave Distortion</label>
-				<input id="slider-verticalWaveDistortion" type="range" value="1" min="0.01" max="2" step="0.01" />
-			</div>
-			<div class="slider">
-				<label>Unknown</label>
-				<input id="slider-unknown" type="range" value="1" min="0" max="20" step="0.01" />
-			</div>
 
 
-		</div>
-	</div>
+<% include ui.html %>
 
 	<script type="text/javascript">
 	var paused = false;
 	var accordion = new TINY.accordion.slider("accordion");
 	accordion.init("accordion","h3",true,0,"selected");
-	$('#prompt').html("Drop a file or enter a Youtube link " +
-		"<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>");
+	$('#prompt').html("Drop an MP3 or MP4 file");
+	//$('#prompt').html("Drop a file or enter a Youtube link " +
+	//	"<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>");
 	$('#youtube').keydown(function(event) {
 		if (event.keyCode == 13) {
 			var value = $( this ).val();
