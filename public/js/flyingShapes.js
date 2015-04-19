@@ -11,6 +11,9 @@ var low = 999;
 var high = 0;
 var mid = 0;
 var fakeTime = 0;
+var expanding = true;
+var lastSum = 0;
+var animated = false;
 
 var SEGMENTS = 512;
 var BIN_COUNT = 512;
@@ -59,7 +62,7 @@ function init() {
 	analyser.fftSize = 1024;
 
 	parameters = {
-		objectsPerLayer: 20,
+		objectsPerLayer: 50,
 		cameraZoom: 35,
 		//Inner circle
 		innerRotX: 0,
@@ -82,6 +85,9 @@ function init() {
 	camera.position.z = parameters.cameraZoom;
 	var renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
+	var light = new THREE.PointLight( 0xff0000, 1, 100 );
+	light.position.set( 5, -50, 10 );
+	scene.add( light );
 	var geometry = new THREE.BoxGeometry(1,1,1);
 	var material = new THREE.MeshBasicMaterial( { color: 0x866ff } );
 	var parentmaterial = new THREE.MeshBasicMaterial( { visible: false } );
@@ -186,6 +192,11 @@ function update() {
 				}
 			}
 		}
+		lastSum = sum;
+		if(Math.abs(lastSum-sum) > 1) {
+			expanding = !expanding;
+		}
+		lastSum = sum;
 		
 		sum = 0;
 		j = 20;
@@ -237,29 +248,31 @@ function render() {
 	update(source);
 
 	parameters.time.value += 0.05;
-	fakeTime += 0.1;
-	if(fakeTime > 7) {
-		for(var i=0; i<meshes.length; i++) {
-			meshes[i].position.y -= 0.5;
-			parameters.innerRadius -= 0.5;
-		}
-	}
-	else {
-		for(var i=0; i<meshes.length; i++) {
-			meshes[i].position.y += 0.5;
-			parameters.innerRadius += 0.5;
-		}
-	}
-	if(fakeTime > 25) {
-		fakeTime = 0;
-	}
-	renderer.render( scene, camera );
+		fakeTime += 0.1;
+		
+			if(fakeTime > 7) {
+				for(var i=0; i<meshes.length; i++) {
+					meshes[i].position.y -= 0.5;
+					parameters.innerRadius -= 0.5;
+				}
+			}
+			else {
+				for(var i=0; i<meshes.length; i++) {
+					meshes[i].position.y += 0.5;
+					parameters.innerRadius += 0.5;
+				}
+			}
 
-	innerparent.rotation.x += parameters.innerRotX;
-	innerparent.rotation.y += parameters.innerRotY;
-	innerparent.rotation.z += parameters.innerRotZ;
-	outerparent.rotation.x += parameters.outerRotX;
-	outerparent.rotation.y += parameters.outerRotY;
-	outerparent.rotation.z += parameters.outerRotZ;
-	//outerparent.rotation.z -= 0.01;
+		if(fakeTime > 14) {
+			fakeTime = 0;
+		}
+		renderer.render( scene, camera );
+
+		innerparent.rotation.x += parameters.innerRotX;
+		innerparent.rotation.y += parameters.innerRotY;
+		innerparent.rotation.z += parameters.innerRotZ;
+		outerparent.rotation.x += parameters.outerRotX;
+		outerparent.rotation.y += parameters.outerRotY;
+		outerparent.rotation.z += parameters.outerRotZ;
+		//outerparent.rotation.z -= 0.01;
 }
