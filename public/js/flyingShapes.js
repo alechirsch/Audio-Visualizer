@@ -3,7 +3,10 @@ if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 var stats;
 
-var parameters;
+var parameters, scene, camera, innerparent, outerparent;
+var innerlayer = [];
+var outerlayer = [];
+var meshes = [];
 
 var SEGMENTS = 512;
 var BIN_COUNT = 512;
@@ -20,59 +23,6 @@ var timeByteData;
 var min = 0;
 var sum = 0;
 var max = 256 * 20;
-
-
-
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-camera.position.z = 15;
-
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-
-var geometry = new THREE.BoxGeometry(1,1,1);
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var parent = new THREE.Mesh( geometry, material );
-
-// parent
-//parent = new THREE.Object3D();
-scene.add( parent );
-
-// pivots
-var pivot1 = new THREE.Object3D();
-var pivot2 = new THREE.Object3D();
-var pivot3 = new THREE.Object3D();
-var pivot4 = new THREE.Object3D();
-
-pivot1.rotation.z = 0;
-pivot2.rotation.z = 2 * Math.PI / 4;
-pivot3.rotation.z = 4 * Math.PI / 4;
-pivot4.rotation.z = 6 * Math.PI / 4;
-
-parent.add( pivot1 );
-parent.add( pivot2 );
-parent.add( pivot3 );
-parent.add( pivot4 );
-
-// mesh
-var mesh1 = new THREE.Mesh( geometry, material );
-var mesh2 = new THREE.Mesh( geometry, material );
-var mesh3 = new THREE.Mesh( geometry, material );
-var mesh4 = new THREE.Mesh( geometry, material );
-
-mesh1.position.y = 5;
-mesh2.position.y = 5;
-mesh3.position.y = 5;
-mesh4.position.y = 5;
-
-pivot1.add( mesh1 );
-pivot2.add( mesh2 );
-pivot3.add( mesh3 );
-pivot4.add( mesh4 );
-
-
-
-
 
 
 
@@ -105,12 +55,90 @@ function init() {
 	analyser.fftSize = 1024;
 
 	parameters = {
+		objectsPerLayer: 20,
+		cameraZoom: 35,
+		innerRotX: 0,
+		innerRotY: 0,
+		innerRotZ: 0,
+		outerRotX: 0,
+		outerRotY: 0,
+		outerRotZ: 0,
 		time: { type: "f", value: 1.0 },
-
-		innerRadius: 150,
-		outerRadius: 300,
+		innerRadius: 5,
+		outerRadius: 15,
 		resolution: { type: "v2", value: new THREE.Vector2() }
 	};
+
+
+
+	scene = new THREE.Scene();
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+	camera.position.z = parameters.cameraZoom;
+	var renderer = new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+
+	var geometry = new THREE.BoxGeometry(1,1,1);
+	var material = new THREE.MeshBasicMaterial( { color: 0x866ff } );
+	var parentmaterial = new THREE.MeshBasicMaterial( { visible: false } );
+	innerparent = new THREE.Mesh( geometry, parentmaterial );
+	outerparent = new THREE.Mesh( geometry, parentmaterial );
+
+	scene.add( innerparent );
+	scene.add( outerparent );
+
+	for(var i=0; i<parameters.objectsPerLayer; i++) {
+		innerlayer.push(new THREE.Object3D());
+	}
+	for(var i=0; i<parameters.objectsPerLayer; i++) {
+		outerlayer.push(new THREE.Object3D());
+	}
+
+	for(var i=0; i<parameters.objectsPerLayer; i++) {
+		innerlayer[i].rotation.z = (i*2) * Math.PI / parameters.objectsPerLayer;
+		outerlayer[i].rotation.z = (i*2) * Math.PI / parameters.objectsPerLayer;
+	}
+	/*innerlayer[0].rotation.z = 0;
+	innerlayer[1].rotation.z = 2 * Math.PI / parameters.objectsPerLayer;
+	innerlayer[2].rotation.z = 4 * Math.PI / parameters.objectsPerLayer;
+	innerlayer[3].rotation.z = 6 * Math.PI / parameters.objectsPerLayer;
+	outerlayer[0].rotation.z = 0;
+	outerlayer[1].rotation.z = 2 * Math.PI / parameters.objectsPerLayer;
+	outerlayer[2].rotation.z = 4 * Math.PI / parameters.objectsPerLayer;
+	outerlayer[3].rotation.z = 6 * Math.PI / parameters.objectsPerLayer;*/
+
+	for(var i=0; i<parameters.objectsPerLayer; i++) {
+		innerparent.add(innerlayer[i]);
+		outerparent.add(outerlayer[i]);
+	}
+
+	// mesh
+	for(var i=0; i<parameters.objectsPerLayer*2; i++) {
+		meshes.push(new THREE.Mesh(geometry, material));
+		if(i<parameters.objectsPerLayer) {
+			meshes[i].position.y = parameters.innerRadius;
+			innerlayer[i].add(meshes[i]);
+		}
+		else {
+			meshes[i].position.y = parameters.outerRadius;
+			outerlayer[i-parameters.objectsPerLayer].add(meshes[i]);
+		}
+	}
+	/*var mesh1 = new THREE.Mesh( geometry, material );
+	var mesh2 = new THREE.Mesh( geometry, material );
+	var mesh3 = new THREE.Mesh( geometry, material );
+	var mesh4 = new THREE.Mesh( geometry, material );
+
+	mesh1.position.y = parameters.innerRadius;
+	mesh2.position.y = parameters.innerRadius;
+	mesh3.position.y = parameters.innerRadius;
+	mesh4.position.y = parameters.innerRadius;
+
+	innerlayer[0].add( meshes[] );
+	innerlayer[1].add( mesh2 );
+	innerlayer[2].add( mesh3 );
+	innerlayer[3].add( mesh4 );*/
+
+
 
 	audioInit();
 }
@@ -168,5 +196,6 @@ function render() {
 
 	parameters.time.value += 0.05;
 	renderer.render( scene, camera );
-	parent.rotation.z += 0.01;
+	innerparent.rotation.z += 0.01;
+	outerparent.rotation.z -= 0.01;
 }
