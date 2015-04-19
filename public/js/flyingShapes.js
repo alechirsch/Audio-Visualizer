@@ -7,6 +7,10 @@ var parameters, scene, camera, innerparent, outerparent;
 var innerlayer = [];
 var outerlayer = [];
 var meshes = [];
+var low = 999;
+var high = 0;
+var mid = 0;
+var fakeTime = 0;
 
 var SEGMENTS = 512;
 var BIN_COUNT = 512;
@@ -57,35 +61,36 @@ function init() {
 	parameters = {
 		objectsPerLayer: 20,
 		cameraZoom: 35,
+		//Inner circle
 		innerRotX: 0,
 		innerRotY: 0,
 		innerRotZ: 0,
+		innerRadius: 5,
+		//Outer circle
 		outerRotX: 0,
 		outerRotY: 0,
 		outerRotZ: 0,
-		time: { type: "f", value: 1.0 },
-		innerRadius: 5,
 		outerRadius: 15,
+		time: { type: "f", value: 1.0 },
 		resolution: { type: "v2", value: new THREE.Vector2() }
 	};
 
 
-
+	//Set up all the basic stuff
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 	camera.position.z = parameters.cameraZoom;
 	var renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
-
 	var geometry = new THREE.BoxGeometry(1,1,1);
 	var material = new THREE.MeshBasicMaterial( { color: 0x866ff } );
 	var parentmaterial = new THREE.MeshBasicMaterial( { visible: false } );
 	innerparent = new THREE.Mesh( geometry, parentmaterial );
 	outerparent = new THREE.Mesh( geometry, parentmaterial );
-
 	scene.add( innerparent );
 	scene.add( outerparent );
 
+	//Create objects
 	for(var i=0; i<parameters.objectsPerLayer; i++) {
 		innerlayer.push(new THREE.Object3D());
 	}
@@ -93,25 +98,19 @@ function init() {
 		outerlayer.push(new THREE.Object3D());
 	}
 
+	//Position the objects
 	for(var i=0; i<parameters.objectsPerLayer; i++) {
 		innerlayer[i].rotation.z = (i*2) * Math.PI / parameters.objectsPerLayer;
 		outerlayer[i].rotation.z = (i*2) * Math.PI / parameters.objectsPerLayer;
 	}
-	/*innerlayer[0].rotation.z = 0;
-	innerlayer[1].rotation.z = 2 * Math.PI / parameters.objectsPerLayer;
-	innerlayer[2].rotation.z = 4 * Math.PI / parameters.objectsPerLayer;
-	innerlayer[3].rotation.z = 6 * Math.PI / parameters.objectsPerLayer;
-	outerlayer[0].rotation.z = 0;
-	outerlayer[1].rotation.z = 2 * Math.PI / parameters.objectsPerLayer;
-	outerlayer[2].rotation.z = 4 * Math.PI / parameters.objectsPerLayer;
-	outerlayer[3].rotation.z = 6 * Math.PI / parameters.objectsPerLayer;*/
 
+	//Give objects rotation hierarchy
 	for(var i=0; i<parameters.objectsPerLayer; i++) {
 		innerparent.add(innerlayer[i]);
 		outerparent.add(outerlayer[i]);
 	}
 
-	// mesh
+	//Give objects meshes
 	for(var i=0; i<parameters.objectsPerLayer*2; i++) {
 		meshes.push(new THREE.Mesh(geometry, material));
 		if(i<parameters.objectsPerLayer) {
@@ -123,21 +122,6 @@ function init() {
 			outerlayer[i-parameters.objectsPerLayer].add(meshes[i]);
 		}
 	}
-	/*var mesh1 = new THREE.Mesh( geometry, material );
-	var mesh2 = new THREE.Mesh( geometry, material );
-	var mesh3 = new THREE.Mesh( geometry, material );
-	var mesh4 = new THREE.Mesh( geometry, material );
-
-	mesh1.position.y = parameters.innerRadius;
-	mesh2.position.y = parameters.innerRadius;
-	mesh3.position.y = parameters.innerRadius;
-	mesh4.position.y = parameters.innerRadius;
-
-	innerlayer[0].add( meshes[] );
-	innerlayer[1].add( mesh2 );
-	innerlayer[2].add( mesh3 );
-	innerlayer[3].add( mesh4 );*/
-
 
 
 	audioInit();
@@ -155,6 +139,22 @@ function onParamsChange() {
 function normalize(value) {
 		return (value - min) / (max - min);
 }
+function radiusNormalize(value) {
+		var v = normalize(value) * 100;
+		return v;
+}
+function detectLowAndHigh(value) {
+	var bool = false;
+	if(value < low - 1 ) {
+		low = value;
+		bool = true;
+	}
+	if(value > high + 1) {
+		high = value;
+		bool = true;
+	}
+	return bool;
+}
 
 function update() {
 
@@ -166,21 +166,63 @@ function update() {
 		for(var i = j; i < j+20; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.sphereRotX = normalize(sum) * 0.1;
+		sum = radiusNormalize(sum) * 0.1;
+		if(detectLowAndHigh(sum)) {
+			mid = (high-low)/2 + low;
+		}
+		if(sum < mid) {
+			if(parameters.innerRadius > 1) {
+				for(var i=0; i<meshes.length; i++) {
+					meshes[i].position.y -= 0.1;
+					parameters.innerRadius -= 0.1;
+				}
+			}
+		}
+		else if(sum > mid) {
+			if(parameters.innerRadius < 200) {
+				for(var i=0; i<meshes.length; i++) {
+					meshes[i].position.y += 0.5;
+					parameters.innerRadius += 0.5;
+				}
+			}
+		}
 		
 		sum = 0;
 		j = 20;
 		for(var i = j; i < j+20; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.sphereRotY = normalize(sum) * 0.1;
+		parameters.innerRotY = normalize(sum) * 0.1;
 		
 		sum = 0;
 		j = 40;
 		for(var i = j; i < j+20; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.sphereRotZ = normalize(sum) * 0.1;
+		parameters.innerRotZ = normalize(sum) * 0.1;
+
+		sum = 0;
+		j = 80;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.outerRotX = normalize(sum) * 0.1;
+
+		sum = 0;
+		j = 100;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.outerRotY = normalize(sum) * 0.1;
+
+		sum = 0;
+		j = 120;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.outerRotZ = normalize(sum) * 0.1;
+
+
 }
 
 function animate() {
@@ -195,7 +237,29 @@ function render() {
 	update(source);
 
 	parameters.time.value += 0.05;
+	fakeTime += 0.1;
+	if(fakeTime > 7) {
+		for(var i=0; i<meshes.length; i++) {
+			meshes[i].position.y -= 0.5;
+			parameters.innerRadius -= 0.5;
+		}
+	}
+	else {
+		for(var i=0; i<meshes.length; i++) {
+			meshes[i].position.y += 0.5;
+			parameters.innerRadius += 0.5;
+		}
+	}
+	if(fakeTime > 25) {
+		fakeTime = 0;
+	}
 	renderer.render( scene, camera );
-	innerparent.rotation.z += 0.01;
-	outerparent.rotation.z -= 0.01;
+
+	innerparent.rotation.x += parameters.innerRotX;
+	innerparent.rotation.y += parameters.innerRotY;
+	innerparent.rotation.z += parameters.innerRotZ;
+	outerparent.rotation.x += parameters.outerRotX;
+	outerparent.rotation.y += parameters.outerRotY;
+	outerparent.rotation.z += parameters.outerRotZ;
+	//outerparent.rotation.z -= 0.01;
 }
