@@ -62,8 +62,11 @@ function init() {
 	analyser.fftSize = 1024;
 
 	parameters = {
-		objectsPerLayer: 50,
+		objectsPerLayer: 20,
 		cameraZoom: 35,
+		audioInterval: 85,
+		animationSpeed: 0.05,
+		xScale: 0.7,
 		//Inner circle
 		innerRotX: 0,
 		innerRotY: 0,
@@ -85,7 +88,7 @@ function init() {
 	camera.position.z = parameters.cameraZoom;
 	var renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
-	var light = new THREE.PointLight( 0xff0000, 1, 100 );
+	var light = new THREE.PointLight( 0xff0000, 1, 0 );
 	light.position.set( 5, -50, 10 );
 	scene.add( light );
 	var geometry = new THREE.BoxGeometry(1,1,1);
@@ -167,6 +170,8 @@ function update() {
 		analyser.getByteFrequencyData(freqByteData);
 		analyser.getByteTimeDomainData(timeByteData);
 
+		var interval = parameters.audioInterval;
+
 		sum = 0;
 		j = 0;
 		for(var i = j; i < j+20; i++) {
@@ -199,39 +204,45 @@ function update() {
 		lastSum = sum;
 		
 		sum = 0;
-		j = 20;
-		for(var i = j; i < j+20; i++) {
+		j = 0;
+		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.innerRotY = normalize(sum) * 0.1;
+		parameters.innerRotY = normalize(sum) * parameters.animationSpeed * parameters.xScale;
 		
 		sum = 0;
-		j = 40;
-		for(var i = j; i < j+20; i++) {
+		j = interval;
+		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.innerRotZ = normalize(sum) * 0.1;
+		parameters.innerRotZ = normalize(sum) * parameters.animationSpeed * parameters.xScale;
 
 		sum = 0;
-		j = 80;
-		for(var i = j; i < j+20; i++) {
+		j = interval*2;
+		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.outerRotX = normalize(sum) * 0.1;
+		parameters.outerRotX = normalize(sum) * parameters.animationSpeed;
 
 		sum = 0;
-		j = 100;
-		for(var i = j; i < j+20; i++) {
+		j = interval*3;
+		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.outerRotY = normalize(sum) * 0.1;
+		parameters.outerRotY = normalize(sum) * parameters.animationSpeed;
 
 		sum = 0;
-		j = 120;
-		for(var i = j; i < j+20; i++) {
+		j = interval*4;
+		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.outerRotZ = normalize(sum) * 0.1;
+		parameters.outerRotZ = normalize(sum) * parameters.animationSpeed;
+
+		j = interval*5;
+		for(var i = j; i < j+interval; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.innerRotX = normalize(sum) * parameters.animationSpeed * parameters.xScale;
 
 
 }
@@ -252,14 +263,14 @@ function render() {
 		
 			if(fakeTime > 7) {
 				for(var i=0; i<meshes.length; i++) {
-					meshes[i].position.y -= 0.5;
-					parameters.innerRadius -= 0.5;
+					//meshes[i].position.y -= 0.5;
+					//parameters.innerRadius -= 0.5;
 				}
 			}
 			else {
 				for(var i=0; i<meshes.length; i++) {
-					meshes[i].position.y += 0.5;
-					parameters.innerRadius += 0.5;
+					//meshes[i].position.y += 0.5;
+					//parameters.innerRadius += 0.5;
 				}
 			}
 
