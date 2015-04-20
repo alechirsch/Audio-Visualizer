@@ -62,11 +62,14 @@ function init() {
 	analyser.fftSize = 1024;
 
 	parameters = {
+		//General
 		objectsPerLayer: 20,
 		cameraZoom: 35,
-		audioInterval: 85,
-		animationSpeed: 0.05,
-		xScale: 0.7,
+		audioInterval: 85, //Should be < 85
+		animationSpeed: 0.03, //should be < 0.05 or so
+		xScale: 0.7, // should be < 1
+		spinDirection: -1, //1 or -1
+		expandAmount: 0.5,
 		//Inner circle
 		innerRotX: 0,
 		innerRotY: 0,
@@ -77,6 +80,7 @@ function init() {
 		outerRotY: 0,
 		outerRotZ: 0,
 		outerRadius: 15,
+		//Stuff
 		time: { type: "f", value: 1.0 },
 		resolution: { type: "v2", value: new THREE.Vector2() }
 	};
@@ -152,18 +156,6 @@ function radiusNormalize(value) {
 		var v = normalize(value) * 100;
 		return v;
 }
-function detectLowAndHigh(value) {
-	var bool = false;
-	if(value < low - 1 ) {
-		low = value;
-		bool = true;
-	}
-	if(value > high + 1) {
-		high = value;
-		bool = true;
-	}
-	return bool;
-}
 
 function update() {
 
@@ -172,37 +164,17 @@ function update() {
 
 		var interval = parameters.audioInterval;
 
+		//EXPANSION AND CONTRACTION
 		sum = 0;
 		j = 0;
-		for(var i = j; i < j+20; i++) {
+		for(var i = j; i < 512; i++) {
 			sum += freqByteData[i];
 		}
 		sum = radiusNormalize(sum) * 0.1;
-		if(detectLowAndHigh(sum)) {
-			mid = (high-low)/2 + low;
-		}
-		if(sum < mid) {
-			if(parameters.innerRadius > 1) {
-				for(var i=0; i<meshes.length; i++) {
-					meshes[i].position.y -= 0.1;
-					parameters.innerRadius -= 0.1;
-				}
-			}
-		}
-		else if(sum > mid) {
-			if(parameters.innerRadius < 200) {
-				for(var i=0; i<meshes.length; i++) {
-					meshes[i].position.y += 0.5;
-					parameters.innerRadius += 0.5;
-				}
-			}
-		}
-		lastSum = sum;
-		if(Math.abs(lastSum-sum) > 1) {
-			expanding = !expanding;
-		}
-		lastSum = sum;
 		
+
+		
+		//ROTATION
 		sum = 0;
 		j = 0;
 		for(var i = j; i < j+interval; i++) {
@@ -263,14 +235,14 @@ function render() {
 		
 			if(fakeTime > 7) {
 				for(var i=0; i<meshes.length; i++) {
-					//meshes[i].position.y -= 0.5;
-					//parameters.innerRadius -= 0.5;
+					//meshes[i].position.y -= parameters.expandAmount;
+					//parameters.innerRadius -= parameters.expandAmount;
 				}
 			}
 			else {
 				for(var i=0; i<meshes.length; i++) {
-					//meshes[i].position.y += 0.5;
-					//parameters.innerRadius += 0.5;
+					//meshes[i].position.y += parameters.expandAmount;
+					//parameters.innerRadius += parameters.expandAmount;
 				}
 			}
 
@@ -279,11 +251,10 @@ function render() {
 		}
 		renderer.render( scene, camera );
 
-		innerparent.rotation.x += parameters.innerRotX;
-		innerparent.rotation.y += parameters.innerRotY;
-		innerparent.rotation.z += parameters.innerRotZ;
-		outerparent.rotation.x += parameters.outerRotX;
-		outerparent.rotation.y += parameters.outerRotY;
-		outerparent.rotation.z += parameters.outerRotZ;
-		//outerparent.rotation.z -= 0.01;
+		innerparent.rotation.x += parameters.innerRotX * parameters.spinDirection;
+		innerparent.rotation.y += parameters.innerRotY * parameters.spinDirection;
+		innerparent.rotation.z += parameters.innerRotZ * parameters.spinDirection;
+		outerparent.rotation.x += parameters.outerRotX * parameters.spinDirection;
+		outerparent.rotation.y += parameters.outerRotY * parameters.spinDirection;
+		outerparent.rotation.z += parameters.outerRotZ * parameters.spinDirection;
 }
