@@ -44,9 +44,9 @@ function init() {
 
 	/*start ThreeJS scene*/
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-	camera.position.x = 80;
-	camera.position.y = 135;
-	camera.position.z = 200;
+	camera.position.x = -60;
+	camera.position.y = 80;
+	camera.position.z = -140;
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 	controls = new THREE.OrbitControls( camera );
@@ -77,49 +77,29 @@ function init() {
 
 	//debugaxis(100);
 
-	var material = new THREE.MeshBasicMaterial({color: 0xff00});
-	var geometry = new THREE.PlaneBufferGeometry( 200, 200 );
+	geometry = new THREE.PlaneGeometry( 100, 120, 256, 50 );
+	geometry.verticesNeedUpdate = true;
+	geometry.normalsNeedUpdate = true;
+	geometry.colorsNeedUpdate = true;
+	material = new THREE.MeshBasicMaterial({wireframe: true, vertexColors: THREE.VertexColors});
 	var plane = new THREE.Mesh(geometry, material);
 	plane.position.set(0,0,0);
 	plane.rotation.x = -Math.PI/2;
 	plane.rotation.y = 0;
-	//scene.add(plane);
-
-
-	var material = new THREE.LineBasicMaterial({color: 0x0000ff});
-	var radius = 1;
-	var segments = 20;
-
-	var circleGeometry = new THREE.CircleGeometry( radius, segments );				
-	var circle = new THREE.Line( circleGeometry, material );
-	circleGeometry.vertices.shift();
-	circle.position.set(0, 0, 0);
-	circle.rotation.x = -Math.PI/2;
-	circle.rotation.y = 0;
-	scene.add( circle );
-	circleArray[0] = circle;
+	scene.add(plane);
+	console.log(geometry);
 	parameters = {
-		newHeight: 0
+		newHeights: [],
+		time: 0
 	};
-
-	createCircles(2, 20);
+	for(var i = 0; i < 257; i++){
+		parameters.newHeights[i] = 0;
+	}
+	console.log(material);
 
 	audioInit();
 }
 
-function createCircles(radius, segments){
-	if(radius > 150) return;
-	var circleGeometry = new THREE.CircleGeometry( radius, segments );	
-	var circleMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});				
-	var circle = new THREE.Line( circleGeometry, circleMaterial );
-	circleGeometry.vertices.shift();
-	circle.position.set(0, 0, 0);
-	circle.rotation.x = -Math.PI/2;
-	circle.rotation.y = 0;
-	scene.add( circle );
-	circleArray[radius - 1] = circle;
-	createCircles(radius + 1, segments + 2);
-}
 
 function audioInit(){
 	freqByteData = new Uint8Array(analyser.frequencyBinCount);
@@ -141,11 +121,14 @@ function update() {
 	analyser.getByteTimeDomainData(timeByteData);
 	sum = 0;
 
-	for(var i = 0; i < 500; i++){
+	for(var i = 0; i < 512; i++){
 		sum += freqByteData[i];
+		if(i % 2 === 0 && i !== 0){
+			parameters.newHeights[i/2 - 1] = Math.floor(normalize(sum, 2 * 256) * 25);
+			sum = 0;
+		}
 	}
 
-	parameters.newHeight = normalize(sum, 500 * 255) * 70;
 }
 
 function animate() {
@@ -157,29 +140,33 @@ function animate() {
 
 }
 
-function updateCircleColor(index){
-	var colorIndex = normalize(circleArray[index].position.y, 45) >= 1 ? colorArray.length - 1 : Math.floor(normalize(circleArray[index].position.y, 45)*colorArray.length);
-	circleArray[index].material.color.setHex(colorArray[colorIndex]);
+function updateVertexColor(index){
+	var colorIndex = normalize(geometry.vertices[index].z, 25) >= 1 ? colorArray.length - 1 : Math.floor(normalize(geometry.vertices[index].z, 25)*colorArray.length);
+	geometry.faces[index].color.setHex(colorArray[colorIndex]);
 }
 
-function updateCircleHeights(index){
-	if(index === 0){
-		circleArray[index].position.y = parameters.newHeight;
-		//console.log(parameters.newHeight);
-		updateCircleColor(index);
-		return;
+function updateVertices(){
+	for(var i = geometry.vertices.length - 1; i >= 0; i--){
+		if(i < 257){
+			geometry.vertices[i].z = parameters.newHeights[i];
+		}
+		else{
+			geometry.vertices[i].z = geometry.vertices[i - 257].z;
+		}
+		updateVertexColor(i);
 	}
-	circleArray[index].position.y = circleArray[index - 1].position.y;
-	updateCircleColor(index);
-	updateCircleHeights(index - 1);
 }
 
 function render() {
-	update(source);
-
-	updateCircleHeights(circleArray.length - 1);
-
+	if(parameters.time % 3 === 0){
+		update(source);
+	}
+	updateVertices();
+	geometry.verticesNeedUpdate = true;
+	geometry.colorsNeedUpdate = true;
+	
 	//console.log(camera.position.x+","+ camera.position.y+","+ camera.position.z);
-	//parameters.time.value += 0.05;1
+	parameters.time += 1;
+	if(parameters.time > 10000000) parameters.time = 0;
 	renderer.render( scene, camera );
 }
