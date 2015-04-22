@@ -1,38 +1,6 @@
-if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
-var stats;
-
-var camera, scene;
-
-var parameters;
-
-var SEGMENTS = 512;
-var BIN_COUNT = 512;
-var analyser;
-var source;
-var buffer;
-var audioBuffer;
-var dropArea;
-var audioContext;
-
-var freqByteData;
-var timeByteData;
-
-var min = 0;
-var sum = 0;
-var max = 256 * 20;
-
-var animate = function() {
-
-	requestAnimationFrame( animate );
-
-	sphereSpin.render();
-	/*stats.update();*/
-
-};
-
-
 var sphereSpin = {
+
+	camera: new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000),
 
 	init: function() {
 
@@ -65,8 +33,8 @@ var sphereSpin = {
 		analyser.smoothingTimeConstant = 0.000001;
 		analyser.fftSize = 1024;
 
-		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-		camera.position.z = 5;
+		
+		this.camera.position.z = 5;
 
 		scene = new THREE.Scene();
 
@@ -105,7 +73,7 @@ var sphereSpin = {
 	},
 
 	normalize: function(value) {
-			return (value - min) / (max - min);
+			return value/max;
 	},
 
 	update: function() {
@@ -150,7 +118,7 @@ var sphereSpin = {
 
 
 		parameters.time.value += 0.05;
-		renderer.render( scene, camera );
+		renderer.render( scene, this.camera );
 
 	}
 };

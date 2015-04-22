@@ -12,73 +12,79 @@
 	<script src="public/js/jquery-2.1.1.min.js"></script>
 	<script src="public/js/accordion.js"></script>
 	<script src="public/js/ui.js"></script>
-	<script src="public/js/sphereSpin.js"></script>
+	<script src="public/visuals/globals.js"></script>
+	<script src="public/visuals/terrain.js"></script>
+	<script src="public/visuals/sphereSpin.js"></script>
 	<script src="public/js/OrbitControls.js"></script>
-
 </head>
 <body>
 
-
-<% include ui.html %>
+	<% include ui.html %>
 
 	<script type="text/javascript">
-	var paused = false;
-	var accordion = new TINY.accordion.slider("accordion");
-	accordion.init("accordion","h3",true,0,"selected");
-	$('#prompt').html("Drop an MP3 or MP4 file");
+		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+		var paused = false;
+		var accordion = new TINY.accordion.slider("accordion");
+		accordion.init("accordion","h3",true,0,"selected");
+		$('#prompt').html("Drop an MP3 or MP4 file");
 	//$('#prompt').html("Drop a file or enter a Youtube link " +
 	//	"<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>");
-	$('#youtube').keydown(function(event) {
-		if (event.keyCode == 13) {
-			var value = $( this ).val();
-			value = "/" + value.match(/\/([^/]*)$/)[1];
-			if(value.length > 1) youtubeEntered(value);
-		}
-	});
-
-	var renderer;
-	var container = document.getElementById( 'container' );
-	renderer = new THREE.WebGLRenderer();
-	container.appendChild( renderer.domElement );
-
-	sphereSpin.init();
-	//init();
-	onWindowResize();
-	
-	animate();
-	document.addEventListener('drop', onMP3Drop, false);
-	document.addEventListener('dragover', onDocumentDragOver, false);
-	window.addEventListener('resize', function() {
-		windowHalfX = window.innerWidth / 2;
-		windowHalfY = window.innerHeight / 2;
-		camera.aspect = window.innerWidth / window.innerHeight;
-		camera.updateProjectionMatrix();
-		renderer.setSize(window.innerWidth, window.innerHeight);
-	}, false);
-	window.addEventListener('resize, onWindowResize', false);
-
-	function onWindowResize(event) {
-		windowHalfX = window.innerWidth / 2;
-		windowHalfY = window.innerHeight / 2;
-		camera.aspect = window.innerWidth / window.innerHeight;
-		camera.updateProjectionMatrix();
-		renderer.setSize(window.innerWidth, window.innerHeight);
+$('#youtube').keydown(function(event) {
+	if (event.keyCode == 13) {
+		var value = $( this ).val();
+		value = "/" + value.match(/\/([^/]*)$/)[1];
+		if(value.length > 1) youtubeEntered(value);
 	}
+});
 
-	$('#play-pause').click(function() {
-		if(started) {
-			if(paused) {
-				play();
-			}
-			else {
-				pause();
-			}
+var visual = Terrain;
+
+var renderer;
+var container = document.getElementById( 'container' );
+renderer = new THREE.WebGLRenderer();
+container.appendChild( renderer.domElement );
+visual.init();
+onWindowResize();
+animate = function() {
+
+	requestAnimationFrame( animate );
+
+	visual.render();
+	/*stats.update();*/
+
+};
+animate();
+document.addEventListener('drop', onMP3Drop, false);
+document.addEventListener('dragover', onDocumentDragOver, false);
+window.addEventListener('resize', function() {
+	windowHalfX = window.innerWidth / 2;
+	windowHalfY = window.innerHeight / 2;
+	visual.camera.aspect = window.innerWidth / window.innerHeight;
+	visual.camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}, false);
+window.addEventListener('resize, onWindowResize', false);
+
+function onWindowResize(event) {
+	windowHalfX = window.innerWidth / 2;
+	windowHalfY = window.innerHeight / 2;
+	visual.camera.aspect = window.innerWidth / window.innerHeight;
+	visual.camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+$('#play-pause').click(function() {
+	if(started) {
+		if(paused) {
+			play();
 		}
-	});
-	</script>
-
-
-
+		else {
+			pause();
+		}
+	}
+});
+</script>
 
 </body>
 </html>
