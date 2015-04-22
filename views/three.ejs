@@ -12,7 +12,7 @@
 	<script src="public/js/jquery-2.1.1.min.js"></script>
 	<script src="public/js/accordion.js"></script>
 	<script src="public/js/ui.js"></script>
-	<script src="public/js/sphere-cylinder.js"></script>
+	<script src="public/js/sphereSpin.js"></script>
 	<script src="public/js/OrbitControls.js"></script>
 
 </head>
@@ -41,7 +41,8 @@
 	renderer = new THREE.WebGLRenderer();
 	container.appendChild( renderer.domElement );
 
-	init();
+	sphereSpin.init();
+	//init();
 	onWindowResize();
 	
 	animate();
