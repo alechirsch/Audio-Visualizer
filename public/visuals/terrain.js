@@ -52,8 +52,6 @@ var Terrain = {
 		for(var i = 0; i < 257; i++){
 			this.parameters.newHeights[i] = 0;
 		}
-
-		this.audioInit();
 	},
 
 	createLines: function(){
@@ -73,12 +71,6 @@ var Terrain = {
 		console.log(this.parameters.lines[0]);
 	},
 
-
-	audioInit: function(){
-		freqByteData = new Uint8Array(analyser.frequencyBinCount);
-		timeByteData = new Uint8Array(analyser.frequencyBinCount);
-		this.onParamsChange();
-	},
 
 	onParamsChange: function() {
 		console.log("I got here");
@@ -105,8 +97,8 @@ var Terrain = {
 	},
 
 	updateVertexColor: function(geometry , j){
-		var colorIndex = this.normalize(geometry.vertices[j].y, 25) >= 1 ? this.colorArray.length - 1 : Math.floor(this.normalize(geometry.vertices[j].y, 25)*this.colorArray.length);
-		geometry.colors[j] = this.colorArray[colorIndex];
+		var colorIndex = this.normalize(geometry.vertices[j].y, 25) >= 1 ? colorArray.length - 1 : Math.floor(this.normalize(geometry.vertices[j].y, 25)*colorArray.length);
+		geometry.colors[j] = colorArray[colorIndex];
 	},
 
 	updateVertices: function(){

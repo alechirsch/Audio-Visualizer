@@ -6,6 +6,11 @@ var xhr;
 
 
 
+function audioInit(){
+	freqByteData = new Uint8Array(analyser.frequencyBinCount);
+	timeByteData = new Uint8Array(analyser.frequencyBinCount);
+}
+
 $('#enter-link').click(function(){
 	$('#prompt').html("<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>").show();
 	fadePrompt();
