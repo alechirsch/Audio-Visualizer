@@ -1,15 +1,3 @@
-var analyser, source, buffer, audioBuffer, dropArea, audioContext, freqByteData, timeByteData;
-function animate() {
-
-	requestAnimationFrame( animate );
-
-	Terrain.render();
-	/*stats.update();*/
-
-}
-var controls = new THREE.OrbitControls( Terrain.camera );
-controls.damping = 0.2;
-controls.addEventListener( 'change', Terrain.render );
 
 var Terrain = {
 
