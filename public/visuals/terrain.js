@@ -34,7 +34,7 @@ var TerrainVisual = {
 			geometry.colorsNeedUpdate = true;
 			var line = new THREE.Line(geometry, material);
 			parameters.lines[i] = line;
-			this.scene.add(line);
+			scene.add(line);
 		}
 		console.log(parameters.lines[0]);
 	},
