@@ -1,8 +1,7 @@
 var Hapi = require('hapi');
 var fs = require('fs');
 var ytdl = require('ytdl-core');
-var ejs = require('ejs');
-var Path = require('path');
+var ejs = require('ejs');var Path = require('path');
 var server = new Hapi.Server('0.0.0.0', process.env.PORT || 8000, {
     "payload": {
         "maxBytes": 104857600 //Increasing max file size to 1MB
