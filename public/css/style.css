@@ -31,6 +31,15 @@ a {
     margin: 5px;
 }
 
+.visual-button {
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+    margin: 5px;
+}
+
 
 #color .slider{
 	display:none;

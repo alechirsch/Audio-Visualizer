@@ -15,6 +15,9 @@
 	<script src="public/visuals/globals.js"></script>
 	<script src="public/visuals/terrain.js"></script>
 	<script src="public/visuals/sphereSpin.js"></script>
+	<script src="public/visuals/flyingShapes.js"></script>
+	<!-- <script src="public/visuals/sphere-cylinder.js"></script>
+	<script src="public/visuals/circles.js"></script> -->
 	<script src="public/js/OrbitControls.js"></script>
 </head>
 <body>
@@ -38,7 +41,7 @@ $('#youtube').keydown(function(event) {
 	}
 });
 
-var visual = Terrain;
+var visual = flyingShapesVisual;
 
 var renderer;
 var container = document.getElementById( 'container' );
