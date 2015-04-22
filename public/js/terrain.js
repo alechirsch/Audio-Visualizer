@@ -75,29 +75,36 @@ function init() {
 		createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
 	};
 
-	//debugaxis(100);
+	debugaxis(100);
 
-	geometry = new THREE.PlaneGeometry( 100, 120, 256, 50 );
-	geometry.verticesNeedUpdate = true;
-	geometry.normalsNeedUpdate = true;
-	geometry.colorsNeedUpdate = true;
-	material = new THREE.MeshBasicMaterial({wireframe: true, vertexColors: THREE.VertexColors});
-	var plane = new THREE.Mesh(geometry, material);
-	plane.position.set(0,0,0);
-	plane.rotation.x = -Math.PI/2;
-	plane.rotation.y = 0;
-	scene.add(plane);
-	console.log(geometry);
 	parameters = {
+		lines: [],
 		newHeights: [],
 		time: 0
 	};
+	createLines();
 	for(var i = 0; i < 257; i++){
 		parameters.newHeights[i] = 0;
 	}
-	console.log(material);
 
 	audioInit();
+}
+
+function createLines(){
+	var x = -50, z = -128;
+	var material = new THREE.LineBasicMaterial({color: 0xFF0000});//, vertexColors: THREE.VertexColors});
+	for(var i = 0; i < 256; i++){
+		var geometry = new THREE.Geometry();
+		for(var j = 0; j < 100; j++){
+			geometry.vertices.push(new THREE.Vector3(x + 4*j, 0, z + i));
+		}
+		geometry.verticesNeedUpdate = true;
+		geometry.colorsNeedUpdate = true;
+		var line = new THREE.Line(geometry, material);
+		parameters.lines[i] = line;
+		scene.add(line);
+	}
+	console.log(parameters.lines[0]);
 }
 
 
@@ -140,31 +147,39 @@ function animate() {
 
 }
 
-function updateVertexColor(index){
-	var colorIndex = normalize(geometry.vertices[index].z, 25) >= 1 ? colorArray.length - 1 : Math.floor(normalize(geometry.vertices[index].z, 25)*colorArray.length);
-	geometry.faces[index].color.setHex(colorArray[colorIndex]);
+function updateVertexColor(geometry , j){
+	var colorIndex = normalize(geometry.vertices[j].y, 25) >= 1 ? colorArray.length - 1 : Math.floor(normalize(geometry.vertices[j].y, 25)*colorArray.length);
+	geometry.colors[j] = colorArray[colorIndex];
 }
 
 function updateVertices(){
-	for(var i = geometry.vertices.length - 1; i >= 0; i--){
-		if(i < 257){
-			geometry.vertices[i].z = parameters.newHeights[i];
+	for(var i = 0; i < parameters.lines.length; i++){
+		var geometry = parameters.lines[i].geometry;
+		for(var j = geometry.vertices.length - 1; j >= 0; j--){
+			if(j === 0){
+				geometry.vertices[j].y = parameters.newHeights[parameters.lines.length - i];
+			}
+			else{
+				geometry.vertices[j].y = geometry.vertices[j-1].y;
+			}
+			updateVertexColor(geometry, j);
+
 		}
-		else{
-			geometry.vertices[i].z = geometry.vertices[i - 257].z;
-		}
-		updateVertexColor(i);
+
+		geometry.verticesNeedUpdate = true;
+		geometry.colorsNeedUpdate = true;
 	}
 }
 
 function render() {
-	if(parameters.time % 3 === 0){
-		update(source);
-	}
-	updateVertices();
-	geometry.verticesNeedUpdate = true;
-	geometry.colorsNeedUpdate = true;
 	
+	update(source);
+	
+
+	updateVertices();
+	//geometry.verticesNeedUpdate = true;
+	//geometry.colorsNeedUpdate = true;
+
 	//console.log(camera.position.x+","+ camera.position.y+","+ camera.position.z);
 	parameters.time += 1;
 	if(parameters.time > 10000000) parameters.time = 0;
