@@ -112,33 +112,34 @@
 							<input id="slider-verticalStretch-2" type="range" value="2.0" min="0.5" max="2.0" step="0.01" />
 						</div>
 
-						<div id="terrain" class="visual-button"></div>
-						<div id="sphereSpin" class="visual-button"></div>
-						<div id="flyingShapes" class="visual-button"></div>
-						<div id="cylinder" class="visual-button"></div>
-						<div id="circles" class="visual-button"></div>
+						<div id="terrain-button" class="visual-button"></div>
+						<div id="sphereSpin-button" class="visual-button"></div>
+						<div id="flyingShapes-button" class="visual-button"></div>
+						<div id="cylinder-button" class="visual-button"></div>
+						<div id="circles-button" class="visual-button"></div>
+
 						<script>
-							$("#terrain").click(function(){ 
+							$("#terrain-button").click(function(){ 
 								visual = TerrainVisual;
 								visual.init();
 								visual.render();
 							});
-							$("#sphereSpin").click(function(){ 
+							$("#sphereSpin-button").click(function(){ 
 								visual = SphereSpinVisual;
 								visual.init();
 								visual.render();
 							});
-							$("#flyingShapes").click(function(){ 
+							$("#flyingShapes-button").click(function(){ 
 								visual = FlyingShapesVisual;
 								visual.init();
 								visual.render();
 							});
-							$("#cylinder").click(function(){ 
+							$("#cylinder-button").click(function(){ 
 								visual = CylinderVisual;
 								visual.init();
 								visual.render();
 							});
-							$("#circles").click(function(){ 
+							$("#circles-button").click(function(){ 
 								visual = CirclesVisual;
 								visual.init();
 								visual.render();
