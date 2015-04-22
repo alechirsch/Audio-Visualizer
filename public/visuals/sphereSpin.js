@@ -16,7 +16,7 @@ var sphereSpin = {
 
 	    scene.add(sphere);
 
-		this.parameters = {
+		parameters = {
 			time: { type: "f", value: 1.0 },
 			sphereScaleX: 1,
 			sphereScaleY: 1,
@@ -52,21 +52,21 @@ var sphereSpin = {
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			this.parameters.sphereScaleX = this.normalize(sum) * 0.1;
+			parameters.sphereScaleX = this.normalize(sum) * 0.1;
 			
 			sum = 0;
 			j = 20;
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			this.parameters.sphereScaleY = this.normalize(sum) * 0.1;
+			parameters.sphereScaleY = this.normalize(sum) * 0.1;
 			
 			sum = 0;
 			j = 40;
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			this.parameters.sphereScaleZ = this.normalize(sum) * 0.1;
+			parameters.sphereScaleZ = this.normalize(sum) * 0.1;
 	},
 
 	temp: 1,
@@ -77,13 +77,13 @@ var sphereSpin = {
 		//uniforms.sphereShape.scale.multiplyScalar((1 / temp));
 		//temp = LoopVisualizer.parameters.sphereScale;
 		//uniforms.sphereShape.scale.multiplyScalar(LoopVisualizer.parameters.sphereScale);
-		this.parameters.sphereShape.rotation.x += this.parameters.sphereScaleX;
-		this.parameters.sphereShape.rotation.y += this.parameters.sphereScaleY;
-		this.parameters.sphereShape.rotation.z += this.parameters.sphereScaleZ;
+		parameters.sphereShape.rotation.x += parameters.sphereScaleX;
+		parameters.sphereShape.rotation.y += parameters.sphereScaleY;
+		parameters.sphereShape.rotation.z += parameters.sphereScaleZ;
 
 
 
-		this.parameters.time.value += 0.05;
+		parameters.time.value += 0.05;
 		renderer.render( scene, this.camera );
 
 	}
