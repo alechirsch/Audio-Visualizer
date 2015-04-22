@@ -157,11 +157,11 @@ function audioInit(){
 function onParamsChange() {
 
 }
-function normalize(value) {
-		return (value - min) / (max - min);
+function normalize(value, max) {
+		return (value / max);
 }
 function radiusNormalize(value) {
-		var v = normalize(value) * 100;
+		var v = normalize(value, max) * 100;
 		return v;
 }
 function expand() {
@@ -216,7 +216,7 @@ function update() {
 	for(var i = j; i < 512; i++) {
 		sum += freqByteData[i];
 	}
-	sum = radiusNormalize(sum) * 0.1;
+	sum = radiusNormalize(sum, max) * 0.1;
 	if(Math.abs(sum-lastSum) >= parameters.expandThreshold) {
 		if(parameters.expanding) {
 			parameters.expanding = false;
@@ -237,41 +237,41 @@ function update() {
 	for(var i = j; i < j+interval; i++) {
 		sum += freqByteData[i];
 	}
-	parameters.innerRotY = normalize(sum) * parameters.animationSpeed * parameters.xScale;
+	parameters.innerRotY = normalize(sum, max) * parameters.animationSpeed * parameters.xScale;
 	
 	sum = 0;
 	j = interval;
 	for(var i = j; i < j+interval; i++) {
 		sum += freqByteData[i];
 	}
-	parameters.innerRotZ = normalize(sum) * parameters.animationSpeed * parameters.xScale;
+	parameters.innerRotZ = normalize(sum, max) * parameters.animationSpeed * parameters.xScale;
 
 	sum = 0;
 	j = interval*2;
 	for(var i = j; i < j+interval; i++) {
 		sum += freqByteData[i];
 	}
-	parameters.outerRotX = normalize(sum) * parameters.animationSpeed;
+	parameters.outerRotX = normalize(sum, max) * parameters.animationSpeed;
 
 	sum = 0;
 	j = interval*3;
 	for(var i = j; i < j+interval; i++) {
 		sum += freqByteData[i];
 	}
-	parameters.outerRotY = normalize(sum) * parameters.animationSpeed;
+	parameters.outerRotY = normalize(sum, max) * parameters.animationSpeed;
 
 	sum = 0;
 	j = interval*4;
 	for(var i = j; i < j+interval; i++) {
 		sum += freqByteData[i];
 	}
-	parameters.outerRotZ = normalize(sum) * parameters.animationSpeed;
+	parameters.outerRotZ = normalize(sum, max) * parameters.animationSpeed;
 
 	j = interval*5;
 	for(var i = j; i < j+interval; i++) {
 		sum += freqByteData[i];
 	}
-	parameters.innerRotX = normalize(sum) * parameters.animationSpeed * parameters.xScale;
+	parameters.innerRotX = normalize(sum, max) * parameters.animationSpeed * parameters.xScale;
 
 
 }

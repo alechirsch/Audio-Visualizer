@@ -22,7 +22,7 @@ var min = 0;
 var sum = 0;
 var max = 256 * 20;
 
-animate = function() {
+var animate = function() {
 
 	requestAnimationFrame( animate );
 
