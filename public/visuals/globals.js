@@ -1,6 +1,7 @@
 var stats;
 
-var camera, scene;
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+var scene;
 
 var parameters;
 
@@ -29,9 +30,13 @@ var started = false;
 var paused = false;
 var source;
 
+var parameters = {};
+
 var xhr;
 
-
+function normalize (value, max){
+	return value/max;
+}
 
 function audioInit(){
 	try {

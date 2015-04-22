@@ -11,8 +11,9 @@
 	<script src="public/js/stats.min.js"></script>
 	<script src="public/js/jquery-2.1.1.min.js"></script>
 	<script src="public/js/accordion.js"></script>
-	<script src="public/js/ui.js"></script>
 	<script src="public/visuals/globals.js"></script>
+	<script src="public/visuals/cylinder.js"></script>
+	<script src="public/visuals/circles.js"></script>
 	<script src="public/visuals/terrain.js"></script>
 	<script src="public/visuals/sphereSpin.js"></script>
 	<script src="public/js/OrbitControls.js"></script>
@@ -38,7 +39,7 @@ $('#youtube').keydown(function(event) {
 	}
 });
 
-var visual = Terrain;
+var visual = CylinderVisual;
 
 var renderer;
 var container = document.getElementById( 'container' );
@@ -57,8 +58,8 @@ document.addEventListener('dragover', onDocumentDragOver, false);
 window.addEventListener('resize', function() {
 	windowHalfX = window.innerWidth / 2;
 	windowHalfY = window.innerHeight / 2;
-	visual.camera.aspect = window.innerWidth / window.innerHeight;
-	visual.camera.updateProjectionMatrix();
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
 window.addEventListener('resize, onWindowResize', false);
@@ -66,8 +67,8 @@ window.addEventListener('resize, onWindowResize', false);
 function onWindowResize(event) {
 	windowHalfX = window.innerWidth / 2;
 	windowHalfY = window.innerHeight / 2;
-	visual.camera.aspect = window.innerWidth / window.innerHeight;
-	visual.camera.updateProjectionMatrix();
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
