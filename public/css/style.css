@@ -32,19 +32,38 @@ a {
 }
 
 .visual-button {
-    width: 100px;
-    height: 100px;
+    background:#fff;
+    width: 85px;
+    height: 85px;
     border-radius: 50%;
     cursor: pointer;
     display: inline-block;
     margin: 5px;
 }
 
+#terrain-button{
+    background: url("/public/images/terrain.jpg");
+}
+
+#sphereSpin-button{
+    background: url("/public/images/sphereSpin.jpg");
+}
+
+#flyingShapes-button{
+    background: url("/public/images/flyingShapes.jpg");
+}
+
+#cylinder-button{
+    background: url("/public/images/cylinders.jpg");
+}
+
+#circles-button{
+    background: url("/public/images/circles.jpg");
+}
 
 #color .slider{
 	display:none;
 }
-
 
 #red-button{
     background-color: #c0392b;
