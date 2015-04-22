@@ -1,6 +1,8 @@
 var SphereSpinVisual = {
 max: 256 * 20,
 	init: function() {
+
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 		
 		camera.position.z = 5;
 
@@ -24,18 +26,6 @@ max: 256 * 20,
 			sphereShape: sphere,
 			resolution: { type: "v2", value: new THREE.Vector2() }
 		};
-	},
-
-	audioInit: function() {
-		freqByteData = new Uint8Array(analyser.frequencyBinCount);
-		timeByteData = new Uint8Array(analyser.frequencyBinCount);
-		this.onParamsChange();
-	},
-
-	onParamsChange: function() {
-			console.log("I got here");
-			/* when a parameter is changed, change it */
-
 	},
 
 	update: function() {
@@ -80,7 +70,7 @@ max: 256 * 20,
 
 
 		parameters.time.value += 0.05;
-		renderer.render( scene, this.camera );
+		renderer.render( scene, camera );
 
 	}
 };

@@ -14,35 +14,11 @@ var FlyingShapesVisual = {
 	lastSum: 0,
 
 
-	camera: new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ),
+	//camera: new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ),
 
 	init: function() {
-		try {
-			window.AudioContext = window.AudioContext || window.webkitAudioContext;
-			audioContext = new window.AudioContext();
-		} catch(e) {
-			return;
-		}
 
-		window.addEventListener('touchstart', function() {
-
-			/* create empty buffer */
-			var buffer = audioContext.createBuffer(1, 1, 22050);
-			var source = audioContext.createBufferSource();
-			source.buffer = buffer;
-
-			/* connect to output (your speakers) */
-			source.connect(audioContext.destination);
-
-			/* play the file */
-			source.noteOn(0);
-
-		}, false);
-
-		/* init audio */
-		analyser = audioContext.createAnalyser();
-		analyser.smoothingTimeConstant = 0.000001;
-		analyser.fftSize = 1024;
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
 		parameters = {
 			//General
@@ -72,8 +48,6 @@ var FlyingShapesVisual = {
 			minOuterRadius: 11,
 			maxOuterRadius: 35,
 			//Stuff
-			time: { type: "f", value: 1.0 },
-			resolution: { type: "v2", value: new THREE.Vector2() }
 		};
 
 
@@ -247,8 +221,6 @@ var FlyingShapesVisual = {
 
 	render: function() {
 		this.update(source);
-
-		parameters.time.value += 0.05;
 		this.fakeTime += 0.1;
 		if(this.fakeTime > parameters.changeDirectionTime) {
 			parameters.spinDirection *= -1;
@@ -261,15 +233,13 @@ var FlyingShapesVisual = {
 			this.contract();
 		}
 
-
-
-		renderer.render( scene, camera );
-
 		this.innerparent.rotation.x += parameters.innerRotX * parameters.spinDirection;
 		this.innerparent.rotation.y += parameters.innerRotY * parameters.spinDirection;
 		this.innerparent.rotation.z += parameters.innerRotZ * parameters.spinDirection;
 		this.outerparent.rotation.x += parameters.outerRotX * parameters.spinDirection;
 		this.outerparent.rotation.y += parameters.outerRotY * parameters.spinDirection;
 		this.outerparent.rotation.z += parameters.outerRotZ * parameters.spinDirection;
+
+		renderer.render( scene, camera );
 	}
 };
