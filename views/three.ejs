@@ -48,12 +48,8 @@ visual.init();
 audioInit();
 onWindowResize();
 animate = function() {
-
 	requestAnimationFrame( animate );
-
 	visual.render();
-	/*stats.update();*/
-
 };
 animate();
 document.addEventListener('drop', onMP3Drop, false);

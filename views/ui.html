@@ -111,6 +111,21 @@
 							<label>Vertical Stretch 2</label>
 							<input id="slider-verticalStretch-2" type="range" value="2.0" min="0.5" max="2.0" step="0.01" />
 						</div>
+
+						<div id="terrain" class="color-button"></div>
+						<div id="sphereSpin" class="color-button"></div>
+						<script>
+							$("#terrain").click(function(){ 
+								visual = Terrain;
+								visual.init();
+								visual.render();
+							});
+							$("#sphereSpin").click(function(){ 
+								visual = sphereSpin;
+								visual.init();
+								visual.render();
+							});
+						</script>
 					</div>
 				</div>
 			</li>

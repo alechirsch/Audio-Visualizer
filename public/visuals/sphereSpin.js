@@ -3,36 +3,6 @@ var sphereSpin = {
 	camera: new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000),
 
 	init: function() {
-
-
-
-		try {
-			window.AudioContext = window.AudioContext || window.webkitAudioContext;
-			audioContext = new window.AudioContext();
-		} catch(e) {
-			return;
-		}
-
-		window.addEventListener('touchstart', function() {
-
-			/* create empty buffer */
-			var buffer = audioContext.createBuffer(1, 1, 22050);
-			var source = audioContext.createBufferSource();
-			source.buffer = buffer;
-
-			/* connect to output (your speakers) */
-			source.connect(audioContext.destination);
-
-			/* play the file */
-			source.noteOn(0);
-
-		}, false);
-
-		/* init audio */
-		analyser = audioContext.createAnalyser();
-		analyser.smoothingTimeConstant = 0.000001;
-		analyser.fftSize = 1024;
-
 		
 		this.camera.position.z = 5;
 
@@ -48,7 +18,7 @@ var sphereSpin = {
 
 	    scene.add(sphere);
 
-		parameters = {
+		this.parameters = {
 			time: { type: "f", value: 1.0 },
 			sphereScaleX: 1,
 			sphereScaleY: 1,
@@ -56,8 +26,6 @@ var sphereSpin = {
 			sphereShape: sphere,
 			resolution: { type: "v2", value: new THREE.Vector2() }
 		};
-
-		this.audioInit();
 	},
 
 	audioInit: function() {
@@ -86,21 +54,21 @@ var sphereSpin = {
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			parameters.sphereScaleX = this.normalize(sum) * 0.1;
+			this.parameters.sphereScaleX = this.normalize(sum) * 0.1;
 			
 			sum = 0;
 			j = 20;
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			parameters.sphereScaleY = this.normalize(sum) * 0.1;
+			this.parameters.sphereScaleY = this.normalize(sum) * 0.1;
 			
 			sum = 0;
 			j = 40;
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			parameters.sphereScaleZ = this.normalize(sum) * 0.1;
+			this.parameters.sphereScaleZ = this.normalize(sum) * 0.1;
 	},
 
 	temp: 1,
@@ -111,13 +79,13 @@ var sphereSpin = {
 		//uniforms.sphereShape.scale.multiplyScalar((1 / temp));
 		//temp = LoopVisualizer.parameters.sphereScale;
 		//uniforms.sphereShape.scale.multiplyScalar(LoopVisualizer.parameters.sphereScale);
-		parameters.sphereShape.rotation.x += parameters.sphereScaleX;
-		parameters.sphereShape.rotation.y += parameters.sphereScaleY;
-		parameters.sphereShape.rotation.z += parameters.sphereScaleZ;
+		this.parameters.sphereShape.rotation.x += this.parameters.sphereScaleX;
+		this.parameters.sphereShape.rotation.y += this.parameters.sphereScaleY;
+		this.parameters.sphereShape.rotation.z += this.parameters.sphereScaleZ;
 
 
 
-		parameters.time.value += 0.05;
+		this.parameters.time.value += 0.05;
 		renderer.render( scene, this.camera );
 
 	}

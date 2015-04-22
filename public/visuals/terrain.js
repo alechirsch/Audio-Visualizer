@@ -10,28 +10,6 @@ var Terrain = {
 	parameters: [],
 
 	init: function() {
-		try {
-			window.AudioContext = window.AudioContext || window.webkitAudioContext;
-			audioContext = new window.AudioContext();
-		} catch(e) {
-			return;
-		}
-		window.addEventListener('touchstart', function() {
-			/* create empty buffer */
-			var buffer = audioContext.createBuffer(1, 1, 22050);
-			var source = audioContext.createBufferSource();
-			source.buffer = buffer;
-			/* connect to output (your speakers) */
-			source.connect(audioContext.destination);
-			/* play the file */
-			source.noteOn(0);
-		}, false);
-
-		/* init audio */
-		analyser = audioContext.createAnalyser();
-		analyser.smoothingTimeConstant = 0.01;
-		analyser.fftSize = 1024;
-
 		/*start ThreeJS scene*/
 		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 		this.camera.position.x = -60;

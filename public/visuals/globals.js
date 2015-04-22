@@ -34,6 +34,25 @@ var xhr;
 
 
 function audioInit(){
+	try {
+		window.AudioContext = window.AudioContext || window.webkitAudioContext;
+		audioContext = new window.AudioContext();
+	} catch(e) {
+		return;
+	}
+	window.addEventListener('touchstart', function() {
+		/* create empty buffer */
+		var buffer = audioContext.createBuffer(1, 1, 22050);
+		var source = audioContext.createBufferSource();
+		source.buffer = buffer;
+		/* connect to output (your speakers) */
+		source.connect(audioContext.destination);
+		/* play the file */
+		source.noteOn(0);
+	}, false);
+	analyser = audioContext.createAnalyser();
+	analyser.smoothingTimeConstant = 0.01;
+	analyser.fftSize = 1024;
 	freqByteData = new Uint8Array(analyser.frequencyBinCount);
 	timeByteData = new Uint8Array(analyser.frequencyBinCount);
 }
