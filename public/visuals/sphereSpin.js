@@ -1,8 +1,10 @@
-var sphereSpin = {
-
+var SphereSpinVisual = {
+max: 256 * 20,
 	init: function() {
+
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 		
-		this.camera.position.z = 5;
+		camera.position.z = 5;
 
 		scene = new THREE.Scene();
 
@@ -26,22 +28,6 @@ var sphereSpin = {
 		};
 	},
 
-	audioInit: function() {
-		freqByteData = new Uint8Array(analyser.frequencyBinCount);
-		timeByteData = new Uint8Array(analyser.frequencyBinCount);
-		this.onParamsChange();
-	},
-
-	onParamsChange: function() {
-			console.log("I got here");
-			/* when a parameter is changed, change it */
-
-	},
-
-	normalize: function(value) {
-			return value/max;
-	},
-
 	update: function() {
 
 			analyser.getByteFrequencyData(freqByteData);
@@ -52,21 +38,21 @@ var sphereSpin = {
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			parameters.sphereScaleX = this.normalize(sum) * 0.1;
+			parameters.sphereScaleX = normalize(sum, this.max) * 0.1;
 			
 			sum = 0;
 			j = 20;
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			parameters.sphereScaleY = this.normalize(sum) * 0.1;
+			parameters.sphereScaleY = normalize(sum, this.max) * 0.1;
 			
 			sum = 0;
 			j = 40;
 			for(var i = j; i < j+20; i++) {
 				sum += freqByteData[i];
 			}
-			parameters.sphereScaleZ = this.normalize(sum) * 0.1;
+			parameters.sphereScaleZ = normalize(sum, this.max) * 0.1;
 	},
 
 	temp: 1,
@@ -84,7 +70,7 @@ var sphereSpin = {
 
 
 		parameters.time.value += 0.05;
-		renderer.render( scene, this.camera );
+		renderer.render( scene, camera );
 
 	}
 };

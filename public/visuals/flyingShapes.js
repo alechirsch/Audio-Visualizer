@@ -1,11 +1,10 @@
-if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
-var flyingShapesVisual = {
+var FlyingShapesVisual = {
 
 	max: 256 * 20,
 
-	innerparent: new THREE.Mesh( geometry, this.parentmaterial ),
-	outerparent: new THREE.Mesh( geometry, this.parentmaterial ),
+	geometry: new THREE.BoxGeometry(1,1,1),
+	innerparent: new THREE.Mesh( this.geometry, this.parentmaterial ),
+	outerparent: new THREE.Mesh( this.geometry, this.parentmaterial ),
 	material: new THREE.MeshBasicMaterial( { color: colorArray[0] } ),
 	parentmaterial: new THREE.MeshBasicMaterial( { visible: false } ),
 	innerlayer: [],
@@ -15,35 +14,11 @@ var flyingShapesVisual = {
 	lastSum: 0,
 
 
-	camera: new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ),
+	//camera: new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ),
 
 	init: function() {
-		try {
-			window.AudioContext = window.AudioContext || window.webkitAudioContext;
-			audioContext = new window.AudioContext();
-		} catch(e) {
-			return;
-		}
 
-		window.addEventListener('touchstart', function() {
-
-			/* create empty buffer */
-			var buffer = audioContext.createBuffer(1, 1, 22050);
-			var source = audioContext.createBufferSource();
-			source.buffer = buffer;
-
-			/* connect to output (your speakers) */
-			source.connect(audioContext.destination);
-
-			/* play the file */
-			source.noteOn(0);
-
-		}, false);
-
-		/* init audio */
-		analyser = audioContext.createAnalyser();
-		analyser.smoothingTimeConstant = 0.000001;
-		analyser.fftSize = 1024;
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
 		parameters = {
 			//General
@@ -73,8 +48,6 @@ var flyingShapesVisual = {
 			minOuterRadius: 11,
 			maxOuterRadius: 35,
 			//Stuff
-			time: { type: "f", value: 1.0 },
-			resolution: { type: "v2", value: new THREE.Vector2() }
 		};
 
 
@@ -86,7 +59,7 @@ var flyingShapesVisual = {
 		var light = new THREE.PointLight( 0xff0000, 1, 0 );
 		light.position.set( 5, -50, 10 );
 		scene.add( light );
-		var geometry = new THREE.BoxGeometry(1,1,1);
+		//var geometry = new THREE.BoxGeometry(1,1,1);
 		//material = new THREE.MeshBasicMaterial( { color: colorArray[0] } );
 		//var this.parentmaterial = new THREE.MeshBasicMaterial( { visible: false } );
 		//this.innerparent = new THREE.Mesh( geometry, this.parentmaterial );
@@ -116,7 +89,7 @@ var flyingShapesVisual = {
 
 		//Give objects this.meshes
 		for(var i=0; i<parameters.objectsPerLayer*2; i++) {
-			this.meshes.push(new THREE.Mesh(geometry, this.material));
+			this.meshes.push(new THREE.Mesh(this.geometry, this.material));
 			if(i<parameters.objectsPerLayer) {
 				this.meshes[i].position.y = parameters.innerRadius;
 				this.innerlayer[i].add(this.meshes[i]);
@@ -129,7 +102,7 @@ var flyingShapesVisual = {
 	},
 
 	radiusNormalize: function(value) {
-			var v = normalize(value, max) * 100;
+			var v = normalize(value, this.max) * 100;
 			return v;
 	},
 
@@ -180,13 +153,13 @@ var flyingShapesVisual = {
 		var interval = parameters.audioInterval;
 
 
-		//EXPANSION AND CONTRACTION
+		//EXPANSION AND this.contractION
 		sum = 0;
 		j = 0;
 		for(var i = j; i < 512; i++) {
 			sum += freqByteData[i];
 		}
-		sum = radiusNormalize(sum, max) * 0.1;
+		sum = this.radiusNormalize(sum, this.max) * 0.1;
 		if(Math.abs(sum-this.lastSum) >= parameters.expandThreshold) {
 			if(parameters.expanding) {
 				parameters.expanding = false;
@@ -207,64 +180,58 @@ var flyingShapesVisual = {
 		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.innerRotY = normalize(sum, max) * parameters.animationSpeed * parameters.xScale;
+		parameters.innerRotY = normalize(sum, this.max) * parameters.animationSpeed * parameters.xScale;
 		
 		sum = 0;
 		j = interval;
 		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.innerRotZ = normalize(sum, max) * parameters.animationSpeed * parameters.xScale;
+		parameters.innerRotZ = normalize(sum, this.max) * parameters.animationSpeed * parameters.xScale;
 
 		sum = 0;
 		j = interval*2;
 		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.outerRotX = normalize(sum, max) * parameters.animationSpeed;
+		parameters.outerRotX = normalize(sum, this.max) * parameters.animationSpeed;
 
 		sum = 0;
 		j = interval*3;
 		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.outerRotY = normalize(sum, max) * parameters.animationSpeed;
+		parameters.outerRotY = normalize(sum, this.max) * parameters.animationSpeed;
 
 		sum = 0;
 		j = interval*4;
 		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.outerRotZ = normalize(sum, max) * parameters.animationSpeed;
+		parameters.outerRotZ = normalize(sum, this.max) * parameters.animationSpeed;
 
 		j = interval*5;
 		for(var i = j; i < j+interval; i++) {
 			sum += freqByteData[i];
 		}
-		parameters.innerRotX = normalize(sum, max) * parameters.animationSpeed * parameters.xScale;
+		parameters.innerRotX = normalize(sum, this.max) * parameters.animationSpeed * parameters.xScale;
 	},
 
 	temp: 1,
 
 	render: function() {
-		update(source);
-
-		parameters.time.value += 0.05;
+		this.update(source);
 		this.fakeTime += 0.1;
 		if(this.fakeTime > parameters.changeDirectionTime) {
 			parameters.spinDirection *= -1;
 			this.fakeTime = 0;
 		}
 		if(parameters.expanding) {
-			expand();
+			this.expand();
 		}
 		else {
-			contract();
+			this.contract();
 		}
-
-
-
-		renderer.render( scene, camera );
 
 		this.innerparent.rotation.x += parameters.innerRotX * parameters.spinDirection;
 		this.innerparent.rotation.y += parameters.innerRotY * parameters.spinDirection;
@@ -272,5 +239,7 @@ var flyingShapesVisual = {
 		this.outerparent.rotation.x += parameters.outerRotX * parameters.spinDirection;
 		this.outerparent.rotation.y += parameters.outerRotY * parameters.spinDirection;
 		this.outerparent.rotation.z += parameters.outerRotZ * parameters.spinDirection;
+
+		renderer.render( scene, camera );
 	}
 };
