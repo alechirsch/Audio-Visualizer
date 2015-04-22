@@ -219,9 +219,29 @@ var FlyingShapesVisual = {
 
 	temp: 1,
 
+	updateColor: function(index, maxval){
+		var colorIndex = normalize(this.meshes[index].position.y, maxval) >= 1 ? colorArray.length - 1 : Math.floor(normalize(this.meshes[index].position.y, maxval)*colorArray.length);
+		this.material.color.setHex(colorArray[colorIndex]);
+	},
+
 	render: function() {
 		this.update(source);
 		this.fakeTime += 0.1;
+
+		this.innerparent.rotation.x += parameters.innerRotX * parameters.spinDirection;
+		this.innerparent.rotation.y += parameters.innerRotY * parameters.spinDirection;
+		this.innerparent.rotation.z += parameters.innerRotZ * parameters.spinDirection;
+		this.outerparent.rotation.x += parameters.outerRotX * parameters.spinDirection;
+		this.outerparent.rotation.y += parameters.outerRotY * parameters.spinDirection;
+		this.outerparent.rotation.z += parameters.outerRotZ * parameters.spinDirection;
+
+		for(var i=0; i<this.meshes.length/2; i++) {
+			this.updateColor(i, parameters.maxInnerRadius);
+		}
+		for(var i=this.meshes.length/2; i<this.meshes.length; i++) {
+			this.updateColor(i, parameters.maxOuterRadius);
+		}
+
 		if(this.fakeTime > parameters.changeDirectionTime) {
 			parameters.spinDirection *= -1;
 			this.fakeTime = 0;
@@ -232,13 +252,6 @@ var FlyingShapesVisual = {
 		else {
 			this.contract();
 		}
-
-		this.innerparent.rotation.x += parameters.innerRotX * parameters.spinDirection;
-		this.innerparent.rotation.y += parameters.innerRotY * parameters.spinDirection;
-		this.innerparent.rotation.z += parameters.innerRotZ * parameters.spinDirection;
-		this.outerparent.rotation.x += parameters.outerRotX * parameters.spinDirection;
-		this.outerparent.rotation.y += parameters.outerRotY * parameters.spinDirection;
-		this.outerparent.rotation.z += parameters.outerRotZ * parameters.spinDirection;
 
 		renderer.render( scene, camera );
 	}
