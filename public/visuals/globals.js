@@ -25,3 +25,181 @@ var colorArray2 = [0x330000, 0x331a1a, 0x4c0000, 0x660000, 0x806060, 0x994d4d, 0
 var colorArray = [0xfa1e34, 0xfa6171, 0xd4192c, 0xd47982, 0xfa1e4a, 0xfa7892, 0xe02f53, 0xed87a6, 0xe05881, 0xd42c5f, 0xfa1e76, 0xfa619e, 0xe06c9a, 0xd42c6f, 0xfa8ec4, 0xed1c85, 0xfa4bb4, 0xe01b91, 0xd466a8, 0xfa78d3, 0xd440a7, 0xe01bb9, 0xe080cd, 0xe058d3, 0xfa61fa, 0xed1ced, 0xed87ed, 0xc119d4, 0xba53d4, 0xc54bfa, 0xaf1ced, 0xc380e0, 0xc678fa, 0x912cd4, 0xa866d4, 0x9c58e0, 0xb98efa, 0x7034fa, 0x7243e0, 0x9479d4, 0x9278fa, 0x7c66d4, 0x341efa, 0x7161fa, 0x998efa, 0x2f2fe0, 0x6c77e0, 0x1e4afa, 0x4b6efa, 0x879ced, 0x2c4ed4, 0x2c5fd4, 0x7994d4, 0x619efa, 0x8eb9fa, 0x327ded, 0x407bd4, 0x669dd4, 0x34abfa, 0x5cb3ed, 0x80bae0, 0x1989d4, 0x47bbed, 0x80c3e0, 0x61dbfa, 0x80cde0, 0x19aed4, 0x61ebfa, 0x19c1d4, 0x34fafa, 0x80e0e0, 0x8efaef, 0x1cedd8, 0x53d4c7, 0x8efada, 0x47edbb, 0x79d4b8, 0x66d4a8, 0x34fa97, 0x8efac4, 0x43e092, 0x1efa60, 0x2fe064, 0x80e09d, 0x87ed91, 0x2cd42c, 0x7eed72, 0x60fa1e, 0x87d466, 0xb9fa8e, 0x8fed32, 0x8ad440, 0xbdfa61, 0xafd479, 0xafed1c, 0xadd453, 0xe0fa78, 0xb2d42c, 0xe6fa34, 0xcbd479, 0xe0e02f, 0xe0e06c, 0xfae41e, 0xd4c119, 0xfad234, 0xfadb61, 0xd4b22c, 0xd4c179, 0xfab81e, 0xfada8e, 0xedc25c, 0xd49c19, 0xd4b366, 0xfaab34, 0xfabd61, 0xedc487, 0xd48919, 0xfab978, 0xed8f32, 0xe0b080, 0xd48a3f, 0xfa761e, 0xfab98e, 0xe0762f, 0xe08e58, 0xfa8f61, 0xed6a32, 0xeda687, 0xd46c3f, 0xfa4a1e, 0xed6847, 0xed8b72, 0xd43f19, 0xd48b79, 0xfa998e, 0xe05343, 0xfa1e1e, 0xfa6161, 0xd41919, 0xd46666];
 var colorArray3 = [0xfa1e1e, 0xfa6161, 0xd41919, 0xd46666, 0xfa998e, 0xe05343, 0xfa4a1e, 0xed6847, 0xed8b72, 0xd43f19, 0xd48b79, 0xfa8f61, 0xed6a32, 0xeda687, 0xd46c3f, 0xfa761e, 0xfab98e, 0xe0762f, 0xe08e58, 0xfab978, 0xed8f32, 0xe0b080, 0xd48a3f, 0xfaab34, 0xfabd61, 0xedc487, 0xd48919, 0xfab81e, 0xfada8e, 0xedc25c, 0xd49c19, 0xd4b366, 0xfad234, 0xfadb61, 0xd4b22c, 0xd4c179, 0xfae41e, 0xd4c119, 0xe0e02f, 0xe0e06c, 0xe6fa34, 0xcbd479, 0xe0fa78, 0xb2d42c, 0xafed1c, 0xadd453, 0xbdfa61, 0xafd479, 0x8fed32, 0x8ad440, 0xb9fa8e, 0x60fa1e, 0x87d466, 0x7eed72, 0x2cd42c, 0x87ed91, 0x1efa60, 0x2fe064, 0x80e09d, 0x34fa97, 0x8efac4, 0x43e092, 0x66d4a8, 0x8efada, 0x47edbb, 0x79d4b8, 0x8efaef, 0x1cedd8, 0x53d4c7, 0x34fafa, 0x80e0e0, 0x61ebfa, 0x19c1d4, 0x61dbfa, 0x80cde0, 0x19aed4, 0x47bbed, 0x80c3e0, 0x34abfa, 0x5cb3ed, 0x80bae0, 0x1989d4, 0x669dd4, 0x619efa, 0x8eb9fa, 0x327ded, 0x407bd4, 0x2c5fd4, 0x7994d4, 0x1e4afa, 0x4b6efa, 0x879ced, 0x2c4ed4, 0x6c77e0, 0x2f2fe0, 0x341efa, 0x7161fa, 0x998efa, 0x9278fa, 0x7c66d4, 0x7034fa, 0x7243e0, 0x9479d4, 0xb98efa, 0x9c58e0, 0xc678fa, 0x912cd4, 0xa866d4, 0xc54bfa, 0xaf1ced, 0xc380e0, 0xba53d4, 0xc119d4, 0xfa61fa, 0xed1ced, 0xed87ed, 0xe058d3, 0xe01bb9, 0xe080cd, 0xfa78d3, 0xd440a7, 0xfa4bb4, 0xe01b91, 0xd466a8, 0xfa8ec4, 0xed1c85, 0xfa1e76, 0xfa619e, 0xe06c9a, 0xd42c6f, 0xed87a6, 0xe05881, 0xd42c5f, 0xfa1e4a, 0xfa7892, 0xe02f53, 0xfa1e34, 0xfa6171, 0xd4192c, 0xd47982];
 
+var started = false;
+var paused = false;
+var source;
+
+var xhr;
+
+
+
+function audioInit(){
+	freqByteData = new Uint8Array(analyser.frequencyBinCount);
+	timeByteData = new Uint8Array(analyser.frequencyBinCount);
+}
+
+$('#enter-link').click(function(){
+	$('#prompt').html("<input id='youtube' type='text' placeholder='Enter a Youtube URL here...'>").show();
+	fadePrompt();
+
+});
+
+var timer;
+$(document).mousemove(function() {
+	if (timer) {
+		clearTimeout(timer);
+		timer = 0;
+	}
+
+	$("#tools").fadeIn();
+	timer = setTimeout(function() {
+		$('#tools').fadeOut()
+	}, 1500)
+})
+
+function fadePrompt(){
+	setTimeout(function() {
+		$('#prompt').fadeOut('slow');
+	}, 10000);
+}
+
+function getURLParameter(url, name) {
+	return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
+}
+
+function loading(){
+	$('#prompt').text("loading").show();
+	var i = 0;
+	var interval = setInterval(function() {
+		if($('#prompt').is(':hidden')) clearInterval(interval);
+		if(i === 5){
+			$('#prompt').text('loading');
+			i = 0;
+		}
+		else{
+			$('#prompt').append('.');
+			i++;
+		}
+	}, 750);
+}
+
+
+function youtubeEntered(link){
+	loading();
+	window.location.href = link;
+
+}
+
+function youtubeEntered2(link){
+	loading();
+	var request = new XMLHttpRequest();
+	request.open("GET", link, true);
+	request.responseType = "arraybuffer";
+	request.send();
+
+	request.onload = function() {
+		loadYoutube(getURLParameter(link, 'v'));
+	};
+}
+
+function loadYoutube(link) {
+	loading();
+	var url = "public/" + link + ".mp4";
+	console.log(url);
+	var request = new XMLHttpRequest();
+	request.open("GET", url, true);
+	request.responseType = "arraybuffer";
+	request.send();
+	request.onload = function() {
+		audioContext.decodeAudioData(request.response, function(buffer) {
+			audioBuffer = buffer;
+			startSound();
+		}, function(e) {
+			console.log(e);
+		});
+	};
+};
+
+function loadSampleAudio() {
+	loading();
+	var audioURL = "public/cohkka.mp3";
+
+	/* Load asynchronously */
+	var request = new XMLHttpRequest();
+	request.open("GET", audioURL, true);
+	request.responseType = "arraybuffer";
+
+	request.onload = function() {
+		audioContext.decodeAudioData(request.response, function(buffer) {
+			audioBuffer = buffer;
+			startSound();
+		}, function(e) {
+			$('#prompt').text("error loading mp3").show();
+			console.log(e);
+		});
+	};
+	request.send();
+}
+
+function onDocumentDragOver(evt) {
+	evt.stopPropagation();
+	evt.preventDefault();
+	return false;
+}
+
+function onDroppedMP3Loaded(data) {
+	audioContext.decodeAudioData(data, function(buffer) {
+		audioBuffer = buffer;
+		startSound();
+	}, function(e) {
+		$('#prompt').text("cannot decode mp3").show();
+		console.log(e);
+	});
+}
+
+function onMP3Drop(evt) {
+	evt.stopPropagation();
+	evt.preventDefault();
+
+	loading();
+
+	var droppedFiles = evt.dataTransfer.files;
+	var reader = new FileReader();
+	reader.onload = function(fileEvent) {
+		var data = fileEvent.target.result;
+		onDroppedMP3Loaded(data);
+	};
+	reader.readAsArrayBuffer(droppedFiles[0]);
+}
+
+function startSound() {
+
+	if (source){
+		source.stop(0.0);
+		source.disconnect();
+	}
+
+	/* Connect audio processing graph */
+	source = audioContext.createBufferSource();	
+	source.connect(audioContext.destination);
+	source.connect(analyser);
+
+	$('#prompt').fadeOut('slow');
+	source.buffer = audioBuffer;
+	source.loop = false;
+	source.start(0.0);
+	started = true;
+	console.log(source);
+	/*startViz();*/
+}
+
+function pause(){
+	paused = true;
+	console.log(source);
+	source.stop();
+}
+
+function play(){
+	paused = false;
+	source.start();
+}
