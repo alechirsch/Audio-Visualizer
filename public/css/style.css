@@ -109,7 +109,19 @@ a {
 }
 #purple-button:hover{
     background-color:#9b59b6;
-    }
+}
+
+#rainbow1-button{
+    background: url("/public/images/rainbow1.jpg");
+}
+#rainbow2-button{
+    background: url("/public/images/rainbow2.jpg");
+}
+#rainbow3-button{
+ background: url("/public/images/rainbow3.jpg");
+}
+
+
 #prompt-contatiner {
     background:rgba(55,55,55,0.8);
     position:absolute;
