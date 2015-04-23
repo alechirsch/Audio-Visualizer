@@ -11,7 +11,7 @@ var SphereSpinVisual = {
 		var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
 
 		var spheregeometry = new THREE.SphereGeometry(0.8, 16, 16);
-		var spherematerial = new THREE.MeshBasicMaterial({wireframe: true, color: 0x00ff00});
+		var spherematerial = new THREE.MeshBasicMaterial({wireframe: true, color: colorArray[0]});
 		var sphere = new THREE.Mesh(spheregeometry, spherematerial);
 
 		sphere.position.set(0, 0, 0);
@@ -24,6 +24,7 @@ var SphereSpinVisual = {
 			sphereScaleY: 1,
 			sphereScaleZ: 1,
 			sphereShape: sphere,
+			sphereMat: spherematerial,
 			resolution: { type: "v2", value: new THREE.Vector2() }
 		};
 	},
@@ -67,6 +68,7 @@ var SphereSpinVisual = {
 		parameters.sphereShape.rotation.y += parameters.sphereScaleY;
 		parameters.sphereShape.rotation.z += parameters.sphereScaleZ;
 
+		parameters.sphereMat.color.setHex(colorArray[colorArray.length-1]);
 
 
 		parameters.time.value += 0.05;
