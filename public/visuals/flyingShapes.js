@@ -47,7 +47,6 @@ var FlyingShapesVisual = {
 			outerRadius: 15,
 			minOuterRadius: 11,
 			maxOuterRadius: 35,
-			//Stuff
 		};
 
 
@@ -59,11 +58,6 @@ var FlyingShapesVisual = {
 		var light = new THREE.PointLight( 0xff0000, 1, 0 );
 		light.position.set( 5, -50, 10 );
 		scene.add( light );
-		//var geometry = new THREE.BoxGeometry(1,1,1);
-		//material = new THREE.MeshBasicMaterial( { color: colorArray[0] } );
-		//var this.parentmaterial = new THREE.MeshBasicMaterial( { visible: false } );
-		//this.innerparent = new THREE.Mesh( geometry, this.parentmaterial );
-		//this.outerparent = new THREE.Mesh( geometry, this.parentmaterial );
 		scene.add( this.innerparent );
 		scene.add( this.outerparent );
 
@@ -141,10 +135,6 @@ var FlyingShapesVisual = {
 		}
 	},
 
-	incrementColor: function(index) {
-		this.material.color.setHex(colorArray[index]);
-	},
-
 	update: function() {
 
 		analyser.getByteFrequencyData(freqByteData);
@@ -153,7 +143,7 @@ var FlyingShapesVisual = {
 		var interval = parameters.audioInterval;
 
 
-		//EXPANSION AND this.contractION
+		//EXPANSION AND CONTRACTION
 		sum = 0;
 		j = 0;
 		for(var i = j; i < 512; i++) {
