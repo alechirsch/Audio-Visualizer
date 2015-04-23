@@ -31,42 +31,36 @@
 						<div id="green-button" class="color-button"></div>
 						<div id="blue-button" class="color-button"></div>
 						<div id="purple-button" class="color-button"></div>
+						<div id="rainbow1-button" class="color-button"></div>
+						<div id="rainbow2-button" class="color-button"></div>
+						<div id="rainbow3-button" class="color-button"></div>
 						<script>
 							$("#red-button").click(function(){ 
-								$("#slider-color-1").val(0.33);
-								$("#slider-color-2").val(1.45);
-								$("#slider-color-3").val(2.86);
-								$("#slider-color-4").val(3.2);
+								colorArray = redColors;
 							});
 							$("#orange-button").click(function(){ 
-								$("#slider-color-1").val(0.5);
-								$("#slider-color-2").val(1.12);
-								$("#slider-color-3").val(0.72);
-								$("#slider-color-4").val(4.0);
+								colorArray = orangeColors;
 							});
 							$("#yellow-button").click(function(){ 
-								$("#slider-color-1").val(0.61);
-								$("#slider-color-2").val(0.55);
-								$("#slider-color-3").val(0.72);
-								$("#slider-color-4").val(0.67);
+								colorArray = yellowColors;
 							});
 							$("#green-button").click(function(){ 
-								$("#slider-color-1").val(3.81);
-								$("#slider-color-2").val(4.88);
-								$("#slider-color-3").val(0.55);
-								$("#slider-color-4").val(3);
+								colorArray = greenColors;
 							});
 							$("#blue-button").click(function(){ 
-								$("#slider-color-1").val(10);
-								$("#slider-color-2").val(10);
-								$("#slider-color-3").val(2.07);
-								$("#slider-color-4").val(4.88);
+								colorArray = blueColors;
 							});
 							$("#purple-button").click(function(){ 
-								$("#slider-color-1").val(1);
-								$("#slider-color-2").val(2.69);
-								$("#slider-color-3").val(6.62);
-								$("#slider-color-4").val(6.06);
+								colorArray = purpleColors;
+							});
+							$("#rainbow1-button").click(function(){ 
+								colorArray = rainbowColors1;
+							});
+							$("#rainbow2-button").click(function(){ 
+								colorArray = rainbowColors2;
+							});
+							$("#rainbow3-button").click(function(){ 
+								colorArray = rainbowColors3;
 							});
 						</script>
 					</div>
