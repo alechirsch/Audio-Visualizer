@@ -58,18 +58,21 @@ var SphereSpinVisual = {
 
 	temp: 1,
 
+	updateColor: function(){
+		var colorIndex = normalize(parameters.sphereScaleY, 0.1) >= 1 ? colorArray.length - 1 : Math.floor(normalize(parameters.sphereScaleY, 0.1)*colorArray.length);
+		parameters.sphereMat.color.setHex(colorArray[colorIndex]);
+	},
+
 	render: function() {
 		this.update(source);
 
-		//uniforms.sphereShape.scale.multiplyScalar((1 / temp));
-		//temp = LoopVisualizer.parameters.sphereScale;
-		//uniforms.sphereShape.scale.multiplyScalar(LoopVisualizer.parameters.sphereScale);
 		parameters.sphereShape.rotation.x += parameters.sphereScaleX;
 		parameters.sphereShape.rotation.y += parameters.sphereScaleY;
 		parameters.sphereShape.rotation.z += parameters.sphereScaleZ;
 
-		parameters.sphereMat.color.setHex(colorArray[colorArray.length-1]);
+		console.log(parameters.sphereShape.rotation.y);
 
+		this.updateColor();
 
 		parameters.time.value += 0.05;
 		renderer.render( scene, camera );
