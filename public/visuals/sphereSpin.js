@@ -1,5 +1,5 @@
 var SphereSpinVisual = {
-max: 256 * 20,
+	max: 256 * 20,
 	init: function() {
 
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -11,12 +11,12 @@ max: 256 * 20,
 		var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
 
 		var spheregeometry = new THREE.SphereGeometry(0.8, 16, 16);
-	    var spherematerial = new THREE.MeshBasicMaterial({wireframe: true, color: 0x00ff00});
-	    var sphere = new THREE.Mesh(spheregeometry, spherematerial);
+		var spherematerial = new THREE.MeshBasicMaterial({wireframe: true, color: 0x00ff00});
+		var sphere = new THREE.Mesh(spheregeometry, spherematerial);
 
-	    sphere.position.set(0, 0, 0);
+		sphere.position.set(0, 0, 0);
 
-	    scene.add(sphere);
+		scene.add(sphere);
 
 		parameters = {
 			time: { type: "f", value: 1.0 },
@@ -30,29 +30,29 @@ max: 256 * 20,
 
 	update: function() {
 
-			analyser.getByteFrequencyData(freqByteData);
-			analyser.getByteTimeDomainData(timeByteData);
+		analyser.getByteFrequencyData(freqByteData);
+		analyser.getByteTimeDomainData(timeByteData);
 
-			sum = 0;
-			j = 0;
-			for(var i = j; i < j+20; i++) {
-				sum += freqByteData[i];
-			}
-			parameters.sphereScaleX = normalize(sum, this.max) * 0.1;
-			
-			sum = 0;
-			j = 20;
-			for(var i = j; i < j+20; i++) {
-				sum += freqByteData[i];
-			}
-			parameters.sphereScaleY = normalize(sum, this.max) * 0.1;
-			
-			sum = 0;
-			j = 40;
-			for(var i = j; i < j+20; i++) {
-				sum += freqByteData[i];
-			}
-			parameters.sphereScaleZ = normalize(sum, this.max) * 0.1;
+		sum = 0;
+		j = 0;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleX = normalize(sum, this.max) * 0.1;
+		
+		sum = 0;
+		j = 20;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleY = normalize(sum, this.max) * 0.1;
+		
+		sum = 0;
+		j = 40;
+		for(var i = j; i < j+20; i++) {
+			sum += freqByteData[i];
+		}
+		parameters.sphereScaleZ = normalize(sum, this.max) * 0.1;
 	},
 
 	temp: 1,
