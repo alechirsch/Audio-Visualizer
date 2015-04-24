@@ -5,7 +5,7 @@ var CirclesVisual = {
 
 	init: function() {
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-		camera.position.x = 80;
+		camera.position.x = 0;
 		camera.position.y = 135;
 		camera.position.z = 200;
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -76,6 +76,7 @@ var CirclesVisual = {
 	render: function() {
 		this.update(source);
 		this.updateCircleHeights(this.circleArray.length - 1);
+		camera.lookAt(new THREE.Vector3(0, 0, 0));
 		renderer.render( scene, camera );
 	}
 }
