@@ -8,13 +8,28 @@ var LightsVisual = {
 			canvas: {},
 			canvasgeometry: {},
 			canvasmaterial: {},
-			spotlight: {},
-			lights: [],
+			gridlights: [],
+			biglight: {},
+			spotlights: [],
+			spinners: [],
 
-			//Params
+			//Gridlight params
 			n: 5, //NxN lights total
 			threshold: 0.5,
-			cameraZoom: 5
+			cameraZoom: 5,
+
+			//Spotlight params
+			spotlightx: [0,0,0],
+			spotlighty: [0,0,0],
+			xdir: [1,1,1],
+			ydir: [1,1,1],
+			xmax: 1.5,
+			ymax: 0.7,
+			spottheshold: 0.06,
+			speed: 0.025,
+
+			//General params
+			max: 256*20
 		};
 
 		//Set up scene
@@ -31,29 +46,82 @@ var LightsVisual = {
 		parameters.canvas = new THREE.Mesh( parameters.canvasgeometry, parameters.canvasmaterial );
 		scene.add( parameters.canvas );
 
-		//SpotLights
+		//GridLights
 		var xpos = -4;
 		var ypos = 4;
 		for(var i=0; i<parameters.n; i++) {
 			xpos = (i*2)-4;
 			ypos = 4;
-			parameters.lights.push([]);
+			parameters.gridlights.push([]);
 			for(var j=0; j<parameters.n; j++) {
-				parameters.lights[i].push(new THREE.SpotLight(colorArray[12], 1));
-				parameters.lights[i][j].position.set(xpos, ypos, 1);
-				scene.add(parameters.lights[i][j]);
+				parameters.gridlights[i].push(new THREE.PointLight(colorArray[12], 0));
+				parameters.gridlights[i][j].position.set(xpos, ypos, 1);
+				scene.add(parameters.gridlights[i][j]);
 				ypos -= 2;
 			}
 		}
 
+		//BigLight
+		parameters.biglight = new THREE.DirectionalLight(colorArray[12], 0);
+		parameters.biglight.position.set( 0, 0, 1 );
+		scene.add(parameters.biglight);
+
+		//SpotLights
+		for(var i=0; i<3; i++) {
+			parameters.spotlights.push(new THREE.DirectionalLight(colorArray[12], 0.1));
+		}
+		parameters.spotlights[0].position.set(-1.5 ,0.7 , 1);
+		parameters.spotlights[1].position.set(1.5 ,0.7 , 1);
+		parameters.spotlights[2].position.set(0 ,-0.7 , 1);
+		scene.add(parameters.spotlights[0]);
+		scene.add(parameters.spotlights[1]);
+		scene.add(parameters.spotlights[2]);
+
+		//Spinner(s)
 	},
 
-	incrementIntensity: function(index) {
+	incrementGirdIntensity: function(index) {
 
 	},
 
-	decrementIntensity: function(index) {
+	decrementGridIntensity: function(index) {
 
+	},
+
+	incrementBigIntensity: function() {
+
+	},
+
+	decrementBigIntensity: function() {
+
+	},
+
+	updateSpotlightPositions: function(sums) {
+		for(var i=0; i<3; i++) {
+			if(sums[i] > parameters.spottheshold) {
+				parameters.xdir[i] *= -1;
+			}
+			if(sums[i+3] > parameters.spottheshold) {
+				parameters.ydir[i] *= -1;
+			}
+		}
+
+		for(var i=0; i<3; i++) {
+			if((parameters.xdir[i] === 1 && parameters.spotlightx[i] > parameters.xmax) || (parameters.xdir[i] === -1 && parameters.spotlightx[i] < parameters.xmax * -1)) {
+				parameters.xdir[i] *= -1;
+			}
+			parameters.spotlightx += (sums[i] * parameters.xdir[i]);
+			if((parameters.ydir[i] === 1 && parameters.spotlighty[i] > parameters.ymax) || (parameters.ydir[i] === -1 && parameters.spotlighty[i] < parameters.ymax * -1)) {
+				parameters.ydir[i] *= -1;
+			}
+		}
+		for(var i=0; i<3; i++) {
+			parameters.spotlightx[i] += (parameters.speed * parameters.xdir[i]);
+			//console.log((parameters.speed * parameters.xdir[i]));
+			//console.log(parameters.spotlightx[i]);
+			parameters.spotlighty[i] += (parameters.speed * parameters.ydir[i]);
+			parameters.spotlights[i].position.set(parameters.spotlightx[i] , parameters.spotlighty[i], 1);
+		}
 	},
 
 	updateLightColor: function(index) {
@@ -67,22 +135,48 @@ var LightsVisual = {
 		var interval = 512 / (parameters.n*parameters.n);
 		var colorIndex = 0;
 
+		//UPDATE GRIDLIGHTS
 		for(var i=0; i<512; i++) {
 			sum += freqByteData[i];
 		}
-		colorIndex = sum % colorArray.length;
-
+		/*colorIndex = sum % colorArray.length;
 		for(var i=0; i<parameters.n; i++) {
 			for(var j=0; j<parameters.n; j++) {
-				parameters.lights[i][j].color.setHex(colorArray[colorIndex]);
+				parameters.gridlights[i][j].color.setHex(colorArray[colorIndex]);
 			}
-		}
-		console.log(sum);
+		}*/
+		//console.log(sum);
 
-		if(sum > parameters.threshold) {
-			
-		}
+		//UPDATE BIGLIGHT
+		/*parameters.biglight.intensity = sum / 100;
+		parameters.biglight.color.setHex(colorArray[0]);*/
 
+		//UPDATE SPOTLIGHTS
+		var sums = [0, 0, 0, 0, 0, 0];
+		for(var i=0; i<85; i++) {
+			sums[0] += freqByteData[i];
+		}
+		for(var i=85; i<170; i++) {
+			sums[1] += freqByteData[i];
+		}
+		for(var i=170; i<255; i++) {
+			sums[2] += freqByteData[i];
+		}
+		for(var i=255; i<340; i++) {
+			sums[3] += freqByteData[i];
+		}
+		for(var i=340; i<425; i++) {
+			sums[4] += freqByteData[i];
+		}
+		for(var i=425; i<512; i++) {
+			sums[5] += freqByteData[i];
+		}
+		for(var i=0; i<6; i++) {
+			sums[i] = normalize(sums[i], parameters.max) * 0.05;
+		}
+		this.updateSpotlightPositions(sums);
+
+		//FIRE SPINNER
 	},
 
 	render: function() {
