@@ -75,6 +75,7 @@
 					<div id="flyingShapes-button" class="visual-button"></div>
 					<div id="cylinder-button" class="visual-button"></div>
 					<div id="circles-button" class="visual-button"></div>
+					<div id="lights-button" class="visual-button"></div>
 
 					<script>
 						$("#terrain-button").click(function(){ 
@@ -99,6 +100,11 @@
 						});
 						$("#circles-button").click(function(){ 
 							visual = CirclesVisual;
+							visual.init();
+							visual.render();
+						});
+						$("#lights-button").click(function(){ 
+							visual = LightsVisual;
 							visual.init();
 							visual.render();
 						});
