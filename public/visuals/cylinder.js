@@ -3,6 +3,7 @@ CylinderVisual = {
 
 	init: function() {
 		/*start ThreeJS scene*/
+		this.cylinderArray = [];
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 		camera.position.z = 5;
 		camera.position.x = 1;
@@ -13,7 +14,7 @@ CylinderVisual = {
 
 		/* SPHERE */
 		var spheregeometry = new THREE.SphereGeometry(0.8, 16, 16);
-		var spherematerial = new THREE.MeshBasicMaterial({wireframe: false, color: 0x000000});
+		var spherematerial = new THREE.MeshBasicMaterial({color: 0x000000});
 		var sphere = new THREE.Mesh(spheregeometry, spherematerial);
 		sphere.position.set(0, 0, 0);
 		scene.add(sphere);
@@ -22,7 +23,7 @@ CylinderVisual = {
 		cylindergeometry.verticesNeedUpdate = true;
 		cylindergeometry.normalsNeedUpdate = true;
 		cylindergeometry.colorsNeedUpdate = true;
-		var cylindermaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
+		var cylindermaterial = new THREE.MeshBasicMaterial();
 		var cylinder = new THREE.Mesh(cylindergeometry, cylindermaterial);
 		cylinder.position.set(0,0,0);
 		this.createCylinders(cylinder, 0);
@@ -51,6 +52,8 @@ CylinderVisual = {
 				this.createCylinders(cylinder.clone(), depth + 1);
 				cylinder.rotation.z += Math.PI/8;
 			}
+			var cylindermaterial = new THREE.MeshBasicMaterial();
+			cylinder.material = cylindermaterial;
 			this.cylinderArray[this.cylinderArray.length] = cylinder;
 			scene.add(cylinder);
 			cylinder = cylinder.clone();
@@ -65,14 +68,14 @@ CylinderVisual = {
 			for(var j = 1; j <= 10; j++){
 				sum += freqByteData[i*j];
 			}
-			parameters.cylinderHeights[i] = normalize(sum, 72 * 255) * 20;
+			parameters.cylinderHeights[i] = normalize(sum, 72 * 255) * 30;
 			sum = 0;
 		}
 		for(var i = 5; i <= 71; i++){
 			for(var j = 1; j <= 2; j++){
 				sum += freqByteData[i*j];
 			}
-			parameters.cylinderWidths[i] = normalize(sum, 72 * 255) * 20;
+			parameters.cylinderWidths[i] = normalize(sum, 72 * 255) * 30;
 			sum = 0;
 		}
 		for(var i = 12; i < 17; i++){
@@ -92,13 +95,23 @@ CylinderVisual = {
 		parameters.cameraZ += normalize(sum, 12 * 255) * 0.001;
 	},
 
-	render: function() {
-		this.update(source);
+	updateCylinderColor: function(material, height){
+		var colorIndex = normalize(height, 30) >= 1 ? colorArray.length - 1 : Math.floor(normalize(height, 30)*colorArray.length);
+		material.color.setHex(colorArray[colorIndex]);
+	},
+
+	updateCylinders: function(){
 		for(var i = 0; i < this.cylinderArray.length; i++){
 			this.cylinderArray[i].scale.y = parameters.cylinderHeights[i]*0.4 + 1;
 			this.cylinderArray[i].scale.x = parameters.cylinderWidths[this.cylinderArray.length - i] + 0.1;
 			this.cylinderArray[i].scale.z = parameters.cylinderWidths[this.cylinderArray.length - i] + 0.1;
+			this.updateCylinderColor(this.cylinderArray[i].material, parameters.cylinderHeights[i]);
 		}
+	},
+
+	render: function() {
+		this.update(source);
+		this.updateCylinders();
 		camera.position.x = Math.cos(parameters.cameraX) * 5;
 		camera.position.y = Math.sin(parameters.cameraY) * 5;
 		camera.position.z = camera.position.x + camera.position.y < 3 ? 3 : camera.position.x + camera.position.y;
