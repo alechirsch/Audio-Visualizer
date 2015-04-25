@@ -15,6 +15,18 @@ var FlyingShapesVisual = {
 
 	init: function() {
 
+		this.geometry = new THREE.BoxGeometry(1,1,1);
+		this.innerparent = new THREE.Mesh( this.geometry, this.parentmaterial );
+		this.outerparent = new THREE.Mesh( this.geometry, this.parentmaterial );
+		this.material = new THREE.MeshBasicMaterial( { color: colorArray[0] } );
+		this.parentmaterial = new THREE.MeshBasicMaterial( { visible: false } );
+		
+		this.innerlayer = [];
+		this.outerlayer = [];
+		this.meshes = [];
+		this.fakeTime = 0;
+		this.lastSum = 0;
+
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
 		parameters = {
@@ -93,8 +105,8 @@ var FlyingShapesVisual = {
 	},
 
 	radiusNormalize: function(value) {
-			var v = normalize(value, this.max) * 100;
-			return v;
+		var v = normalize(value, this.max) * 100;
+		return v;
 	},
 
 	expand: function() {
