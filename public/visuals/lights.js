@@ -1,4 +1,6 @@
-var LightsVisual = {	
+var LightsVisual = {
+
+	fakeTime: 0,	
 
 	init: function() {
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -21,6 +23,9 @@ var LightsVisual = {
 			gridsums: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 			lastgridsums: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 			increasing: [],
+			girdstate: [],
+			randomizedIndex: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			allLightsVisible: true,
 
 			//Spotlight params
 			spotlightx: [0,0,0],
@@ -57,6 +62,12 @@ var LightsVisual = {
 		scene.add( parameters.canvas );
 
 		//GridLights
+		var taken = [];
+		var check = true;
+		var temp;
+		for(var i=0; i<25; i++) {
+			taken.push(false);
+		}
 		var xpos = -4;
 		var ypos = 6;
 		for(var i=0; i<25; i++) {
@@ -64,7 +75,14 @@ var LightsVisual = {
 				xpos = -4;
 				ypos -= 2;
 			}
-			parameters.gridlights.push(new THREE.PointLight(colorArray[colorArray.length/2], 0.5));
+			parameters.gridlights.push(new THREE.PointLight(colorArray[colorArray.length/2], 0.05));
+			while(check) {
+				temp = Math.floor(Math.random() * 25);
+				check = taken[temp];
+			}
+			check = true;
+			taken[temp] = true;
+			parameters.randomizedIndex[i] = temp;
 			parameters.increasing.push(false);
 			parameters.gridlights[i].position.set(xpos, ypos, 1);
 			scene.add(parameters.gridlights[i]);
@@ -86,20 +104,6 @@ var LightsVisual = {
 		scene.add(parameters.spotlights[0]);
 		scene.add(parameters.spotlights[1]);
 		scene.add(parameters.spotlights[2]);
-
-		//Spinner(s)
-	},
-
-	updateGirdIntensity: function(index) {
-
-	},
-
-	incrementBigIntensity: function() {
-
-	},
-
-	decrementBigIntensity: function() {
-
 	},
 
 	updateSpotlightPositions: function(sums) {
@@ -130,11 +134,19 @@ var LightsVisual = {
 		}
 	},
 
-	updateLightColor: function(index) {
-
+	makeAllLightsVisible: function() {
+		if(parameters.allLightsVisible) {
+			for(var i=0; i< parameters.gridlights.length; i++) {
+				if(parameters.gridlights[i].intensity < 0.01) {
+					parameters.gridlights[i].intensity = 0.01;
+					parameters.gridlights[i].color.setHex(colorArray[0]);
+				}
+			}
+		}
 	},
 
 	update: function() {
+		this.fakeTime += 1;
 		analyser.getByteFrequencyData(freqByteData);
 		analyser.getByteTimeDomainData(timeByteData);
 		sum = 0;
@@ -158,22 +170,22 @@ var LightsVisual = {
 			if(parameters.gridsums[k] === 0) {
 				//do nothing
 			} 
-			else if(parameters.gridsums[k] > parameters.lastgridsums[k] + 3000 && parameters.gridlights[k].intensity < 0.5) {
-				parameters.gridlights[k].intensity += 0.00002;
-				parameters.gridlights[k].color.setHex(colorArray[parameters.gridsums[k] % colorArray.length]);
-				parameters.increasing[k] = true;
+			else if(parameters.gridsums[k] > parameters.lastgridsums[k] + 3000 && parameters.gridlights[parameters.randomizedIndex[k]].intensity < 0.5) {
+				parameters.gridlights[parameters.randomizedIndex[k]].intensity += 0.00002;
+				parameters.gridlights[parameters.randomizedIndex[k]].color.setHex(colorArray[parameters.gridsums[k] % colorArray.length]);
+				parameters.increasing[parameters.randomizedIndex[k]] = true;
 			}
-			else if(parameters.gridsums[k] < parameters.lastgridsums[k]) {
-				parameters.gridlights[k].intensity -= 0.00002;
-				parameters.gridlights[k].color.setHex(colorArray[parameters.gridsums[k] % colorArray.length]);
-				parameters.increasing[k] = false;
+			else if(parameters.gridsums[k] < parameters.lastgridsums[k] && parameters.gridlights[parameters.randomizedIndex[k]].intensity > 0.1) {
+				parameters.gridlights[parameters.randomizedIndex[k]].intensity -= 0.00002;
+				parameters.gridlights[parameters.randomizedIndex[k]].color.setHex(colorArray[parameters.gridsums[k] % colorArray.length]);
+				parameters.increasing[parameters.randomizedIndex[k]] = false;
 			}
 			else {
-				if(parameters.increasing[k] && parameters.gridlights[k].intensity < 0.5) {
-					parameters.gridlights[k].intensity += 0.00002;	
+				if(parameters.increasing[parameters.randomizedIndex[k]] && parameters.gridlights[parameters.randomizedIndex[k]].intensity < 0.5) {
+					parameters.gridlights[parameters.randomizedIndex[k]].intensity += 0.00002;	
 				}
-				else {
-					parameters.gridlights[k].intensity -= 0.00002;
+				else if(parameters.gridlights[parameters.randomizedIndex[k]].intensity > 0.1) {
+					parameters.gridlights[parameters.randomizedIndex[k]].intensity -= 0.00002;
 				}
 			}
 			parameters.lastgridsums[k] = parameters.gridsums[k];
@@ -182,13 +194,21 @@ var LightsVisual = {
 		//console.log(sum);
 
 		//UPDATE BIGLIGHT
-		/*for(var i=0; i<512; i++) {
+		for(var i=0; i<512; i++) {
 			sum += freqByteData[i];
 		}
-		if(Math.abs(sum-parameters.totalLastSum) > 75000) {
+		if(Math.abs(sum-parameters.totalLastSum) > 45000 && this.fakeTime > 500) {
 			parameters.biglight.intensity = 1.5;
 			parameters.biglight.color.setHex(colorArray[sum % colorArray.length]);
 			parameters.biglightOn = true;
+			parameters.gridstate = [];
+			for(var i=0; i<parameters.gridlights.length; i++) {
+				parameters.gridstate.push(new THREE.PointLight(parameters.gridlights[i].color, parameters.gridlights[i].intensity));
+				parameters.gridstate[i].position.x = parameters.gridlights[i].position.x;
+				parameters.gridstate[i].position.y = parameters.gridlights[i].position.y;
+				parameters.gridstate[i].position.z = parameters.gridlights[i].position.z;
+				parameters.gridlights[i].intensity = 0;
+			}
 		}
 		else if(parameters.biglightOn) {
 			if(!parameters.goingDown){
@@ -200,12 +220,38 @@ var LightsVisual = {
 			else {
 				parameters.biglight.intensity /= 10;
 				if(parameters.biglight.intensity < 1.5) {
+					this.fakeTime = 0;
 					parameters.biglight.intensity = 0;
 					parameters.goingDown = false;
 					parameters.biglightOn = false;
+
+					for(var i=0; i<parameters.gridlights.length; i++) {
+						parameters.gridlights[i].intensity = parameters.gridstate[i].intensity;
+						parameters.gridlights[i].color.setHex(parameters.gridstate.color);
+						parameters.gridlights[i].position.x = parameters.gridstate[i].position.x;
+						parameters.gridlights[i].position.y = parameters.gridstate[i].position.y;
+						parameters.gridlights[i].position.z = parameters.gridstate[i].position.z;
+					}
+
+					//Re-randomize the gridlights
+					var taken = [];
+					var check = true;
+					var temp;
+					for(var i=0; i<25; i++) {
+						taken.push(false);
+					}
+					for(var i=0; i<parameters.gridlights.length; i++) {
+						while(check) {
+						temp = Math.floor(Math.random() * 25);
+						check = taken[temp];
+						}
+						check = true;
+						taken[temp] = true;
+						parameters.randomizedIndex[i] = temp;
+					}
 				}
 			}
-		}*/
+		}
 		parameters.totalLastSum = sum;
 
 		//UPDATE SPOTLIGHTS
@@ -245,7 +291,10 @@ var LightsVisual = {
 		}
 		this.updateSpotlightPositions(sums);
 
-		//FIRE SPINNER
+		//Finally make all lights visible (if that parameter is set to true)
+		if(!parameters.biglightOn) {
+			this.makeAllLightsVisible();
+		}
 	},
 
 	render: function() {
