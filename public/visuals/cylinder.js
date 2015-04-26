@@ -96,13 +96,13 @@ CylinderVisual = {
 	},
 
 	updateCylinderColor: function(material, height){
-		var colorIndex = normalize(height, 30) >= 1 ? colorArray.length - 1 : Math.floor(normalize(height, 30)*colorArray.length);
+		var colorIndex = normalize(height, 3.85) >= 1 ? colorArray.length - 1 : Math.floor(normalize(height, 3.85)*colorArray.length);
 		material.color.setHex(colorArray[colorIndex]);
 	},
-
 	updateCylinders: function(){
 		for(var i = 0; i < this.cylinderArray.length; i++){
 			this.cylinderArray[i].scale.y = parameters.cylinderHeights[i]*0.4 + 1;
+			if(parameters.cylinderHeights[i] > this.maxYScale) this.maxYScale = parameters.cylinderHeights[i];
 			this.cylinderArray[i].scale.x = parameters.cylinderWidths[this.cylinderArray.length - i] + 0.1;
 			this.cylinderArray[i].scale.z = parameters.cylinderWidths[this.cylinderArray.length - i] + 0.1;
 			this.updateCylinderColor(this.cylinderArray[i].material, parameters.cylinderHeights[i]);

@@ -35,7 +35,6 @@ var TerrainVisual = {
 			parameters.lines[i] = line;
 			scene.add(line);
 		}
-		console.log(parameters.lines[0]);
 	},
 
 	normalize: function(value, max){
@@ -63,17 +62,22 @@ var TerrainVisual = {
 	},
 
 	updateVertices: function(){
+		var averageHeight = 0;
 		for(var i = 0; i < parameters.lines.length; i++){
 			var geometry = parameters.lines[i].geometry;
 			for(var j = geometry.vertices.length - 1; j >= 0; j--){
 				if(j === 0){
 					geometry.vertices[j].y = parameters.newHeights[parameters.lines.length - i];
-					this.updateLineColor(parameters.lines[i].material, geometry.vertices[j].y);
 				}
 				else{
 					geometry.vertices[j].y = geometry.vertices[j-1].y;
+
 				}
+				if(j < geometry.vertices.length/4) averageHeight += geometry.vertices[j].y;
 			}
+			averageHeight /= geometry.vertices.length/4;
+			this.updateLineColor(parameters.lines[i].material, averageHeight);
+			averageHeight = 0;
 			geometry.verticesNeedUpdate = true;
 			geometry.colorsNeedUpdate = true;
 		}
@@ -84,13 +88,11 @@ var TerrainVisual = {
 	render: function() {
 		this.update(source);
 		this.updateVertices();
-	//geometry.verticesNeedUpdate = true;
-	//geometry.colorsNeedUpdate = true;
 
-	camera.position.x = Math.cos(this.angle) * -200;
-	camera.position.z = Math.sin(this.angle) * -200;
-	this.angle += 0.001;
-	camera.lookAt(new THREE.Vector3(0, 0, 0));
+		camera.position.x = Math.cos(this.angle) * -200;
+		camera.position.z = Math.sin(this.angle) * -200;
+		this.angle += 0.001;
+		camera.lookAt(new THREE.Vector3(0, 0, 0));
 	//console.log(camera.position.x+","+ camera.position.y+","+ camera.position.z);
 	parameters.time += 1;
 	if(parameters.time > 10000000) parameters.time = 0;
