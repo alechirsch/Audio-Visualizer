@@ -153,22 +153,22 @@ var LightsVisual = {
 			if(parameters.gridsums[k] === 0) {
 				//do nothing
 			} 
-			else if(parameters.gridsums[k] > parameters.lastgridsums[k] && parameters.gridlights[k].intensity < 0.5) {
-				parameters.gridlights[k].intensity += 0.2;
+			else if(parameters.gridsums[k] > parameters.lastgridsums[k] + 3000 && parameters.gridlights[k].intensity < 0.5) {
+				parameters.gridlights[k].intensity += 0.00002;
 				parameters.gridlights[k].color.setHex(colorArray[parameters.gridsums[k] % colorArray.length]);
 				parameters.increasing[k] = true;
 			}
 			else if(parameters.gridsums[k] < parameters.lastgridsums[k]) {
-				parameters.gridlights[k].intensity -= 0.2;
+				parameters.gridlights[k].intensity -= 0.00002;
 				parameters.gridlights[k].color.setHex(colorArray[parameters.gridsums[k] % colorArray.length]);
 				parameters.increasing[k] = false;
 			}
 			else {
 				if(parameters.increasing[k] && parameters.gridlights[k].intensity < 0.5) {
-					parameters.gridlights[k].intensity += 0.2;	
+					parameters.gridlights[k].intensity += 0.00002;	
 				}
 				else {
-					parameters.gridlights[k].intensity -= 0.2;
+					parameters.gridlights[k].intensity -= 0.00002;
 				}
 			}
 			parameters.lastgridsums[k] = parameters.gridsums[k];
@@ -181,7 +181,7 @@ var LightsVisual = {
 		parameters.biglight.color.setHex(colorArray[0]);*/
 
 		//UPDATE SPOTLIGHTS
-		var sums = [0, 0, 0, 0, 0, 0];
+		/*var sums = [0, 0, 0, 0, 0, 0];
 		for(var i=0; i<85; i++) {
 			sums[0] += freqByteData[i];
 		}
@@ -215,7 +215,7 @@ var LightsVisual = {
 		for(var i=0; i<6; i++) {
 			sums[i] = normalize(sums[i], parameters.max) * 0.05;
 		}
-		this.updateSpotlightPositions(sums);
+		this.updateSpotlightPositions(sums);*/
 
 		//FIRE SPINNER
 	},
