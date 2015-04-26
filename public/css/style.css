@@ -61,6 +61,10 @@ a {
     background: url("/public/images/circles.jpg");
 }
 
+#lights-button{
+    background: url("/public/images/lights.png");
+}
+
 #color .slider{
 	display:none;
 }

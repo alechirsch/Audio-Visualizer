@@ -33,6 +33,11 @@ var LightsVisual = {
 			spottheshold: 0.06,
 			speed: 0.025,
 
+			//Biglight params
+			totalLastSum: 0,
+			biglightOn: false,
+			goingDown: false,
+
 			//General params
 			max: 256*20
 		};
@@ -177,11 +182,34 @@ var LightsVisual = {
 		//console.log(sum);
 
 		//UPDATE BIGLIGHT
-		/*parameters.biglight.intensity = sum / 100;
-		parameters.biglight.color.setHex(colorArray[0]);*/
+		/*for(var i=0; i<512; i++) {
+			sum += freqByteData[i];
+		}
+		if(Math.abs(sum-parameters.totalLastSum) > 75000) {
+			parameters.biglight.intensity = 1.5;
+			parameters.biglight.color.setHex(colorArray[sum % colorArray.length]);
+			parameters.biglightOn = true;
+		}
+		else if(parameters.biglightOn) {
+			if(!parameters.goingDown){
+				parameters.biglight.intensity = parameters.biglight.intensity * parameters.biglight.intensity;
+				if(parameters.biglight.intensity > 100) {
+					parameters.goingDown = true;
+				}
+			}
+			else {
+				parameters.biglight.intensity /= 10;
+				if(parameters.biglight.intensity < 1.5) {
+					parameters.biglight.intensity = 0;
+					parameters.goingDown = false;
+					parameters.biglightOn = false;
+				}
+			}
+		}*/
+		parameters.totalLastSum = sum;
 
 		//UPDATE SPOTLIGHTS
-		/*var sums = [0, 0, 0, 0, 0, 0];
+		var sums = [0, 0, 0, 0, 0, 0];
 		for(var i=0; i<85; i++) {
 			sums[0] += freqByteData[i];
 		}
@@ -215,7 +243,7 @@ var LightsVisual = {
 		for(var i=0; i<6; i++) {
 			sums[i] = normalize(sums[i], parameters.max) * 0.05;
 		}
-		this.updateSpotlightPositions(sums);*/
+		this.updateSpotlightPositions(sums);
 
 		//FIRE SPINNER
 	},
