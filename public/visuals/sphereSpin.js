@@ -70,8 +70,6 @@ var SphereSpinVisual = {
 		parameters.sphereShape.rotation.y += parameters.sphereScaleY;
 		parameters.sphereShape.rotation.z += parameters.sphereScaleZ;
 
-		console.log(parameters.sphereShape.rotation.y);
-
 		this.updateColor();
 
 		parameters.time.value += 0.05;
