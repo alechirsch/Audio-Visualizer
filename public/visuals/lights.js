@@ -26,16 +26,17 @@ var LightsVisual = {
 			girdstate: [],
 			randomizedIndex: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 			allLightsVisible: true,
+			girdlightThreshold: 2000,
 
 			//Spotlight params
 			spotlightx: [0,0,0],
 			spotlighty: [0,0,0],
-			lastSumsSpotlight: [0,0,0],
+			lastSumsSpotlight: [0,0],
 			xdir: [1,1,1],
 			ydir: [1,1,1],
 			xmax: 1.5,
 			ymax: 0.7,
-			spottheshold: 0.06,
+			spotthesholds: [0.16, 0.16, 0.06, 0.06],
 			speed: 0.025,
 
 			//Biglight params
@@ -95,42 +96,36 @@ var LightsVisual = {
 		scene.add(parameters.biglight);
 
 		//SpotLights
-		for(var i=0; i<3; i++) {
+		for(var i=0; i<2; i++) {
 			parameters.spotlights.push(new THREE.DirectionalLight(colorArray[12], 0.1));
 		}
 		parameters.spotlights[0].position.set(-1.5 ,0.7 , 1);
 		parameters.spotlights[1].position.set(1.5 ,0.7 , 1);
-		parameters.spotlights[2].position.set(0 ,-0.7 , 1);
 		scene.add(parameters.spotlights[0]);
 		scene.add(parameters.spotlights[1]);
-		scene.add(parameters.spotlights[2]);
 	},
 
 	updateSpotlightPositions: function(sums) {
-		for(var i=0; i<3; i++) {
-			if(sums[i] > parameters.spottheshold) {
-				//parameters.xdir[i] *= -1;
+		for(var i=0; i<2; i++) {
+			if(sums[i] > parameters.spotthesholds[i]) {
+				parameters.xdir[i] *= -1;
 			}
-			if(sums[i+3] > parameters.spottheshold) {
+			if(sums[i+2] > parameters.spotthesholds[i+2]) {
 				parameters.ydir[i] *= -1;
 			}
 		}
-
-		for(var i=0; i<3; i++) {
-			if((parameters.xdir[i] === 1 && parameters.spotlightx[i] > parameters.xmax) || (parameters.xdir[i] === -1 && parameters.spotlightx[i] < parameters.xmax * -1)) {
-				//parameters.xdir[i] *= -1;
+		for(var j=0; j<2; j++) {
+			if((parameters.xdir[j] === 1 && parameters.spotlightx[j] > parameters.xmax) || (parameters.xdir[j] === -1 && parameters.spotlightx[j] < parameters.xmax * -1)) {
+				parameters.xdir[j] *= -1;
 			}
-			parameters.spotlightx += (sums[i] * parameters.xdir[i]);
-			if((parameters.ydir[i] === 1 && parameters.spotlighty[i] > parameters.ymax) || (parameters.ydir[i] === -1 && parameters.spotlighty[i] < parameters.ymax * -1)) {
-				parameters.ydir[i] *= -1;
+			if((parameters.ydir[j] === 1 && parameters.spotlighty[j] > parameters.ymax) || (parameters.ydir[j] === -1 && parameters.spotlighty[j] < parameters.ymax * -1)) {
+				parameters.ydir[j] *= -1;
 			}
 		}
-		for(var i=0; i<3; i++) {
-			parameters.spotlightx[i] += (parameters.speed * parameters.xdir[i]);
-			//console.log((parameters.speed * parameters.xdir[i]));
-			//console.log(parameters.spotlightx[i] + parameters.speed);
-			parameters.spotlighty[i] += (parameters.speed * parameters.ydir[i]);
-			parameters.spotlights[i].position.set(parameters.spotlightx[i] , parameters.spotlighty[i], 1);
+		for(var k=0; k<2; k++) {
+			parameters.spotlightx[k] += (parameters.speed * parameters.xdir[k]);
+			parameters.spotlighty[k] += (parameters.speed * parameters.ydir[k]);
+			parameters.spotlights[k].position.set(parameters.spotlightx[k], parameters.spotlighty[k], 1);
 		}
 	},
 
@@ -156,7 +151,7 @@ var LightsVisual = {
 		//UPDATE GRIDLIGHTS
 		//In case colorArray was changed and index is out of bounds
 		if(parameters.colorIndex >= colorArray.length) {
-			parameters.colorIndex = colorArray / 2;
+			parameters.colorIndex = colorArray.length / 2;
 		}
 
 		var start = 0
@@ -170,7 +165,7 @@ var LightsVisual = {
 			if(parameters.gridsums[k] === 0) {
 				//do nothing
 			} 
-			else if(parameters.gridsums[k] > parameters.lastgridsums[k] + 3000 && parameters.gridlights[parameters.randomizedIndex[k]].intensity < 0.5) {
+			else if(parameters.gridsums[k] > parameters.lastgridsums[k] + parameters.girdlightThreshold && parameters.gridlights[parameters.randomizedIndex[k]].intensity < 0.5) {
 				parameters.gridlights[parameters.randomizedIndex[k]].intensity += 0.00002;
 				parameters.gridlights[parameters.randomizedIndex[k]].color.setHex(colorArray[parameters.gridsums[k] % colorArray.length]);
 				parameters.increasing[parameters.randomizedIndex[k]] = true;
@@ -190,8 +185,6 @@ var LightsVisual = {
 			}
 			parameters.lastgridsums[k] = parameters.gridsums[k];
 		}
-		
-		//console.log(sum);
 
 		//UPDATE BIGLIGHT
 		for(var i=0; i<512; i++) {
@@ -255,38 +248,29 @@ var LightsVisual = {
 		parameters.totalLastSum = sum;
 
 		//UPDATE SPOTLIGHTS
-		var sums = [0, 0, 0, 0, 0, 0];
-		for(var i=0; i<85; i++) {
+		var sums = [0, 0, 0, 0];
+		for(var i=0; i<128; i++) {
 			sums[0] += freqByteData[i];
 		}
-		for(var i=85; i<170; i++) {
+		for(var i=128; i<256; i++) {
 			sums[1] += freqByteData[i];
 		}
 		if(Math.abs((sums[0]+sums[1]) - parameters.lastSumsSpotlight[0]) > 2000) {
 			parameters.spotlights[0].color.setHex(colorArray[(sums[0]+sums[1]) % colorArray.length]);
 		}
 		parameters.lastSumsSpotlight[0] = sums[0]+sums[1];
-		for(var i=170; i<255; i++) {
+		for(var i=256; i<384; i++) {
 			sums[2] += freqByteData[i];
 		}
-		for(var i=255; i<340; i++) {
+		for(var i=384; i<512; i++) {
 			sums[3] += freqByteData[i];
 		}
 		if(Math.abs((sums[2]+sums[3]) - parameters.lastSumsSpotlight[1]) > 2000) {
 			parameters.spotlights[1].color.setHex(colorArray[(sums[2]+sums[3]) % colorArray.length]);
 		}
 		parameters.lastSumsSpotlight[1] = sums[2]+sums[3];
-		for(var i=340; i<425; i++) {
-			sums[4] += freqByteData[i];
-		}
-		for(var i=425; i<512; i++) {
-			sums[5] += freqByteData[i];
-		}
-		if(Math.abs((sums[4]+sums[5]) - parameters.lastSumsSpotlight[2]) > 2000) {
-			parameters.spotlights[2].color.setHex(colorArray[(sums[4]+sums[5]) % colorArray.length]);
-		}
-		parameters.lastSumsSpotlight[2] = sums[4]+sums[5];
-		for(var i=0; i<6; i++) {
+
+		for(var i=0; i<4; i++) {
 			sums[i] = normalize(sums[i], parameters.max) * 0.05;
 		}
 		this.updateSpotlightPositions(sums);
