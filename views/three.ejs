@@ -18,6 +18,7 @@
 	<script src="public/visuals/sphereSpin.js"></script>
 	<script src="public/visuals/flyingShapes.js"></script>
 	<script src="public/visuals/lights.js"></script>
+	<script src="public/visuals/falling.js"></script>
 	<script src="public/js/OrbitControls.js"></script>
 </head>
 <body>
@@ -41,7 +42,7 @@ $('#youtube').keydown(function(event) {
 	}
 });
 
-var visual = LightsVisual;
+var visual = FallingVisual;
 
 var renderer;
 var container = document.getElementById( 'container' );
