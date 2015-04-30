@@ -26,7 +26,7 @@ var LightsVisual = {
 			girdstate: [],
 			randomizedIndex: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 			allLightsVisible: true,
-			girdlightThreshold: 2500,
+			girdlightThreshold: 3000,
 
 			//Spotlight params
 			spotlightx: [0,0,0],

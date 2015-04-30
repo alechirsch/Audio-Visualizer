@@ -76,6 +76,7 @@
 					<div id="cylinder-button" class="visual-button"></div>
 					<div id="circles-button" class="visual-button"></div>
 					<div id="lights-button" class="visual-button"></div>
+					<div id="falling-button" class="visual-button"></div>
 
 					<script>
 						$("#terrain-button").click(function(){ 
@@ -105,6 +106,11 @@
 						});
 						$("#lights-button").click(function(){ 
 							visual = LightsVisual;
+							visual.init();
+							visual.render();
+						});
+						$("#falling-button").click(function(){ 
+							visual = FallingVisual;
 							visual.init();
 							visual.render();
 						});

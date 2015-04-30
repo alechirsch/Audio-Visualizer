@@ -65,6 +65,10 @@ a {
     background: url("/public/images/lights.png");
 }
 
+#falling-button{
+    background: url("/public/images/falling.png");
+}
+
 #color .slider{
 	display:none;
 }
