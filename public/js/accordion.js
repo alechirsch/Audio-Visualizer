@@ -1,3 +1,5 @@
+// from http://sandbox.scriptiny.com/javascript-accordion/
+
 var TINY={};
 
 function T$(i) {
@@ -76,13 +78,3 @@ TINY.accordion = function() {
 
 	return { slider:slider } 
 }();
-
-
-
-
-
-
-
-
-
-
