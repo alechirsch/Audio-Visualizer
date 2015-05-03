@@ -3,15 +3,15 @@ var fs = require('fs');
 var ytdl = require('ytdl-core');
 var ejs = require('ejs');
 var Path = require('path');
-/*var server = new Hapi.Server('0.0.0.0', process.env.PORT || 8000, {
+var server = new Hapi.Server('0.0.0.0', process.env.PORT || 8000, {
     "payload": {
         "maxBytes": 104857600 //Increasing max file size to 1MB
     }
-});*/
-
+});
+/*
 var server = new Hapi.Server();
 server.connection( { port: 8000 } );
-
+*/
 server.views({
     engines: {
         ejs: ejs
@@ -21,9 +21,9 @@ server.views({
 //NEW ROUTE
 server.route({
     method: 'GET',
-    path: '/three',
+    path: '/old',
     handler: function(req, reply) {
-        reply.view('three.ejs', {
+        reply.view('view.ejs', {
             video_id: '',
             youtube: false
         });
@@ -33,7 +33,7 @@ server.route({
     method: 'GET',
     path: '/',
     handler: function(req, reply) {
-        reply.view('view.ejs', {
+        reply.view('three.ejs', {
             video_id: '',
             youtube: false
         });
